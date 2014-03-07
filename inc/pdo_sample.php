@@ -8,7 +8,7 @@ $db = array(
 $user = 'user';
 $password = 'password';
 $options = array(
-  PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES \'UTF8\'"
+  PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"
 );
 return new PDO($db['db'] . ':host=' . $db['host']
   . ';port=' . $db['port']

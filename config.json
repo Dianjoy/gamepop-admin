@@ -1,0 +1,29 @@
+{
+  "img_url": "web",
+  "module": "web",
+  "config-js": {
+    "pair": [{
+      "key": "baseURL",
+      "value": "api/"
+    }, {
+      "key": "GAid",
+      "value": "UA-35957679-5"
+    }]
+  },
+  "project": {
+    "name": "游戏泡泡"
+  },
+  "admin": {
+    "name": "Meathill",
+    "mail": "meathill@gmail.com"
+  },
+  "company": {
+    "name": "Dianjoy",
+    "start": "2012"
+  },
+  "category": [{
+    "url": "#/games/list",
+    "icon": "trophy",
+    "title": "全部游戏"
+  }]
+}
