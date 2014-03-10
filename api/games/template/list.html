@@ -1,9 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title></title>
-</head>
-<body>
+<div class="navbar navbar-default navbar-static-top" role="navigation">
+  <ul class="nav navbar-nav">
+    <li>筛选</li>
+  </ul>
+</div>
 
-</body>
-</html>
+<table class="table table-bordered">
+  <thead>
+  <tr>
+    <th>游戏名称</th>
+    <th>游戏别名</th>
+  </tr>
+  </thead>
+  <tbody>
+  {{#games}}
+  <tr>
+    <td>{{game_name}}</td>
+    <td>{{alias}}</td>
+  </tr>
+  {{/games}}
+  </tbody>
+</table>

@@ -7,7 +7,7 @@
  */
 
 $pdo = include_once "../../inc/pdo.php";
-include_once "../../Template.class.php";
+include_once "../../inc/Template.class.php";
 
 $result = array();
 

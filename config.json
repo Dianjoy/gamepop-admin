@@ -2,17 +2,30 @@
   "img_url": "web",
   "module": "web",
   "config-js": {
-    "pair": [{
-      "key": "baseURL",
-      "value": "api/"
-    }, {
-      "key": "GAid",
-      "value": "UA-35957679-5"
-    }]
+    "pair": [
+      {
+        "key": "baseURL",
+        "value": "api/"
+      },
+      {
+        "key": "GAid",
+        "value": "UA-35957679-5"
+      },
+      {
+        "key": "webURL",
+        "value": "web"
+      }
+    ]
   },
   "project": {
-    "name": "游戏泡泡"
+    "name": "游戏泡泡",
+    "welcome": "欢迎，泡泡的未来在你手中"
   },
+  "login": {
+    "action": "login_do.php",
+    "verify-code": "inc/showimg.php"
+  },
+  "logout": "logout.php",
   "admin": {
     "name": "Meathill",
     "mail": "meathill@gmail.com"
@@ -21,9 +34,28 @@
     "name": "Dianjoy",
     "start": "2012"
   },
-  "category": [{
-    "url": "#/games/list",
-    "icon": "trophy",
-    "title": "全部游戏"
-  }]
+  "category": [
+    {
+      "url": "#/games/list",
+      "icon": "trophy",
+      "title": "全部游戏"
+    },
+    {
+      "icon": "user-md",
+      "title": "用户管理",
+      "has_sub": true,
+      "sub": [
+        {
+          "url": "#/admin/add",
+          "icon": "plus",
+          "title": "添加用户"
+        },
+        {
+          "url": "#/admin/list",
+          "icon": "list",
+          "title": "用户列表"
+        }
+      ]
+    }
+  ]
 }

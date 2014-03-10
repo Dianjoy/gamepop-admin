@@ -1,0 +1,26 @@
+<table class="table table-bordered table-hover">
+  <thead>
+  <tr>
+    <th>账号</th>
+    <th>姓名</th>
+    <th>角色</th>
+    <th>QQ</th>
+    <th>上次登录时间</th>
+    <th>操作</th>
+  </tr>
+  </thead>
+  <tbody>
+  {{#admins}}
+  <tr>
+    <td>{{user}}</td>
+    <td>{{fullname}}</td>
+    <td>{{role_label}}</td>
+    <td>{{qq}}</td>
+    <td>{{last_login}}</td>
+    <td class="btn-group">
+      <a class="btn btn-danger delete-button" href="api/admin/action_admin?m=del&id={{id}}"><i class="fa fa-fw fa-times"></i></a>
+    </td>
+  </tr>
+  {{/admins}}
+  </tbody>
+</table>
