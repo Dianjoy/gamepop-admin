@@ -27,7 +27,7 @@
     $DB = require_once("inc/pdo.php");
     include_once('inc/Admin.class.php');
     $admin = new Admin($DB);
-    $info = $admin->check($username, $password);
+    $info = $admin->get_admin($username, $password);
     if ($info) {
       unset($_SESSION['Checknum']);
       unset($_SESSION['msg']);
@@ -36,11 +36,12 @@
       $_SESSION['fullname'] = $info['fullname']; // 姓名
       $_SESSION['role'] = $info['role']; // 级别
       $_SESSION['permission'] = Admin::$PERMISSION[$info['role']];
+      $hash = $_REQUEST['hash'];
 
       $ip = $_SERVER['REMOTE_ADDR'];
       $admin->insert_login_log($user_id, $ip);
 
-      $turn = './';
+      $turn = './' . $hash;
     } else {
       $_SESSION['msg'] = "用户名或密码不正确！";
       $turn = 'login.php';

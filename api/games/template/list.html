@@ -1,22 +1,67 @@
-<div class="navbar navbar-default navbar-static-top" role="navigation">
+<div class="navbar navbar-default navbar-static-top smart-navbar" role="navigation">
   <ul class="nav navbar-nav">
-    <li>筛选</li>
+    <li><a href="#"><i class="fa fa-filter"></i> 筛选</a></li>
   </ul>
+  <form class="navbar-form navbar-right keyword-form">
+    <div class="form-group">
+      <input type="text" class="form-control" placeholder="关键词" name="query" autofocus >
+    </div>
+    <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+  </form>
 </div>
 
-<table class="table table-bordered">
+<ul class="pagination pull-right hidden-md hidden-lg">
+  <script type="text/html-template">
+    <li><a href="#/to/{{prev}}"><i class="fa fa-chevron-left"></i></a></li>
+    {{#each pages}}
+    <li class="hidden-xs"><a href="#/to/{{.}}">{{.}}</a></li>
+    {{/each}}
+    <li><a href="#/to/{{next}}"><i class="fa fa-chevron-right"></i></a></li>
+  </script>
+</ul>
+
+<table class="table table-bordered smart-table responsive-table" data-pagination=".pagination" data-pagesize="20" data-url="api/games/list.php">
   <thead>
   <tr>
+    <th></th>
     <th>游戏名称</th>
     <th>游戏别名</th>
+    <th>游戏描述</th>
+    <th>操作</th>
   </tr>
   </thead>
   <tbody>
-  {{#games}}
-  <tr>
-    <td>{{game_name}}</td>
-    <td>{{alias}}</td>
-  </tr>
-  {{/games}}
+  <script type="text/html-template">
+    {{#each games}}
+    <tr id="{{guide_name}}">
+      <td><a href="#" class="edit"><img
+        src="{{#if icon_path}}//r.yxpopo.com/popoicon{{icon_path}}{{else}}./img/image.png{{/if}}" ></a></td>
+      <td data-title="游戏名称">{{game_name}}</td>
+      <td data-title="游戏别名">{{guide_name}}</td>
+      <td data-title="游戏描述">
+        {{#if game_desc}}{{game_desc}}{{else}}<a href="#" class="edit">（添加）</a>{{/if}}
+      </td>
+      <td>
+        <a href="api/games/action.php?m=del&id={{guide_name}}" class="btn btn-danger delete-button"><i
+          class="fa fa-times"></i></a>
+      </td>
+    </tr>
+    {{/each}}
+  </script>
   </tbody>
+  <tfoot>
+  <tr class="waiting">
+    <td colspan="5" align="center"><i class="fa fa-spin fa-spinner fa-4x"></i><br>加载数据，请稍后</td>
+  </tr>
+  </tfoot>
 </table>
+
+<ul class="pagination pull-right mg0">
+  <script type="text/html-template">
+    <li><a href="#/to/{{prev}}"><i class="fa fa-chevron-left"></i></a></li>
+    {{#each pages}}
+    <li class="hidden-xs"><a href="#/to/{{.}}">{{.}}</a></li>
+    {{/each}}
+    <li><a href="#/to/{{next}}"><i class="fa fa-chevron-right"></i></a></li>
+  </script>
+</ul>

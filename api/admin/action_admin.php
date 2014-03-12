@@ -3,7 +3,7 @@ define('OPTIONS', 'root');
 include_once '../../inc/session.php';
 ?>
 <?php
-header("Content-Type:text/json;charset=utf-8");
+header("Content-Type:application/json;charset=utf-8");
 $m = $_REQUEST['m'];
 $all = array('add', 'update', 'del');
 if (!in_array($m, $all)) {
@@ -17,8 +17,7 @@ include_once(dirname(__FILE__).'/../../inc/Admin.class.php');
 $admin = new Admin($DB);
 $m($admin);
 $admin->destroy();
-?>
-<?php
+
 function add($admin){
 	$username = trim($_POST['username']); 
 	$password = trim($_POST['newpassword']);

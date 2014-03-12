@@ -50,12 +50,12 @@ class Admin {
     return $this->DB->exec($sql);
   }
 
-  public function check($username, $password) {
+  public function get_admin($username, $password) {
     $password = $this->encrypt($username, $password);
     $sql = "SELECT `id`, `fullname`, `role`
             FROM `". self::TABLE . "`
             WHERE `user`='$username' AND `password`='$password'";
-    return $this->DB->query($sql)->fetchColumn();
+    return $this->DB->query($sql)->fetch(PDO::FETCH_ASSOC);
   }
 
   public function delete($id) {

@@ -18,5 +18,5 @@ $result = array(
 
 require_once('./inc/Template.class.php');
 $tpl = new Template('web/login.html');
-$config = json_decode(file_get_contents('config.json'), true);
+$config = json_decode(file_get_contents('config/config.json'), true);
 echo $tpl->render(array_merge($config, $result));
