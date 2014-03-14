@@ -11,10 +11,10 @@ include_once '../../inc/session.php';
  */
 
 $DB = include_once "../../inc/pdo.php";
-$apk = include_once "../../inc/apk.php";
-include_once "../../inc/Template.class.php";
 include_once "../../inc/Game.class.php";
+include_once "../../inc/Article.class.php";
 $game = new Game($DB);
+$article = new Article($DB);
 
 $methods = array(
   'GET' => 'fetch',
@@ -28,16 +28,35 @@ if ($request) {
 $method = $methods[$_SERVER['REQUEST_METHOD']];
 header("Content-Type:application/json;charset=utf-8");
 if ($method) {
-  $method($game, $args);
+  $method($game, $args, $article);
 }
 
-function fetch($game, $args) {
+function fetch($game, $args, $article) {
   $pagesize = isset($args['pagesize']) ? (int)$args['pagesize'] : 20;
   $page = isset($args['page']) ? (int)$args['page'] : 0;
   $keyword = empty($args['keyword']) ? '' : trim(addslashes(strip_tags($args['keyword'])));
 
   $total = $game->get_game_number($keyword);
   $games = $game->get_all_games($pagesize, $page, $keyword);
+
+  if (DEBUG) {
+    foreach ($games as &$row) {
+      if (substr($row['icon_path'], 0, 7) === 'upload/') {
+        $row['icon_path'] = 'http://admin.yxpopo.com/' . $row['icon_path'];
+      }
+    }
+  }
+
+  // 取每个游戏的文章数量
+  $guide_names = array();
+  foreach ($games as $row) {
+    $guide_names[] = $row['guide_name'];
+  }
+  $article_number = $article->get_article_number_by_id($guide_names);
+  foreach ($games as &$row) {
+    $row['article_number'] = $article_number[$row['guide_name']];
+  }
+
 
   $result = array(
     'total' => $total,

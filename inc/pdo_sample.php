@@ -1,5 +1,8 @@
 <?php
-$db = array(
+// 定义DEBUG常量可以自动开启DEBUG模式
+//define('DEBUG', true);
+
+$db_init = array(
   'db'=>'mysql',
   'host'=>'host',
   'port'=>'port',
@@ -11,7 +14,7 @@ $db = array(
   ),
 );
 
-return new PDO($db['db'] . ':host=' . $db['host']
-  . ';port=' . $db['port']
-  . ';dbname=' . $db['name'],
+return new PDO($db_init['db'] . ':host=' . $db_init['host']
+  . ';port=' . $db_init['port']
+  . ';dbname=' . $db_init['name'],
   $db_init['user'], $db_init['password'], $db_init['options']);

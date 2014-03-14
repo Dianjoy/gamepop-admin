@@ -39,7 +39,7 @@
       $hash = $_REQUEST['hash'];
 
       $ip = $_SERVER['REMOTE_ADDR'];
-      $admin->insert_login_log($user_id, $ip);
+      $admin->insert_login_log($info['id'], $ip);
 
       $turn = './' . $hash;
     } else {

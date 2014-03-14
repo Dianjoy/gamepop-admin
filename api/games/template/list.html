@@ -28,6 +28,7 @@
     <th>游戏名称</th>
     <th>游戏别名</th>
     <th>游戏描述</th>
+    <th>攻略数量</th>
     <th>操作</th>
   </tr>
   </thead>
@@ -45,6 +46,9 @@
         </a>
       </td>
       <td>
+        <a href="#/games/article/{{guide_name}}" class="btn btn-info"><i class="fa fa-list"></i> {{article_number}}</a>
+      </td>
+      <td>
         <a href="api/games/action.php?m=del&id={{guide_name}}" class="btn btn-danger delete-button"><i
           class="fa fa-times"></i></a>
       </td>
@@ -54,7 +58,7 @@
   </tbody>
   <tfoot>
   <tr class="waiting">
-    <td colspan="5" align="center"><i class="fa fa-spin fa-spinner fa-4x"></i><br>加载数据，请稍后</td>
+    <td colspan="6" align="center"><i class="fa fa-spin fa-spinner fa-4x"></i><br>加载数据，请稍后</td>
   </tr>
   </tfoot>
 </table>
