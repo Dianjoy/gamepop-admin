@@ -1,5 +1,5 @@
 <?php
-define('OPTIONS', 'root');
+define('OPTIONS', 'game');
 include_once '../../inc/session.php';
 ?>
 <?php
