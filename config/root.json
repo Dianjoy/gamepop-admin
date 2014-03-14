@@ -1,5 +1,17 @@
 {
-  "url": "#/games/list",
-  "icon": "trophy",
-  "title": "全部游戏"
+  "icon": "user-md",
+  "title": "用户管理",
+  "has_sub": true,
+  "sub": [
+    {
+      "url": "#/admin/add",
+      "icon": "plus",
+      "title": "添加用户"
+    },
+    {
+      "url": "#/admin/list",
+      "icon": "list",
+      "title": "用户列表"
+    }
+  ]
 }
