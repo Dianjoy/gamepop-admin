@@ -23,12 +23,15 @@ class Admin {
     array( // 管理员权限
       'root',
       'game',
+      'upload',
     ),
     array( // 开发权限
-      'game'
+      'game',
+      'upload',
     ),
     array( // 编辑权限
-      'game'
+      'game',
+      'upload',
     )
   );
 

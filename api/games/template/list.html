@@ -24,7 +24,7 @@
 <table class="table table-bordered smart-table responsive-table" data-pagination=".pagination" data-pagesize="20" data-url="api/games/list.php" data-id="guide_name">
   <thead>
   <tr>
-    <th></th>
+    <th>游戏图标</th>
     <th>游戏名称</th>
     <th>游戏别名</th>
     <th>游戏描述</th>
@@ -36,7 +36,7 @@
     {{#each games}}
     <tr id="{{guide_name}}">
       <td><a href="#icon_path" class="edit" data-type="img"><img
-        src="{{#if icon_path}}//r.yxpopo.com/popoicon{{icon_path}}{{else}}./img/image.png{{/if}}" class="icon-100"></a></td>
+        src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="icon-100"></a></td>
       <td data-title="游戏名称">{{game_name}}</td>
       <td data-title="游戏别名">{{guide_name}}</td>
       <td data-title="游戏描述">

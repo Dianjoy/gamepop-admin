@@ -19,7 +19,10 @@ $template = new Template('web/index.html');
 $config = json_decode(file_get_contents('config/config.json'), true);
 
 foreach ($_SESSION['permission'] as $auth) {
-  $config['category'][] = json_decode(file_get_contents("config/$auth.json"), true);
+  $filename = "config/$auth.json";
+  if (file_exists($filename)) {
+    $config['category'][] = json_decode(file_get_contents($filename), true);
+  }
 }
 
 echo $template->render($config);

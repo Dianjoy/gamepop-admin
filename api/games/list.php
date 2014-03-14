@@ -39,7 +39,6 @@ function fetch($game, $args) {
   $total = $game->get_game_number($keyword);
   $games = $game->get_all_games($pagesize, $page, $keyword);
 
-
   $result = array(
     'total' => $total,
     'list' => $games
