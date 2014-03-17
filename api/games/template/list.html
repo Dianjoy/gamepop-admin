@@ -34,7 +34,7 @@
   </thead>
   <tbody>
   <script type="text/html-template">
-    {{#each games}}
+    {{#each list}}
     <tr id="{{guide_name}}">
       <td><a href="#icon_path" class="edit" data-type="img"><img
         src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="icon-100"></a></td>
@@ -46,7 +46,7 @@
         </a>
       </td>
       <td>
-        <a href="#/games/article/{{guide_name}}" class="btn btn-info"><i class="fa fa-list"></i> {{article_number}}</a>
+        <a href="#/article/list/{{guide_name}}" class="btn btn-info"><i class="fa fa-list"></i> {{article_number}}</a>
       </td>
       <td>
         <a href="api/games/action.php?m=del&id={{guide_name}}" class="btn btn-danger delete-button"><i

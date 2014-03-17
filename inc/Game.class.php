@@ -54,7 +54,7 @@ class Game {
               JOIN " . self::APK_INFO . " i ON m.`packagename`=i.`packagename`
             WHERE `status`=" . self::NORMAL . " AND i.`is_game`=1 AND g.`guide_name`='$id'";
     $info = $this->DB->query($sql)->fetch(PDO::FETCH_ASSOC);
-    $this->get_icon_path($info);
+    $info = $this->get_icon_path($info);
     return $info;
   }
 
@@ -86,7 +86,8 @@ class Game {
   private function get_keyword_condition($keyword, $table = '') {
     return $keyword ? "AND ($table`guide_name` LIKE '%$keyword%' OR `game_name` LIKE '%$keyword%')" : '';
   }
-  private function get_icon_path(&$game) {
+  private function get_icon_path($game) {
     $game['icon_path'] = empty($game['new_icon']) ? (empty($game['icon_path']) ? '' : '//r.yxpopo.com/popoicon' . $game['icon_path']) : $game['new_icon'];
+    return $game;
   }
 }

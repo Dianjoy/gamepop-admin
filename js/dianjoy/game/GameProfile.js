@@ -3,7 +3,7 @@
  */
 ;(function (ns) {
   var Model = Backbone.Model.extend({
-    urlRoot: baseURL + 'games/article.php',
+    urlRoot: baseURL + 'games/profile.php',
     parse: function (response) {
       return JSON.parse(response);
     }

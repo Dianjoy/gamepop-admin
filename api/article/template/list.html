@@ -1,0 +1,82 @@
+<div class="game-info well well-sm" data-mediator-class="dianjoy.game.GameInfo">
+  <script type="text/hbs-template">
+    <div class="row">
+      <div class="col-md-1">
+        <a href="#/game/profile/{{guide_name}}">
+          <img src="{{#if icon_path}}{{icon_path}}{{else}}img/image.png{{/if}}" class="img-thumbnail icon-100">
+        </a>
+      </div>
+      <div class="col-md-11">
+        <h2>{{{game_name}}} <small>{{guide_name}}</small></h2>
+        <p>{{game_desc}}</p>
+      </div>
+    </div>
+  </script>
+</div>
+
+<div class="navbar navbar-default navbar-static-top smart-navbar">
+  <ul class="nav navbar-nav">
+    <li class="disabled"><a href="#"><i class="fa fa-filter"></i> 筛选</a></li>
+    <li class="disabled"><a href="#"><i class="fa fa-sort-amount-desc"></i> 排序</a></li>
+  </ul>
+  <form class="navbar-form navbar-right keyword-form">
+    <div class="form-group">
+      <input type="text" class="form-control" placeholder="关键词" name="query" autofocus >
+    </div>
+    <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+  </form>
+</div>
+
+<ul class="pagination pull-right hidden-md hidden-lg">
+  <script type="text/html-template">
+    <li><a href="#/to/{{prev}}"><i class="fa fa-chevron-left"></i></a></li>
+    {{#each pages}}
+    <li class="hidden-xs"><a href="#/to/{{@index}}">{{.}}</a></li>
+    {{/each}}
+    <li><a href="#/to/{{next}}"><i class="fa fa-chevron-right"></i></a></li>
+  </script>
+</ul>
+
+<table class="table table-bordered table-hover smart-table" data-pagination=".pagination" data-pagesize="20" data-url="api/article/list.php" data-id="id">
+  <thead>
+  <tr>
+    <th>类型</th>
+    <th>来源</th>
+    <th>作者</th>
+    <th>标题</th>
+    <th>排序</th>
+    <th>发布日期</th>
+    <th>更新日期</th>
+  </tr>
+  </thead>
+  <tbody>
+  <script type="text/hbs-template">
+    {{#each list}}
+    <tr id="{{id}}">
+      <td><a href="#cate" class="label label-default label-{{guide_type}}">{{type_name}}</a></td>
+      <td><a href="{{src_url}}" target="_blank">{{source}} <i class="fa fa-external-link"></i></a></td>
+      <td>{{author}}</td>
+      <td><a href="#/article/detail/{{id}}">{{topic}} <i class="fa fa-edit"></i></a></td>
+      <td>{{seq}}</td>
+      <td>{{pub_date}}</td>
+      <td>{{update_time}}</td>
+    </tr>
+    {{/each}}
+  </script>
+  </tbody>
+  <tfoot>
+  <tr class="waiting">
+    <td colspan="7" align="center"><i class="fa fa-spin fa-spinner fa-4x"></i><br>加载中，请稍后</td>
+  </tr>
+  </tfoot>
+</table>
+
+<ul class="pagination pull-right mg0">
+  <script type="text/html-template">
+    <li><a href="#/to/{{prev}}"><i class="fa fa-chevron-left"></i></a></li>
+    {{#each pages}}
+    <li class="hidden-xs"><a href="#/to/{{@index}}">{{.}}</a></li>
+    {{/each}}
+    <li><a href="#/to/{{next}}"><i class="fa fa-chevron-right"></i></a></li>
+  </script>
+</ul>

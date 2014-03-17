@@ -13,6 +13,7 @@ while ($pos_right) {
 if (result_without_parenthese($string) == 'false') {
   require(dirname(__FILE__) . '/Template.class.php');
   $tpl = new Template(dirname(__FILE__) . '/../web/template/permission-error.html');
+  header("HTTP/1.1 401 Unauthorized");
   exit($tpl->render());
 }
 

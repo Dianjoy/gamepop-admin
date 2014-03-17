@@ -24,14 +24,17 @@ class Admin {
       'root',
       'game',
       'upload',
+      'article',
     ),
     array( // 开发权限
       'game',
+      'article',
       'upload',
     ),
     array( // 编辑权限
       'game',
       'upload',
+      'article',
     )
   );
 
