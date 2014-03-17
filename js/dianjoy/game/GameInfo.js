@@ -15,7 +15,8 @@
     initialize: function () {
       this.template = Handlebars.compile(this.$('script').remove().html());
       var hash = location.hash
-        , id = hash.substr(hash.lastIndexOf('/') + 1);
+        , arr = hash.substr(2).split('/')
+        , id = arr[2];
       this.model = new Model({
         id: id
       });

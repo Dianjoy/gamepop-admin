@@ -29,6 +29,13 @@ class Article {
     return $this->DB->query($sql)->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
   }
 
+  public function get_article_by_id($id) {
+    $sql = "SELECT `guide_name`, `label`, `content`, `source`, `topic`, `author`, `icon_path`
+            FROM " . self::TABLE . " a JOIN t_category c ON a.`guide_type`=c.`cate`
+            WHERE a.`id`='$id'";
+    return $this->DB->query($sql)->fetch(PDO::FETCH_ASSOC);
+  }
+
   public function get_articles_by_game($guide_name, $pagesize, $page, $keyword) {
     $start = $pagesize * $page;
     $sql = "SELECT `id`, `guide_name`, `type_name`, `source`, `topic`, `author`, `icon_path`,
