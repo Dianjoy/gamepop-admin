@@ -1,5 +1,5 @@
 <div class="game-info well well-sm" data-mediator-class="dianjoy.game.GameInfo">
-  <script type="text/hbs-template">
+  <script type="text/x-handlebars-template">
     <div class="row">
       <div class="col-md-1">
         <a href="#/game/profile/{{guide_name}}">
@@ -28,7 +28,7 @@
 </div>
 
 <ul class="pagination pull-right hidden-md hidden-lg">
-  <script type="text/html-template">
+  <script type="text/x-handlebars-template">
     <li><a href="#/to/{{prev}}"><i class="fa fa-chevron-left"></i></a></li>
     {{#each pages}}
     <li class="hidden-xs"><a href="#/to/{{@index}}">{{.}}</a></li>
@@ -50,7 +50,7 @@
   </tr>
   </thead>
   <tbody>
-  <script type="text/hbs-template">
+  <script type="text/x-handlebars-template">
     {{#each list}}
     <tr id="{{id}}">
       <td><a href="#cate" class="label label-default label-{{guide_type}}">{{type_name}}</a></td>
@@ -72,7 +72,7 @@
 </table>
 
 <ul class="pagination pull-right mg0">
-  <script type="text/html-template">
+  <script type="text/x-handlebars-template">
     <li><a href="#/to/{{prev}}"><i class="fa fa-chevron-left"></i></a></li>
     {{#each pages}}
     <li class="hidden-xs"><a href="#/to/{{@index}}">{{.}}</a></li>

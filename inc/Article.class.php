@@ -30,10 +30,17 @@ class Article {
   }
 
   public function get_article_by_id($id) {
+    require_once(dirname(__FILE__) . '../../inc/HTML_To_Markdown.php');
     $sql = "SELECT `guide_name`, `label`, `content`, `source`, `topic`, `author`, `icon_path`
             FROM " . self::TABLE . " a JOIN t_category c ON a.`guide_type`=c.`cate`
             WHERE a.`id`='$id'";
-    return $this->DB->query($sql)->fetch(PDO::FETCH_ASSOC);
+    $article = $this->DB->query($sql)->fetch(PDO::FETCH_ASSOC);
+    if (get_magic_quotes_gpc()) {
+      $article['content'] = stripslashes($article['content']);
+    }
+    $markdown = new HTML_To_Markdown($article['content'], array('strip_tags' => true));
+    $article['content'] = str_replace('](/', '](http://r.yxpopo.com/yxpopo/', htmlspecialchars($markdown));
+    return $article;
   }
 
   public function get_articles_by_game($guide_name, $pagesize, $page, $keyword) {
@@ -49,5 +56,19 @@ class Article {
 
   public function get_articles($pagesize, $page, $keyword) {
 
+  }
+
+  public function update_article_by_id($id, $topic, $content) {
+    require_once(dirname(__FILE__) . '../../inc/Markdown.inc.php');
+    $content = \Michelf\Markdown::defaultTransform($content);
+    $sql = "UPDATE " . self::TABLE . "
+            SET `topic`=:topic, `content`=:content
+            WHERE `id`=:id";
+    $sth = $this->DB->prepare($sql);
+    return $sth->execute(array(
+      ':topic' => $topic,
+      ':content' => $content,
+      ':id' => $id,
+    ));
   }
 } 
