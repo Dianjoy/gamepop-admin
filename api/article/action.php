@@ -14,7 +14,7 @@ header("Content-Type:application/json;charset=utf-8");
 $m = $_REQUEST['m'];
 $all = array('edit');
 if (!in_array($m, $all)) {
-  header("HTTP/1.1 405 Method Not Allowed");
+  header("HTTP/1.1 406 Not Acceptable");
   exit(json_encode(array(
     'code' => 1,
     'msg' => '指令错误',

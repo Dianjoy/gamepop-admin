@@ -22,7 +22,7 @@
       this.$('[name="topic"]').val(model.get('topic'))
       this.$('textarea')
         .val(model.get('content'))
-        .trigger('textinput');
+        .trigger('textInput');
     }
   });
 }(Nervenet.createNameSpace('dianjoy.article')));

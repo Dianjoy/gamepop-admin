@@ -7,7 +7,8 @@
  */
 
 class Article {
-  const TABLE = '`t_article`';
+  const TABLE = '`t_article` a';
+  const CATEGORY = '`t_category` c';
 
   private $DB = null;
 
@@ -32,7 +33,7 @@ class Article {
   public function get_article_by_id($id) {
     require_once(dirname(__FILE__) . '../../inc/HTML_To_Markdown.php');
     $sql = "SELECT `guide_name`, `label`, `content`, `source`, `topic`, `author`, `icon_path`
-            FROM " . self::TABLE . " a JOIN t_category c ON a.`guide_type`=c.`cate`
+            FROM " . self::TABLE . " JOIN " . self::CATEGORY . " ON a.`guide_type`=c.`cate`
             WHERE a.`id`='$id'";
     $article = $this->DB->query($sql)->fetch(PDO::FETCH_ASSOC);
     if (get_magic_quotes_gpc()) {
@@ -45,11 +46,11 @@ class Article {
 
   public function get_articles_by_game($guide_name, $pagesize, $page, $keyword) {
     $start = $pagesize * $page;
-    $sql = "SELECT `id`, `guide_name`, `type_name`, `source`, `topic`, `author`, `icon_path`,
+    $sql = "SELECT a.`id`, `guide_name`, `label`, `source`, `topic`, `author`, `icon_path`,
               `pub_date`, `src_url`, `seq`, `update_time`
-            FROM " . self::TABLE . " a JOIN t_guide_type_name t ON a.`guide_type`=t.`guide_type`
+            FROM " . self::TABLE . " JOIN " . self::CATEGORY . " ON a.`guide_type`=c.`cate`
             WHERE `guide_name`='$guide_name'
-            ORDER BY `id` DESC
+            ORDER BY a.`id` DESC
             LIMIT $start, $pagesize";
     return $this->DB->query($sql)->fetchAll(PDO::FETCH_ASSOC);
   }
@@ -58,11 +59,19 @@ class Article {
 
   }
 
+  public function get_all_categories() {
+    $sql = "SELECT cate, label
+            FROM " . self::CATEGORY . "
+            WHERE 1";
+    return $this->DB->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+  }
+
   public function update_article_by_id($id, $topic, $content) {
     require_once(dirname(__FILE__) . '../../inc/Markdown.inc.php');
+    $now = date('Y-m-d H:i:s');
     $content = \Michelf\Markdown::defaultTransform($content);
     $sql = "UPDATE " . self::TABLE . "
-            SET `topic`=:topic, `content`=:content
+            SET `topic`=:topic, `content`=:content, `update_time`='$now'
             WHERE `id`=:id";
     $sth = $this->DB->prepare($sql);
     return $sth->execute(array(

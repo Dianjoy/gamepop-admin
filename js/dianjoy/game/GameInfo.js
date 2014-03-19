@@ -2,30 +2,25 @@
  * Created by meathill on 14-3-17.
  */
 ;(function (ns) {
-  var Model = Backbone.Model.extend({
-    defaults: {
-      icon_path: 'img/image.png',
-      game_name: '<i class="fa fa-spin fa-spinner"></i> ',
-      game_desc: '加载中，请稍后',
-      guide_name: ''
-    },
-    urlRoot: 'api/games/info.php'
-  });
+  var defaults = {
+    icon_path: 'img/image.png',
+    game_name: '<i class="fa fa-spin fa-spinner"></i> ',
+    game_desc: '加载中，请稍后',
+    guide_name: ''
+  };
   ns.GameInfo = Backbone.View.extend({
     initialize: function () {
       this.template = Handlebars.compile(this.$('script').remove().html());
-      var hash = location.hash
-        , arr = hash.substr(2).split('/')
-        , id = arr[2];
-      this.model = new Model({
-        id: id
-      });
-      this.model.on('sync', this.render, this);
+      this.model.urlRoot = 'api/games/info.php';
+      this.model.once('sync', this.render, this);
       this.model.fetch();
-      this.render(this.model);
+      this.render(defaults);
     },
     render: function (model) {
-      this.$el.html(this.template(model.toJSON()));
+      if (model instanceof Backbone.Model) {
+        model = model.toJSON();
+      }
+      this.$el.html(this.template(model));
     }
   });
 }(Nervenet.createNameSpace('dianjoy.game')));

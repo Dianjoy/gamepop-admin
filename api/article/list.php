@@ -29,7 +29,7 @@ if ($method) {
 }
 
 function fetch($article, $args) {
-  $path = $args['path'];
+  $path = $args['id'];
   $params = explode('/', $path);
   $id = $params[0];
 

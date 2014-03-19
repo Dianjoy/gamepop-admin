@@ -1,26 +1,7 @@
 {
   "img_url": "web",
   "module": "web",
-  "config-js": {
-    "pair": [
-      {
-        "key": "baseURL",
-        "value": "api/"
-      },
-      {
-        "key": "GAid",
-        "value": "UA-35957679-5"
-      },
-      {
-        "key": "webURL",
-        "value": "web/"
-      },
-      {
-        "key": "custom",
-        "value": "js/"
-      }
-    ]
-  },
+  "config": ".",
   "project": {
     "name": "游戏泡泡",
     "welcome": "欢迎，泡泡的未来在你手中"
