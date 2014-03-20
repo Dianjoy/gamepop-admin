@@ -9,9 +9,8 @@ include_once '../../inc/session.php';
  * Date: 14-3-17
  * Time: 上午10:11
  */
-$DB = include_once "../../inc/pdo.php";
 include_once "../../inc/Article.class.php";
-$article = new Article($DB);
+$article = new Article();
 
 $methods = array(
   'GET' => 'fetch',
@@ -54,16 +53,18 @@ function fetch($article, $args) {
 function update($article, $args) {
   $url = $_SERVER['PATH_INFO'];
   $id = substr($url, 1);
+  $article->initWrite();
 
-  // 如果要修改cate的话，则需要判断是否需要新建一个
-
-
-  $result = $article->update($id, $args) ? array(
-    'code' => 0,
-    'msg' => '更新成功',
-  ) : array(
-    'code' => 1,
-    'msg' => '更新失败',
-  );
-  echo json_encode($result);
+  if ($article->update($id, $args)) {
+    echo json_encode(array(
+      'code' => 0,
+      'msg' => '更新成功',
+    ));
+  } else {
+    header("HTTP/1.1 400 Bad Request");
+    echo json_encode(array(
+      'code' => 1,
+      'msg' => '更新失败',
+    ));
+  }
 }

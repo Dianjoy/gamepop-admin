@@ -9,9 +9,8 @@ include_once '../../inc/session.php';
  * Date: 14-3-17
  * Time: 上午11:38
  */
-$DB = include_once "../../inc/pdo.php";
 include_once "../../inc/Game.class.php";
-$game = new Game($DB);
+$game = new Game();
 
 $url = $_SERVER['PATH_INFO'];
 $id = substr($url, 1);

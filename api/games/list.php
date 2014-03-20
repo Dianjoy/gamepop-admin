@@ -10,11 +10,10 @@ include_once '../../inc/session.php';
  * Time: 下午6:10
  */
 
-$DB = include_once "../../inc/pdo.php";
 include_once "../../inc/Game.class.php";
 include_once "../../inc/Article.class.php";
-$game = new Game($DB);
-$article = new Article($DB);
+$game = new Game();
+$article = new Article();
 
 $methods = array(
   'GET' => 'fetch',
@@ -67,6 +66,7 @@ function fetch($game, $args, $article) {
 }
 
 function update($game, $args) {
+  $game->initWrite();
   $url = $_SERVER['PATH_INFO'];
   $id = substr($url, 1);
   $result = $game->update($id, $args) ? array(

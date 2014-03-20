@@ -5,19 +5,18 @@
  * Date: 14-3-11
  * Time: 上午11:24
  */
-class Game {
+include_once 'Base.class.php';
+
+class Game extends \gamepop\Base {
   const TABLE = '`t_game`';
   const MIDDLE = '`m_pack_guide`';
-  const APK_INFO = '`apkparser`.`t_info`';
+  const APK_INFO = '`t_app_info`';
 
   const NORMAL = 0;
   const DELETED = 1;
 
-  private $DB;
-
-
-  public function __construct($DB) {
-    $this->DB = $DB;
+  public function __construct($need_write = false) {
+    parent::__construct($need_write);
   }
 
   public function get_all_games($size, $page, $keyword = '', $order_by = 'i.now_use-i.pre_use', $order = 'DESC') {
@@ -28,10 +27,10 @@ class Game {
               g.`icon_path` AS `new_icon`
             FROM " . self::MIDDLE . " m JOIN " . self::TABLE . " g ON m.`guide_name`=g.`guide_name`
               JOIN " . self::APK_INFO . " i ON m.`packagename`=i.`packagename`
-            WHERE `status`=" . self::NORMAL . " AND i.`is_game`=1 $keyword
+            WHERE `status`=" . self::NORMAL . " $keyword
             $order_by
             LIMIT $start, $size";
-    $sth = $this->DB->query($sql);
+    $sth = self::$READ->query($sql);
     $result = $sth->fetchAll(PDO::FETCH_ASSOC);
     foreach ($result as $key => $row) {
       $result[$key] = $this->get_icon_path($row);
@@ -44,7 +43,7 @@ class Game {
     $sql = "SELECT COUNT('X')
             FROM " . self::TABLE . "
             WHERE `status`=" . self::NORMAL . " $keyword";
-    return $this->DB->query($sql)->fetchColumn();
+    return self::$READ->query($sql)->fetchColumn();
   }
 
   public function get_info($id) {
@@ -52,8 +51,8 @@ class Game {
               g.`icon_path` AS `new_icon`
             FROM " . self::MIDDLE . " m JOIN " . self::TABLE . " g ON m.`guide_name`=g.`guide_name`
               JOIN " . self::APK_INFO . " i ON m.`packagename`=i.`packagename`
-            WHERE `status`=" . self::NORMAL . " AND i.`is_game`=1 AND g.`guide_name`='$id'";
-    $info = $this->DB->query($sql)->fetch(PDO::FETCH_ASSOC);
+            WHERE `status`=" . self::NORMAL . " AND g.`guide_name`='$id'";
+    $info = self::$READ->query($sql)->fetch(PDO::FETCH_ASSOC);
     $info = $this->get_icon_path($info);
     return $info;
   }
@@ -62,7 +61,7 @@ class Game {
     $sql = "UPDATE " . self::TABLE ."
             SET `status`=" . self::DELETED . "
             WHERE `guide_name`=:guide_name";
-    $sth = $this->DB->prepare($sql);
+    $sth = self::$WRITE->prepare($sql);
     return $sth->execute(array(
       ':guide_name' => $id
     ));
@@ -77,7 +76,7 @@ class Game {
     $sql = "UPDATE " . self::TABLE . "
             SET " . substr($params, 0, -1) . "
             WHERE `guide_name`=:guide_name";
-    $sth = $this->DB->prepare($sql);
+    $sth = self::$WRITE->prepare($sql);
     return $sth->execute(array(
       ':guide_name' => $id,
     ));

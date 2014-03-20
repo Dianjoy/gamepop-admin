@@ -11,13 +11,13 @@ include_once '../../inc/session.php';
  * 操作文章分类
  */
 
-$DB = include_once "../../inc/pdo.php";
 include_once "../../inc/Article.class.php";
-$article = new Article($DB);
+$article = new Article();
 
 $methods = array(
   'GET' => 'fetch',
   'PATCH' => 'update',
+  'POST' => 'create'
 );
 $args = $_REQUEST;
 $request = file_get_contents('php://input');
@@ -30,7 +30,27 @@ if ($method) {
   $method($article, $args);
 }
 
-function fetch($article, $args) {
-  $result = $article->get_all_categories($args['id']);
+function create($article, $args) {
+  $article->initWrite();
+
+  // 新建分类
+  $category = (int)$article->add_category($args['label']);
+
+  if ($category) {
+    exit(json_encode(array(
+      'code' => 0,
+      'category' => $category,
+      'id' => $category,
+    )));
+  }
+
+  header("HTTP/1.1 400 Bad Request");
+  echo json_encode(array(
+    'code' => 1,
+    'msg' => '创建分类失败',
+  ));
+}
+function fetch($article) {
+  $result = $article->get_all_categories();
   echo json_encode($result);
 }
