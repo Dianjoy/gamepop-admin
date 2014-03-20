@@ -3,6 +3,9 @@
 
 # DB
 inc/pdo.php
+inc/pdo_read.php
+inc/pdo_write.php
+
 
 # test
 upload/
