@@ -30,7 +30,7 @@ if ($method) {
   $method($article, $args);
 }
 
-function fetch($article) {
-  $result = $article->get_all_categories();
+function fetch($article, $args) {
+  $result = $article->get_all_categories($args['id']);
   echo json_encode($result);
 }

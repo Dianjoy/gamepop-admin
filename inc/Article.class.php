@@ -33,7 +33,7 @@ class Article {
   public function get_article_by_id($id) {
     require_once(dirname(__FILE__) . '../../inc/HTML_To_Markdown.php');
     $sql = "SELECT `guide_name`, `label`, `content`, `source`, `topic`, `author`, `icon_path`
-            FROM " . self::TABLE . " JOIN " . self::CATEGORY . " ON a.`guide_type`=c.`cate`
+            FROM " . self::TABLE . " JOIN " . self::CATEGORY . " ON a.`category`=c.`id`
             WHERE a.`id`='$id'";
     $article = $this->DB->query($sql)->fetch(PDO::FETCH_ASSOC);
     if (get_magic_quotes_gpc()) {
@@ -48,7 +48,7 @@ class Article {
     $start = $pagesize * $page;
     $sql = "SELECT a.`id`, `guide_name`, `label`, `source`, `topic`, `author`, `icon_path`,
               `pub_date`, `src_url`, `seq`, `update_time`
-            FROM " . self::TABLE . " JOIN " . self::CATEGORY . " ON a.`guide_type`=c.`cate`
+            FROM " . self::TABLE . " JOIN " . self::CATEGORY . " ON a.`category`=c.`id`
             WHERE `guide_name`='$guide_name'
             ORDER BY a.`id` DESC
             LIMIT $start, $pagesize";
@@ -59,11 +59,22 @@ class Article {
 
   }
 
-  public function get_all_categories() {
-    $sql = "SELECT cate, label
+  public function get_all_categories($id) {
+    $sql = "SELECT `category`
+            FROM " . self::TABLE . "
+            WHERE `id`=$id";
+    $cate = $this->DB->query($sql)->fetchColumn();
+    $sql = "SELECT `id`, `cate`, label
             FROM " . self::CATEGORY . "
             WHERE 1";
-    return $this->DB->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    $categories = $this->DB->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($categories as &$category) {
+      if ($category['id'] === $cate) {
+        $category['selected'] = 'selected';
+      }
+    }
+
+    return $categories;
   }
 
   public function update_article_by_id($id, $topic, $content) {
@@ -77,6 +88,21 @@ class Article {
     return $sth->execute(array(
       ':topic' => $topic,
       ':content' => $content,
+      ':id' => $id,
+    ));
+  }
+
+  public function update($id, $args) {
+    $params = '';
+    foreach ($args as $key => $value) {
+      $params .= "`$key`=\"$value\",";
+    }
+
+    $sql = "UPDATE " . self::TABLE . "
+            SET " . substr($params, 0, -1) . "
+            WHERE `id`=:id";
+    $sth = $this->DB->prepare($sql);
+    return $sth->execute(array(
       ':id' => $id,
     ));
   }

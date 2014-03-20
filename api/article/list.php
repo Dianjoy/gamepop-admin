@@ -50,3 +50,20 @@ function fetch($article, $args) {
     'list' => $articles,
   ));
 }
+
+function update($article, $args) {
+  $url = $_SERVER['PATH_INFO'];
+  $id = substr($url, 1);
+
+  // 如果要修改cate的话，则需要判断是否需要新建一个
+
+
+  $result = $article->update($id, $args) ? array(
+    'code' => 0,
+    'msg' => '更新成功',
+  ) : array(
+    'code' => 1,
+    'msg' => '更新失败',
+  );
+  echo json_encode($result);
+}
