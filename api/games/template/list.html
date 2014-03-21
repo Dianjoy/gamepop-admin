@@ -15,7 +15,7 @@
   <script type="text/x-handlebars-template">
     <li><a href="#/to/{{prev}}"><i class="fa fa-chevron-left"></i></a></li>
     {{#each pages}}
-    <li class="hidden-xs"><a href="#/to/{{@index}}">{{.}}</a></li>
+    <li class="hidden-xs"><a href="#/to/{{index}}">{{label}}</a></li>
     {{/each}}
     <li><a href="#/to/{{next}}"><i class="fa fa-chevron-right"></i></a></li>
   </script>
@@ -67,7 +67,7 @@
   <script type="text/x-handlebars-template">
     <li><a href="#/to/{{prev}}"><i class="fa fa-chevron-left"></i></a></li>
     {{#each pages}}
-    <li class="hidden-xs"><a href="#/to/{{@index}}">{{.}}</a></li>
+    <li class="hidden-xs"><a href="#/to/{{index}}">{{label}}</a></li>
     {{/each}}
     <li><a href="#/to/{{next}}"><i class="fa fa-chevron-right"></i></a></li>
   </script>

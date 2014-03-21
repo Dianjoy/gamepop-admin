@@ -31,7 +31,7 @@
   <script type="text/x-handlebars-template">
     <li><a href="#/to/{{prev}}"><i class="fa fa-chevron-left"></i></a></li>
     {{#each pages}}
-    <li class="hidden-xs"><a href="#/to/{{@index}}">{{.}}</a></li>
+    <li class="hidden-xs"><a href="#/to/{{index}}">{{label}}</a></li>
     {{/each}}
     <li><a href="#/to/{{next}}"><i class="fa fa-chevron-right"></i></a></li>
   </script>
@@ -56,7 +56,7 @@
       <td><a href="#category" class="label label-default label-{{category}} edit" data-type="select" data-url="api/article/category.php" data-display="label" data-refresh="true">{{label}}</a></td>
       <td><a href="{{src_url}}" target="_blank">{{source}} <i class="fa fa-external-link"></i></a></td>
       <td>{{author}}</td>
-      <td><a href="#/article/detail/{{guide_name}}/{{id}}">{{topic}} <i class="fa fa-edit"></i></a></td>
+      <td><a href="#/article/detail/{{id}}/{{guide_name}}">{{topic}} <i class="fa fa-edit"></i></a></td>
       <td>{{seq}}</td>
       <td>{{pub_date}}</td>
       <td>{{update_time}}</td>
@@ -75,7 +75,7 @@
   <script type="text/x-handlebars-template">
     <li><a href="#/to/{{prev}}"><i class="fa fa-chevron-left"></i></a></li>
     {{#each pages}}
-    <li class="hidden-xs"><a href="#/to/{{@index}}">{{.}}</a></li>
+    <li class="hidden-xs"><a href="#/to/{{index}}">{{label}}</a></li>
     {{/each}}
     <li><a href="#/to/{{next}}"><i class="fa fa-chevron-right"></i></a></li>
   </script>
