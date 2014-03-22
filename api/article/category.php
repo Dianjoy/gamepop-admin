@@ -30,6 +30,13 @@ if ($method) {
   $method($article, $args);
 }
 
+function fetch($article) {
+  $result = $article->get_all_categories();
+  echo json_encode(array(
+    'total' => count($result),
+    'list' => $result,
+  ));
+}
 function create($article, $args) {
   $article->initWrite();
 
@@ -49,8 +56,4 @@ function create($article, $args) {
     'code' => 1,
     'msg' => '创建分类失败',
   ));
-}
-function fetch($article) {
-  $result = $article->get_all_categories();
-  echo json_encode($result);
 }

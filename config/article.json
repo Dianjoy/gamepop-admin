@@ -1,0 +1,12 @@
+{
+  "icon": "file-text",
+  "title": "文章",
+  "has_sub": true,
+  "sub": [
+    {
+      "icon": "sitemap",
+      "title": "分类",
+      "url": "#/article/category"
+    }
+  ]
+}

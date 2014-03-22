@@ -1,13 +1,20 @@
-<div class="game-info well well-sm" data-mediator-class="dianjoy.game.GameInfo">
-  <script type="text/cdx-handlebars-template">
-    <div class="row">
-      <div class="col-md-1">
-        <a href="#/game/profile/{{guide_name}}">
-          <img src="{{#if icon_path}}{{icon_path}}{{else}}img/image.png{{/if}}" class="img-thumbnail icon-100">
-        </a>
-      </div>
-      <div class="col-md-11">
-        <h2>{{{game_name}}} <small>{{guide_name}}</small></h2>
+<div class="game-info well well-sm smart-info" data-info-id="guide_name" data-url="api/game/info.php">
+  <div class="media">
+    <div class="pull-left">
+      <img src="img/image.png" class="img-thumbnail icon-100">
+    </div>
+    <div class="media-body">
+      <h4><i class="fa fa-spin fa-spinner"></i></h4>
+      <p>加载中，请稍后</p>
+    </div>
+  </div>
+  <script type="text/x-handlebars-template">
+    <div class="media">
+      <a href="#/game/profile/{{guide_name}}" class="pull-left">
+        <img src="{{#if icon_path}}{{icon_path}}{{else}}img/image.png{{/if}}" class="img-thumbnail icon-100">
+      </a>
+      <div class="media-body">
+        <h4>{{{game_name}}} <small>{{guide_name}}</small></h4>
         <p>{{game_desc}}</p>
       </div>
     </div>

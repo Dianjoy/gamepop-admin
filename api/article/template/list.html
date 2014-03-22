@@ -1,13 +1,20 @@
-<div class="game-info well well-sm" data-mediator-class="dianjoy.game.GameInfo">
+<div class="game-info well well-sm smart-info" data-url="api/game/info.php">
+  <div class="media">
+    <div class="pull-left">
+      <img src="img/image.png" class="img-thumbnail icon-100">
+    </div>
+    <div class="media-body">
+      <h4><i class="fa fa-spin fa-spinner"></i></h4>
+      <p>加载中，请稍后</p>
+    </div>
+  </div>
   <script type="text/x-handlebars-template">
-    <div class="row">
-      <div class="col-md-1">
-        <a href="#/game/profile/{{guide_name}}">
-          <img src="{{#if icon_path}}{{icon_path}}{{else}}img/image.png{{/if}}" class="img-thumbnail icon-100">
-        </a>
-      </div>
-      <div class="col-md-11">
-        <h2>{{{game_name}}} <small>{{guide_name}}</small></h2>
+    <div class="media">
+      <a href="#/game/profile/{{guide_name}}" class="pull-left">
+        <img src="{{#if icon_path}}{{icon_path}}{{else}}img/image.png{{/if}}" class="img-thumbnail icon-100">
+      </a>
+      <div class="media-body">
+        <h4>{{{game_name}}} <small>{{guide_name}}</small></h4>
         <p>{{game_desc}}</p>
       </div>
     </div>
@@ -56,7 +63,7 @@
       <td><a href="#category" class="label label-default label-{{category}} edit" data-type="select" data-url="api/article/category.php" data-display="label" data-refresh="true">{{label}}</a></td>
       <td><a href="{{src_url}}" target="_blank">{{source}} <i class="fa fa-external-link"></i></a></td>
       <td>{{author}}</td>
-      <td><a href="#/article/detail/{{id}}/{{guide_name}}">{{topic}} <i class="fa fa-edit"></i></a></td>
+      <td><a href="#/article/detail/{{id}}">{{topic}} <i class="fa fa-edit"></i></a></td>
       <td>{{seq}}</td>
       <td>{{pub_date}}</td>
       <td>{{update_time}}</td>

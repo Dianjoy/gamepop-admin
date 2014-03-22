@@ -1,0 +1,48 @@
+<div class="navbar navbar-default navbar-static-top smart-navbar" role="navigation">
+  <ul class="nav navbar-nav">
+    <li class="disabled"><a href="#"><i class="fa fa-filter"></i> 筛选</a></li>
+    <li class="disabled"><a href="#"><i class="fa fa-sort-amount-desc"></i> 排序</a></li>
+  </ul>
+  <form class="navbar-form navbar-right keyword-form">
+    <div class="form-group">
+      <input type="text" class="form-control" placeholder="关键词" name="query" autofocus >
+    </div>
+    <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+  </form>
+</div>
+
+<table class="table table-bordered smart-table responsive-table" data-url="api/article/category.php" data-id="id">
+  <thead>
+  <tr>
+    <th>图标</th>
+    <th>类名</th>
+    <th>父类</th>
+    <th>攻略数量</th>
+    <th>操作</th>
+  </tr>
+  </thead>
+  <tbody>
+  <script type="text/x-handlebars-template">
+    {{#each list}}
+    <tr id="{{id}}">
+      <td><a href="#icon_path" class="edit" data-type="img"><img
+        src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="icon-100"></a></td>
+      <td data-title="类名">{{label}}</td>
+      <td data-title="父类">{{parent}}</td>
+      <td>
+        <a href="#/article/list/{{id}}" class="btn btn-info"><i class="fa fa-list"></i> {{article_number}}</a>
+      </td>
+      <td>
+        <a href="api/article/action.php?m=del_cate&id={{id}}" class="btn btn-danger delete-button"><i
+          class="fa fa-times"></i></a>
+      </td>
+    </tr>
+    {{/each}}
+  </script>
+  </tbody>
+  <tfoot>
+  <tr class="waiting">
+    <td colspan="6" align="center"><i class="fa fa-spin fa-spinner fa-4x"></i><br>加载数据，请稍后</td>
+  </tr>
+  </tfoot>
+</table>
