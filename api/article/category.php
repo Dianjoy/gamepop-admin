@@ -57,3 +57,17 @@ function create($article, $args) {
     'msg' => '创建分类失败',
   ));
 }
+function update($article, $args) {
+  $url = $_SERVER['PATH_INFO'];
+  $id = (int)substr($url, 1);
+
+  $article->initWrite();
+  $result = $article->update_category($id, $args);
+  if ($result) {
+    $result = array('code' => 0, 'msg' => '修改成功');
+  } else {
+    header('HTTP/1.1 400 Bad Request');
+    $result = array('code' => 1, 'msg' => '修改失败');
+  }
+  echo json_encode($result);
+}

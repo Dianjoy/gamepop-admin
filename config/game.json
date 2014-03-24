@@ -1,5 +1,12 @@
 {
-  "url": "#/game/list",
   "icon": "trophy",
-  "title": "全部游戏"
+  "title": "游戏",
+  "has_sub": true,
+  "sub": [
+    {
+      "icon": "list",
+      "title": "全部游戏",
+      "url": "#/game/list"
+    }
+  ]
 }

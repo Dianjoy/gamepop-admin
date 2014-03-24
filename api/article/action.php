@@ -12,7 +12,7 @@ include_once '../../inc/session.php';
 
 header("Content-Type:application/json;charset=utf-8");
 $m = $_REQUEST['m'];
-$all = array('edit');
+$all = array('del_cate');
 if (!in_array($m, $all)) {
   header("HTTP/1.1 406 Not Acceptable");
   exit(json_encode(array(
@@ -25,11 +25,17 @@ include_once(dirname(__FILE__).'/../../inc/Article.class.php');
 $article = new Article($DB);
 $m($article);
 
-function edit($article) {
+function del_cate($article) {
   $id = (int)$_REQUEST['id'];
-  $topic = $_REQUEST['topic'];
-  $content = $_REQUEST['content'];
-  $result = $article->update_article_by_id($id, $topic, $content);
-  $result = $result ? array('code' => 0, 'msg' => '修改成功') : array('code' => 1, 'msg' => '修改失败');
+  $args = array(
+    'status' => 1,
+  );
+  $result = $article->update_category($id, $args);
+  if ($result) {
+    $result = array('code' => 0, 'msg' => '删除成功');
+  } else {
+    header('HTTP/1.1 400 Bad Request');
+    $result = array('code' => 1, 'msg' => '删除失败');
+  }
   echo json_encode($result);
 }
