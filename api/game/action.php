@@ -18,11 +18,9 @@ if (!in_array($m, $all)) {
     'msg' => '指令错误',
   )));
 }
-$DB = include(dirname(__FILE__).'/../../inc/pdo.php');
 include_once(dirname(__FILE__).'/../../inc/Game.class.php');
-$game = new Game($DB);
+$game = new Game();
 $m($game);
-$game->destroy();
 
 function del($game) {
   $id = $_REQUEST['id'];

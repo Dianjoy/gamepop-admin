@@ -16,6 +16,7 @@ class Article extends \gamepop\Base {
   }
 
   public function add_category($label) {
+    self::init_write();
     $condition = array(
       ':label' => $label,
     );
@@ -57,7 +58,7 @@ class Article extends \gamepop\Base {
 
   public function get_article_by_id($id) {
     require_once(dirname(__FILE__) . '../../inc/HTML_To_Markdown.php');
-    $sql = "SELECT `guide_name`, `label`, `content`, `source`, `topic`, `author`, `icon_path`
+    $sql = "SELECT `guide_name`, `label`, `content`, `source`, `topic`, `author`, a.`icon_path`
             FROM " . self::TABLE . " a JOIN " . self::CATEGORY . " c ON a.`category`=c.`id`
             WHERE a.`id`='$id'";
     $article = self::$READ->query($sql)->fetch(PDO::FETCH_ASSOC);
@@ -71,7 +72,7 @@ class Article extends \gamepop\Base {
 
   public function get_articles_by_game($guide_name, $pagesize, $page, $keyword) {
     $start = $pagesize * $page;
-    $sql = "SELECT a.`id`, `guide_name`, `category`, `label`, `source`, `topic`, `author`, `icon_path`,
+    $sql = "SELECT a.`id`, `guide_name`, `category`, `label`, `source`, `topic`, `author`, a.`icon_path`,
               `pub_date`, `src_url`, `seq`, `update_time`
             FROM " . self::TABLE . " a JOIN " . self::CATEGORY . " c ON a.`category`=c.`id`
             WHERE `guide_name`='$guide_name'
@@ -92,6 +93,7 @@ class Article extends \gamepop\Base {
   }
 
   public function update($id, $args) {
+    self::init_write();
     $params = '';
     $now = date('Y-m-d H:i:s');
     $me = (int)$_SESSION['id'];
@@ -122,6 +124,7 @@ class Article extends \gamepop\Base {
   }
 
   public function update_category($id, $args) {
+    self::init_write();
     $params = '';
     foreach ($args as $key => $value) {
       $params .= "`$key`=:$key,";

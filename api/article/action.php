@@ -20,9 +20,8 @@ if (!in_array($m, $all)) {
     'msg' => '指令错误',
   )));
 }
-$DB = include(dirname(__FILE__).'/../../inc/pdo.php');
 include_once(dirname(__FILE__).'/../../inc/Article.class.php');
-$article = new Article($DB);
+$article = new Article(true);
 $m($article);
 
 function del_cate($article) {

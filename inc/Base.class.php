@@ -18,11 +18,11 @@ class Base {
       self::$READ = require_once(dirname(__FILE__) . '/pdo_read.php');
     }
     if ($need_write) {
-      $this->initWrite();
+      $this->init_write();
     }
   }
 
-  public function initWrite() {
+  public function init_write() {
     if (!self::$WRITE) {
       self::$WRITE = require_once(dirname(__FILE__) . '/pdo_write.php');
     }

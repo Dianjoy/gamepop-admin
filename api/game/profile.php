@@ -11,10 +11,9 @@ include_once '../../inc/session.php';
  */
 
 header("Content-Type:application/json;charset=utf-8");
-$DB = include_once "../../inc/pdo.php";
 include_once "../../inc/Game.class.php";
 include_once "../../inc/Article.class.php";
-$game = new Game($DB);
+$game = new Game();
 
 $url = $_SERVER['PATH_INFO'];
 $id = substr($url, 1);

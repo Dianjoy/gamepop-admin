@@ -12,19 +12,24 @@ include_once '../../inc/session.php';
 include_once "../../inc/Article.class.php";
 $article = new Article();
 
-$methods = array(
-  'GET' => 'fetch',
-  'PATCH' => 'update',
-);
 $args = $_REQUEST;
 $request = file_get_contents('php://input');
 if ($request) {
   $args = array_merge($_POST, json_decode($request, true));
 }
-$method = $methods[$_SERVER['REQUEST_METHOD']];
 header("Content-Type:application/json;charset=utf-8");
-if ($method) {
-  $method($article, $args);
+switch ($_SERVER['REQUEST_METHOD']) {
+  case 'GET':
+    fetch($article, $args);
+    break;
+
+  case 'PATCH':
+    update($article, $args);
+    break;
+
+  default:
+    header("HTTP/1.1 406 Not Acceptable");
+    break;
 }
 
 function fetch($article, $args) {
@@ -53,7 +58,6 @@ function fetch($article, $args) {
 function update($article, $args) {
   $url = $_SERVER['PATH_INFO'];
   $id = substr($url, 1);
-  $article->initWrite();
 
   if ($article->update($id, $args)) {
     echo json_encode(array(

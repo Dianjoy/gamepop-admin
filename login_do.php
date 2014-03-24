@@ -24,9 +24,8 @@
   if ($username != "" && $password != "") {
     filter_login($username);
     filter_login($password);
-    $DB = require_once("inc/pdo.php");
     include_once('inc/Admin.class.php');
-    $admin = new Admin($DB);
+    $admin = new Admin();
     $info = $admin->get_admin($username, $password);
     if ($info) {
       unset($_SESSION['Checknum']);

@@ -46,7 +46,6 @@ function fetch($article, $id) {
 }
 
 function update($article, $id, $args) {
-  $article->initWrite();
   $result = $article->update($id, $args);
   if ($result) {
     $result = array('code' => 0, 'msg' => '修改成功');

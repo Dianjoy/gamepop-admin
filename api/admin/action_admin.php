@@ -12,11 +12,9 @@ if (!in_array($m, $all)) {
     'msg' => '指令错误',
   )));
 }
-$DB = include(dirname(__FILE__).'/../../inc/pdo.php');
 include_once(dirname(__FILE__).'/../../inc/Admin.class.php');
-$admin = new Admin($DB);
+$admin = new Admin();
 $m($admin);
-$admin->destroy();
 
 function add($admin){
 	$username = trim($_POST['username']); 

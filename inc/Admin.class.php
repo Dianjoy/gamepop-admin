@@ -5,8 +5,9 @@
  * Date: 14-3-10
  * Time: 下午2:36
  */
+include_once 'Base.class.php';
 
-class Admin {
+class Admin extends \gamepop\Base {
   const TABLE = 't_admin';
   const LOG = 't_admin_log';
 
@@ -38,10 +39,8 @@ class Admin {
     )
   );
 
-  private $DB;
-
-  public function __construct(PDO $DB) {
-    $this->DB = $DB;
+  public function __construct($need_write = false) {
+    parent::__construct($need_write);
   }
 
   private function encrypt($username, $password) {
@@ -53,7 +52,7 @@ class Admin {
     $sql = "INSERT INTO `" . self::TABLE . "`
             (`user`, `fullname`, `password`, `role`, `qq`)
             VALUES ('$username', '$fullname', '$password', $role, '$qq')";
-    return $this->DB->exec($sql);
+    return self::$READ->exec($sql);
   }
 
   public function get_admin($username, $password) {
@@ -61,14 +60,15 @@ class Admin {
     $sql = "SELECT `id`, `fullname`, `role`
             FROM `". self::TABLE . "`
             WHERE `user`='$username' AND `password`='$password'";
-    return $this->DB->query($sql)->fetch(PDO::FETCH_ASSOC);
+    return self::$READ->query($sql)->fetch(PDO::FETCH_ASSOC);
   }
 
   public function delete($id) {
+    self::init_write();
     $sql = "UPDATE `" . self::TABLE . "`
             SET `status`=" . self::DELETE . "
             WHERE `id`=$id";
-    return $this->DB->exec($sql);
+    return self::$WRITE->exec($sql);
   }
 
   public function get_live_admins() {
@@ -76,7 +76,7 @@ class Admin {
             FROM `" . self::TABLE . "` t LEFT JOIN `" . self::LOG . "` l ON t.`id`=l.`userid`
             WHERE `status`=" . self::NORMAL . "
             GROUP BY t.`id`";
-    $result = $this->DB->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    $result = self::$READ->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     foreach ($result as &$row) {
       $row['role_label'] = self::$ROLES[$row['role']];
     }
@@ -84,36 +84,34 @@ class Admin {
   }
 
   public function insert_login_log($id, $ip) {
+    self::init_write();
     $now = date('Y-m-d H:i:s');
     $sql = "INSERT INTO `" . self::LOG . "`
             (`userid`, `ip`, `login_time`)
             VALUES ($id, '$ip', '$now')";
-    return $this->DB->exec($sql);
+    return self::$WRITE->exec($sql);
   }
 
   public function is_exist($username) {
     $sql = "SELECT 'X'
             FROM `" . self::TABLE . "`
             WHERE `user`='$username'";
-    return $this->DB->query($sql)->fetchColumn();
+    return self::$READ->query($sql)->fetchColumn();
   }
 
   public function update($id, $fullname, $password, $role) {
     $sql = "SELECT `user`
             FROM `" . self::TABLE . "`
             WHERE `id`=$id";
-    $username = $this->DB->query($sql)->fetchColumn();
+    $username = self::$READ->query($sql)->fetchColumn();
     if (!$username) {
       return false;
     }
+    self::init_write();
     $password = $this->encrypt($username, $password);
     $sql = "UPDATE `" . self::TABLE . "`
             SET `fullname`='$fullname', `password`='$password', `role`=$role
             WHERE `id`=$id";
-    return $this->DB->exec($sql);
-  }
-
-  public function destroy() {
-    $this->DB = null;
+    return self::$WRITE->exec($sql);
   }
 }

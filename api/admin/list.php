@@ -3,9 +3,8 @@ define('OPTIONS', 'root');
 include_once '../../inc/session.php';
 ?>
 <?php
-$DB = include(dirname(__FILE__).'/../../inc/pdo.php');
 include_once(dirname(__FILE__) . '/../../inc/Admin.class.php');
-$admin = new Admin($DB);
+$admin = new Admin();
 $res = $admin->get_live_admins();
 
 $result = array(

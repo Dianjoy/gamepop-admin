@@ -38,8 +38,6 @@ function fetch($article) {
   ));
 }
 function create($article, $args) {
-  $article->initWrite();
-
   // 新建分类
   $category = (int)$article->add_category($args['label']);
 
@@ -61,7 +59,6 @@ function update($article, $args) {
   $url = $_SERVER['PATH_INFO'];
   $id = (int)substr($url, 1);
 
-  $article->initWrite();
   $result = $article->update_category($id, $args);
   if ($result) {
     $result = array('code' => 0, 'msg' => '修改成功');
