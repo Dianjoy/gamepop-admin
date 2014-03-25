@@ -27,6 +27,10 @@ switch ($_SERVER['REQUEST_METHOD']) {
     update($article, $args);
     break;
 
+  case 'DELETE':
+    delete($article);
+    break;
+
   default:
     header("HTTP/1.1 406 Not Acceptable");
     break;
@@ -55,20 +59,27 @@ function fetch($article, $args) {
   ));
 }
 
-function update($article, $args) {
+function update($article, $args, $success = '更新成功', $error = '更新失败') {
   $url = $_SERVER['PATH_INFO'];
   $id = substr($url, 1);
 
   if ($article->update($id, $args)) {
     echo json_encode(array(
       'code' => 0,
-      'msg' => '更新成功',
+      'msg' => $success,
     ));
   } else {
     header("HTTP/1.1 400 Bad Request");
     echo json_encode(array(
       'code' => 1,
-      'msg' => '更新失败',
+      'msg' => $error,
     ));
   }
+}
+
+function delete($article) {
+  $args = array(
+    'st' => 1,
+  );
+  update($article, $args, '删除成功', '删除失败');
 }

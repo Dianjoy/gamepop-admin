@@ -58,7 +58,7 @@ class Article extends \gamepop\Base {
 
   public function get_article_by_id($id) {
     require_once(dirname(__FILE__) . '../../inc/HTML_To_Markdown.php');
-    $sql = "SELECT `guide_name`, `label`, `content`, `source`, `topic`, `author`, a.`icon_path`
+    $sql = "SELECT `guide_name`, `label`, `content`, `source`, `topic`, `author`, a.`icon_path`, `st`
             FROM " . self::TABLE . " a JOIN " . self::CATEGORY . " c ON a.`category`=c.`id`
             WHERE a.`id`='$id'";
     $article = self::$READ->query($sql)->fetch(PDO::FETCH_ASSOC);
@@ -70,12 +70,20 @@ class Article extends \gamepop\Base {
     return $article;
   }
 
+  /**
+   * 按照游戏取文章列表
+   * @param $guide_name
+   * @param $pagesize
+   * @param $page
+   * @param $keyword
+   * @return mixed
+   */
   public function get_articles_by_game($guide_name, $pagesize, $page, $keyword) {
     $start = $pagesize * $page;
     $sql = "SELECT a.`id`, `guide_name`, `category`, `label`, `source`, `topic`, `author`, a.`icon_path`,
               `pub_date`, `src_url`, `seq`, `update_time`
             FROM " . self::TABLE . " a JOIN " . self::CATEGORY . " c ON a.`category`=c.`id`
-            WHERE `guide_name`='$guide_name'
+            WHERE `guide_name`='$guide_name' AND `st`=0
             ORDER BY a.`id` DESC
             LIMIT $start, $pagesize";
     return self::$READ->query($sql)->fetchAll(PDO::FETCH_ASSOC);
@@ -86,10 +94,19 @@ class Article extends \gamepop\Base {
   }
 
   public function get_all_categories() {
-    $sql = "SELECT `id`, `cate`, label
+    $sql = "SELECT `id`, `cate`, `label`, `nav_pic`
             FROM " . self::CATEGORY . "
-            WHERE 1";
-    return self::$READ->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+            WHERE `status`=0";
+    $result = self::$READ->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    $sql = "SELECT `category`, COUNT('x') AS NUM
+            FROM " . self::TABLE . "
+            WHERE `st`=0
+            GROUP BY `category`";
+    $number = self::$READ->query($sql)->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE | PDO::FETCH_GROUP);
+    foreach ($result as &$row) {
+      $row['number'] = $number[$row['id']];
+    }
+    return $result;
   }
 
   public function update($id, $args) {
@@ -131,7 +148,7 @@ class Article extends \gamepop\Base {
     }
 
     $sql = "UPDATE " . self::CATEGORY . "
-            SET " . $params . "
+            SET " . substr($params, 0, -1) . "
             WHERE `id`=:id" ;
     $sth = self::$WRITE->prepare($sql);
     $params = array(

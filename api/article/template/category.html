@@ -14,8 +14,9 @@
 <table class="table table-bordered smart-table responsive-table" data-url="api/article/category.php" data-id="id">
   <thead>
   <tr>
-    <th>图标</th>
+    <th>导航图片</th>
     <th>类名</th>
+    <th>别名</th>
     <th>父类</th>
     <th>攻略数量</th>
     <th>操作</th>
@@ -25,16 +26,16 @@
   <script type="text/x-handlebars-template">
     {{#each list}}
     <tr id="{{id}}">
-      <td><a href="#icon_path" class="edit" data-type="img"><img
-        src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="icon-100"></a></td>
-      <td data-title="类名">{{label}}</td>
+      <td><a href="#nav_pic" class="edit" data-type="img"><img
+        src="{{#if nav_pic}}{{nav_pic}}{{else}}./img/image.png{{/if}}" class="icon-mh-100"></a></td>
+      <td data-title="类名"><a href="#label" class="edit">{{label}}</a></td>
+      <td data-title="别名"><a href="#cate" class="edit">{{cate}}</a></td>
       <td data-title="父类">{{parent}}</td>
       <td>
-        <a href="#/article/list/{{id}}" class="btn btn-info"><i class="fa fa-list"></i> {{article_number}}</a>
+        <a href="#/article/list/{{id}}" class="btn btn-info"><i class="fa fa-list"></i> {{number}}</a>
       </td>
       <td>
-        <a href="api/article/action.php?m=del_cate&id={{id}}" class="btn btn-danger delete-button"><i
-          class="fa fa-times"></i></a>
+        <button type="button" class="btn btn-danger delete-button"><i class="fa fa-trash-o"></i></button>
       </td>
     </tr>
     {{/each}}
@@ -46,3 +47,9 @@
   </tr>
   </tfoot>
 </table>
+
+<div class="help-info hide">
+  <div class="alert alert-info" data-for="nav_pic">
+    用于游戏首页分类导航的图片，衬在文字下方。里面不要包含文字，尺寸以 360&times;120 为宜。
+  </div>
+</div>

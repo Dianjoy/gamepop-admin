@@ -15,19 +15,28 @@ include_once "../../inc/Article.class.php";
 $game = new Game();
 $article = new Article();
 
-$methods = array(
-  'GET' => 'fetch',
-  'PATCH' => 'update',
-);
 $args = $_REQUEST;
 $request = file_get_contents('php://input');
 if ($request) {
   $args = array_merge($_POST, json_decode($request, true));
 }
-$method = $methods[$_SERVER['REQUEST_METHOD']];
 header("Content-Type:application/json;charset=utf-8");
-if ($method) {
-  $method($game, $args, $article);
+switch ($_SERVER['REQUEST_METHOD']) {
+  case 'GET':
+    fetch($game, $args, $article);
+    break;
+
+  case 'PATCH':
+    update($game, $args);
+    break;
+
+  case 'DELETE':
+    delete($game);
+    break;
+
+  default:
+    header("HTTP/1.1 406 Not Acceptable");
+    break;
 }
 
 function fetch($game, $args, $article) {
@@ -65,16 +74,23 @@ function fetch($game, $args, $article) {
   echo json_encode($result);
 }
 
-function update($game, $args) {
-  $game->initWrite();
+function delete($game) {
+  $args = array(
+    'status' => 1,
+  );
+  update($game, $args);
+}
+
+function update($game, $args, $success = '更新成功', $error = '更新失败') {
+  $game->init_write();
   $url = $_SERVER['PATH_INFO'];
   $id = substr($url, 1);
   $result = $game->update($id, $args) ? array(
     'code' => 0,
-    'msg' => '更新成功',
+    'msg' => $success,
   ) : array(
     'code' => 1,
-    'msg' => '更新失败',
+    'msg' => $error,
   );
   echo json_encode($result);
 }

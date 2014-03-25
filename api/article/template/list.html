@@ -54,6 +54,7 @@
     <th>排序</th>
     <th>发布日期</th>
     <th>更新日期</th>
+    <th>操作</th>
   </tr>
   </thead>
   <tbody>
@@ -67,13 +68,16 @@
       <td>{{seq}}</td>
       <td>{{pub_date}}</td>
       <td>{{update_time}}</td>
+      <td>
+        <button type="button" class="btn btn-danger delete-button"><i class="fa fa-trash-o"></i></button>
+      </td>
     </tr>
     {{/each}}
   </script>
   </tbody>
   <tfoot>
   <tr class="waiting">
-    <td colspan="7" align="center"><i class="fa fa-spin fa-spinner fa-4x"></i><br>加载中，请稍后</td>
+    <td colspan="8" align="center"><i class="fa fa-spin fa-spinner fa-4x"></i><br>加载中，请稍后</td>
   </tr>
   </tfoot>
 </table>

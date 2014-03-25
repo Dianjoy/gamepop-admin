@@ -14,29 +14,34 @@ include_once '../../inc/session.php';
 include_once "../../inc/Article.class.php";
 $article = new Article();
 
-$methods = array(
-  'GET' => 'fetch',
-  'PATCH' => 'update',
-  'POST' => 'create'
-);
 $args = $_REQUEST;
 $request = file_get_contents('php://input');
 if ($request) {
   $args = array_merge($_POST, json_decode($request, true));
 }
-$method = $methods[$_SERVER['REQUEST_METHOD']];
 header("Content-Type:application/json;charset=utf-8");
-if ($method) {
-  $method($article, $args);
+switch ($_SERVER['REQUEST_METHOD']) {
+  case 'GET':
+    fetch($article, $args);
+    break;
+
+  case 'PATCH':
+    update($article, $args);
+    break;
+
+  case 'POST':
+    create($article, $args);
+    break;
+
+  case 'DELETE':
+    delete($article, $args);
+    break;
+
+  default:
+    header("HTTP/1.1 406 Not Acceptable");
+    break;
 }
 
-function fetch($article) {
-  $result = $article->get_all_categories();
-  echo json_encode(array(
-    'total' => count($result),
-    'list' => $result,
-  ));
-}
 function create($article, $args) {
   // 新建分类
   $category = (int)$article->add_category($args['label']);
@@ -55,16 +60,29 @@ function create($article, $args) {
     'msg' => '创建分类失败',
   ));
 }
-function update($article, $args) {
+function delete($article) {
+  $args = array(
+    'status' => 1,
+  );
+  update($article, $args, '删除成功', '删除失败');
+}
+function fetch($article) {
+  $result = $article->get_all_categories();
+  echo json_encode(array(
+    'total' => count($result),
+    'list' => $result,
+  ));
+}
+function update($article, $args, $success = '修改成功', $error = '修改失败') {
   $url = $_SERVER['PATH_INFO'];
   $id = (int)substr($url, 1);
 
   $result = $article->update_category($id, $args);
   if ($result) {
-    $result = array('code' => 0, 'msg' => '修改成功');
+    $result = array('code' => 0, 'msg' => $success);
   } else {
     header('HTTP/1.1 400 Bad Request');
-    $result = array('code' => 1, 'msg' => '修改失败');
+    $result = array('code' => 1, 'msg' => $error);
   }
   echo json_encode($result);
 }
