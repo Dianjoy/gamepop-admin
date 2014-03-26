@@ -11,8 +11,22 @@ class Article extends \gamepop\Base {
   const TABLE = '`t_article`';
   const CATEGORY = '`t_article_category`';
 
+  static $ALL = 'a.`id`, `guide_name`, `category`, `label`, `source`, `topic`, `author`, a.`icon_path`,
+              `pub_date`, `src_url`, `seq`, `update_time`, `update_editor`';
+
   public function __construct($need_write = false) {
     parent::__construct($need_write);
+  }
+  // overrides parent's method
+  public function search($keyword) {
+    $this->builder->search('topic', $keyword);
+    return $this;
+  }
+
+  protected function getTable($fields) {
+    if ($fields == self::$ALL) {
+      return self::TABLE . " a JOIN " . self::CATEGORY . " c ON a.`category`=c.`id`";
+    }
   }
 
   public function add_category($label) {
@@ -40,57 +54,6 @@ class Article extends \gamepop\Base {
       return self::$WRITE->lastInsertId();
     }
     return $check;
-  }
-
-  public function get_article_number_by_id($guide_names, $keyword = '') {
-    if (is_array($guide_names)) {
-      $guide_names = implode("','", $guide_names);
-    }
-    if ($keyword) {
-      $keyword = "AND `topic` LIKE '%$keyword%'";
-    }
-    $sql = "SELECT `guide_name`, COUNT('X') AS `num`
-            FROM " . self::TABLE . "
-            WHERE `guide_name` in ('$guide_names') $keyword
-            GROUP BY `guide_name`";
-    return self::$READ->query($sql)->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
-  }
-
-  public function get_article_by_id($id) {
-    require_once(dirname(__FILE__) . '../../inc/HTML_To_Markdown.php');
-    $sql = "SELECT `guide_name`, `label`, `content`, `source`, `topic`, `author`, a.`icon_path`, `st`
-            FROM " . self::TABLE . " a JOIN " . self::CATEGORY . " c ON a.`category`=c.`id`
-            WHERE a.`id`='$id'";
-    $article = self::$READ->query($sql)->fetch(PDO::FETCH_ASSOC);
-    if (get_magic_quotes_gpc()) {
-      $article['content'] = stripslashes($article['content']);
-    }
-    $markdown = new HTML_To_Markdown($article['content']);
-    $article['content'] = str_replace('](/', '](http://r.yxpopo.com/yxpopo/', htmlspecialchars($markdown));
-    return $article;
-  }
-
-  /**
-   * 按照游戏取文章列表
-   * @param $guide_name
-   * @param $pagesize
-   * @param $page
-   * @param $keyword
-   * @return mixed
-   */
-  public function get_articles_by_game($guide_name, $pagesize, $page, $keyword) {
-    $start = $pagesize * $page;
-    $sql = "SELECT a.`id`, `guide_name`, `category`, `label`, `source`, `topic`, `author`, a.`icon_path`,
-              `pub_date`, `src_url`, `seq`, `update_time`
-            FROM " . self::TABLE . " a JOIN " . self::CATEGORY . " c ON a.`category`=c.`id`
-            WHERE `guide_name`='$guide_name' AND `st`=0
-            ORDER BY a.`id` DESC
-            LIMIT $start, $pagesize";
-    return self::$READ->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-  }
-
-  public function get_articles($pagesize, $page, $keyword) {
-
   }
 
   public function get_all_categories() {
@@ -160,4 +123,6 @@ class Article extends \gamepop\Base {
     $result = $sth->execute($params);
     return $result;
   }
+
+
 } 

@@ -5,7 +5,10 @@
 inc/pdo.php
 inc/pdo_read.php
 inc/pdo_write.php
-
+inc/memcache.php
 
 # test
 upload/
+
+# case
+admin.class.php

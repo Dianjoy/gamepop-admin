@@ -51,8 +51,10 @@ class Game extends \gamepop\Base {
               g.`icon_path` AS `new_icon`
             FROM " . self::MIDDLE . " m JOIN " . self::TABLE . " g ON m.`guide_name`=g.`guide_name`
               JOIN " . self::APK_INFO . " i ON m.`packagename`=i.`packagename`
-            WHERE `status`=" . self::NORMAL . " AND g.`guide_name`='$id'";
-    $info = self::$READ->query($sql)->fetch(PDO::FETCH_ASSOC);
+            WHERE `status`=" . self::NORMAL . " AND g.`guide_name`=:id";
+    $sth = self::$READ->prepare($sql);
+    $sth->execute(array(':id' => $id));
+    $info = $sth->fetch(PDO::FETCH_ASSOC);
     $info = $this->get_icon_path($info);
     return $info;
   }

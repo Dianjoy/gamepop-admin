@@ -11,9 +11,7 @@ include_once '../../inc/session.php';
  */
 
 include_once "../../inc/Game.class.php";
-include_once "../../inc/Article.class.php";
 $game = new Game();
-$article = new Article();
 
 $args = $_REQUEST;
 $request = file_get_contents('php://input');
@@ -60,6 +58,8 @@ function fetch($game, $args, $article) {
   foreach ($games as $row) {
     $guide_names[] = $row['guide_name'];
   }
+  include_once "../../inc/Article.class.php";
+  $article = new Article();
   $article_number = $article->get_article_number_by_id($guide_names);
   foreach ($games as &$row) {
     $row['article_number'] = $article_number[$row['guide_name']];

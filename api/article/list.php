@@ -37,20 +37,34 @@ switch ($_SERVER['REQUEST_METHOD']) {
 }
 
 function fetch($article, $args) {
-  $path = $args['id'];
-  $params = explode('/', $path);
-  $id = $params[0];
-
   $pagesize = isset($args['pagesize']) ? (int)$args['pagesize'] : 20;
   $page = isset($args['page']) ? (int)$args['page'] : 0;
   $keyword = empty($args['keyword']) ? '' : trim(addslashes(strip_tags($args['keyword'])));
+  $conditions = array(
+    'st' => 0,
+  );
+  foreach (array('game', 'category', 'author') as $row) {
+    if (isset($args[$row])) {
+      $conditions[$row] = $args[$row];
+    }
+  }
 
-  $total = $article->get_article_number_by_id($id, $keyword);
-  $total = (int)$total[$id];
-  if ($id) {
-    $articles = $article->get_articles_by_game($id, $pagesize, $page, $keyword);
-  } else {
-    $articles = $article->get_articles($pagesize, $page, $keyword);
+  $articles = $article->select(Article::$ALL)
+    ->where($conditions)
+    ->search($keyword)
+    ->execute()
+    ->fetchAll(PDO::FETCH_ASSOC);
+  $total = count($articles);
+  $articles = array_slice($articles, $page * $pagesize, $pagesize);
+
+  require_once "../../inc/Admin.class.php";
+  $admin = new Admin();
+  $editors = $admin->select(Admin::$BASE)
+    ->where(array('role' => Admin::EDITOR))
+    ->execute()
+    ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
+  foreach ($articles as &$article) {
+    $article['update_editor_label'] = $editors[$article['update_editor']];
   }
 
   echo json_encode(array(
