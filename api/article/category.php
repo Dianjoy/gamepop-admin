@@ -66,8 +66,23 @@ function delete($article) {
   );
   update($article, $args, '删除成功', '删除失败');
 }
-function fetch($article) {
-  $result = $article->get_all_categories();
+function fetch($article, $args) {
+  $status = array(
+    'status' => Article::NORMAL,
+  );
+  $conditions = array();
+  foreach (array('game', 'category', 'author', 'id') as $row) {
+    if (isset($args[$row])) {
+      $conditions[$row === 'game' || $row === 'id' ? 'guide_name' : $row] = $args[$row];
+    }
+  }
+  $result = $article->select(Article::$ALL_CATEGORY, $article->count())
+    ->where($conditions)
+    ->where($status, false, Article::TABLE)
+    ->group('id', Article::CATEGORY)
+    ->execute()
+    ->fetchAll(PDO::FETCH_ASSOC);
+
   echo json_encode(array(
     'total' => count($result),
     'list' => $result,

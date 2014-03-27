@@ -40,16 +40,17 @@ function fetch($article, $args) {
   $pagesize = isset($args['pagesize']) ? (int)$args['pagesize'] : 20;
   $page = isset($args['page']) ? (int)$args['page'] : 0;
   $keyword = empty($args['keyword']) ? '' : trim(addslashes(strip_tags($args['keyword'])));
-  $conditions = array(
-    'st' => 0,
+  $status = array(
+    'status' => 0,
   );
-  foreach (array('game', 'category', 'author') as $row) {
+  $conditions = array();
+  foreach (array('game', 'category', 'author', 'id') as $row) {
     if (isset($args[$row])) {
-      $conditions[$row] = $args[$row];
+      $conditions[$row === 'game' || $row === 'id' ? 'guide_name' : $row] = $args[$row];
     }
   }
-
   $articles = $article->select(Article::$ALL)
+    ->where($status, false, Article::TABLE)
     ->where($conditions)
     ->search($keyword)
     ->execute()
@@ -93,7 +94,7 @@ function update($article, $args, $success = '更新成功', $error = '更新失�
 
 function delete($article) {
   $args = array(
-    'st' => 1,
+    'status' => 1,
   );
   update($article, $args, '删除成功', '删除失败');
 }

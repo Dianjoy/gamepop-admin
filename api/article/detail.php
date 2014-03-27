@@ -40,7 +40,16 @@ if ($method) {
 }
 
 function fetch($article, $id) {
-  $result = $article->get_article_by_id($id);
+  require_once(dirname(__FILE__) . '/../../inc/HTML_To_Markdown.php');
+  $result = $article->select(Article::$DETAIL)
+    ->where(array('id' => $id), false, Article::TABLE)
+    ->execute()
+    ->fetch(PDO::FETCH_ASSOC);
+  if (get_magic_quotes_gpc()) {
+    $result['content'] = stripslashes($result['content']);
+  }
+  $markdown = new HTML_To_Markdown($result['content']);
+  $result['content'] = str_replace('](/', '](http://r.yxpopo.com/yxpopo/', $markdown);
 
   echo json_encode($result);
 }

@@ -10,12 +10,21 @@ include_once 'Base.class.php';
 class Article extends \gamepop\Base {
   const TABLE = '`t_article`';
   const CATEGORY = '`t_article_category`';
+  const CATEGORY_IMAGE = '`t_article_category_image`';
 
-  static $ALL = 'a.`id`, `guide_name`, `category`, `label`, `source`, `topic`, `author`, a.`icon_path`,
-              `pub_date`, `src_url`, `seq`, `update_time`, `update_editor`';
+  const NORMAL = 0;
+  const DELETED = 0;
 
-  public function __construct($need_write = false) {
-    parent::__construct($need_write);
+  static $ALL = "`t_article`.`id`, `guide_name`, `category`, `label`, `source`,
+    `topic`, `author`, `t_article`.`icon_path`,
+    `pub_date`, `src_url`, `seq`, `update_time`, `update_editor`";
+  static $DETAIL = "`guide_name`, `category`, `label`, `source`,
+    `topic`, `author`, `icon_path`, `content`,
+    `pub_date`, `src_url`, `seq`, `update_time`, `update_editor`";
+  static $ALL_CATEGORY = "`t_article_category`.`id`, `cate`, `label`";
+
+  public function __construct($need_write = false, $need_cache = true, $is_debug = false) {
+    parent::__construct($need_write, $need_cache, $is_debug);
   }
   // overrides parent's method
   public function search($keyword) {
@@ -24,9 +33,10 @@ class Article extends \gamepop\Base {
   }
 
   protected function getTable($fields) {
-    if ($fields == self::$ALL) {
-      return self::TABLE . " a JOIN " . self::CATEGORY . " c ON a.`category`=c.`id`";
+    if ($fields == self::$ALL || $fields == self::$DETAIL || strpos($fields, self::$ALL_CATEGORY) !== false) {
+      return self::TABLE . " JOIN " . self::CATEGORY . " ON " . self::TABLE . ".`category`=" . self::CATEGORY . ".`id`";
     }
+    return self::TABLE;
   }
 
   public function add_category($label) {

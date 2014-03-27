@@ -1,162 +1,119 @@
-<div class="row game-profile" data-nozdormu-class="dianjoy.page.GameProfile">
-  <div class="alert alert-info"><i class="fa fa-spin fa-spinner"></i> 加载数据，请稍后</div>
-  <script type="text/x-handlebars-template">
+<div class="row game-profile profile-page">
 
-<div class="col-md-9">
+  <div class="col-md-9 col-sm-12">
 
-<div class="row">
-
-<div class="col-md-4 col-sm-5">
-
-  <div class="thumbnail">
-    <img src="{{icon_path}}" alt="Profile Picture"/>
+    <div class="row smart-info" data-url="api/game/info.php">
+      <div class="col-md-4 col-sm-5 col-xs-12">
+        <div class="thumbnail">
+          <img src="img/image.png" alt="Profile Picture"/>
+        </div>
+      </div>
+      <div class="col-md-8 col-sm-7 col-xs-12">
+        <h2>加载中</h2>
+        <p>....</p>
+        <hr/>
+        <p>
+          <button type="button" class="btn btn-primary" disabled><i class="fa fa-android"></i> 发布单行本</button>
+          &nbsp;&nbsp;
+          <button type="button" class="btn btn-secondary" disabled><i class="fa fa-archive"></i> 发布攻略包</button>
+          &nbsp;&nbsp;
+          <button type="button" class="btn btn-danger delete-button" disabled><i class="fa fa-trash-o"></i> 删除</button>
+        </p>
+        <hr/>
+      </div>
+      <script type="text/x-handlebars-template">
+        <div class="col-md-4 col-sm-5 col-xs-12">
+          <div class="thumbnail">
+            <img src="{{icon_path}}" alt="Profile Picture"/>
+          </div>
+        </div>
+        <div class="col-md-8 col-sm-7 col-xs-12">
+          <h2>{{game_name}}</h2>
+          <h4>{{guide_name}}</h4>
+          <p>{{game_desc}}</p>
+          <hr/>
+          <p>
+            <button type="button" class="btn btn-primary" disabled><i class="fa fa-android"></i> 发布单行本</button>
+            &nbsp;&nbsp;
+            <button type="button" class="btn btn-secondary" disabled><i class="fa fa-archive"></i> 发布攻略包</button>
+            &nbsp;&nbsp;
+            <button type="button" class="btn btn-danger delete-button"><i class="fa fa-trash-o"></i> 删除</button>
+          </p>
+          <hr/>
+        </div>
+      </script>
+    </div>
   </div>
-  <!-- /.thumbnail -->
 
-  <br/>
-
-  <div class="list-group">
-
-    <a href="javascript:;" class="list-group-item">
-      <i class="fa fa-asterisk"></i> &nbsp;&nbsp;Activity Feed
-
-      <i class="fa fa-chevron-right list-group-chevron"></i>
-    </a>
-
-    <a href="javascript:;" class="list-group-item">
-      <i class="fa fa-book"></i> &nbsp;&nbsp;Projects
-
-      <i class="fa fa-chevron-right list-group-chevron"></i>
-      <span class="badge">3</span>
-    </a>
-
-    <a href="javascript:;" class="list-group-item">
-      <i class="fa fa-envelope"></i> &nbsp;&nbsp;Messages
-
-      <i class="fa fa-chevron-right list-group-chevron"></i>
-    </a>
-
-    <a href="javascript:;" class="list-group-item">
-      <i class="fa fa-group"></i> &nbsp;&nbsp;Friends
-
-      <i class="fa fa-chevron-right list-group-chevron"></i>
-      <span class="badge">7</span>
-    </a>
-
-    <a href="javascript:;" class="list-group-item">
-      <i class="fa fa-cog"></i> &nbsp;&nbsp;Settings
-
-      <i class="fa fa-chevron-right list-group-chevron"></i>
-    </a>
-  </div>
-  <!-- /.list-group -->
-
-</div>
-<!-- /.col -->
-
-
-<div class="col-md-8 col-sm-7">
-
-  <h2>Rod Howard</h2>
-
-  <h4>Visual, UI, UX Designer</h4>
-
-  <hr/>
-
-  <p>
-    <a href="javascript:;" class="btn btn-primary">Follow Rod</a>
-    &nbsp;&nbsp;
-    <a href="javascript:;" class="btn btn-secondary">Send Message</a>
-  </p>
-
-  <hr/>
-
-
-  <ul class="icons-list">
-    <li><i class="icon-li fa fa-envelope"></i> rod@jumpstartui.com</li>
-    <li><i class="icon-li fa fa-globe"></i> jumstartthemes.com</li>
-    <li><i class="icon-li fa fa-map-marker"></i> Las Vegas, NV</li>
-  </ul>
-
-  <br/>
-
-  <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec.</p>
-
-  <hr/>
-
-</div>
-
-</div>
-
-</div>
-
-
-<div class="col-md-3 col-sm-6 col-sidebar-right">
-
-  <h4>统计数据</h4>
-
-
-  <div class="list-group">
-
-    <a href="javascript:;" class="list-group-item"><h3 class="pull-right"><i class="fa fa-eye"></i></h3>
-      <h4 class="list-group-item-heading">38,847</h4>
-
-      <p class="list-group-item-text">Profile Views</p>
-
-    </a>
-
-    <a href="javascript:;" class="list-group-item"><h3 class="pull-right"><i class="fa fa-facebook-square"></i></h3>
-      <h4 class="list-group-item-heading">3,482</h4>
-
-      <p class="list-group-item-text">Facebook Likes</p>
-
-    </a>
-
-    <a href="javascript:;" class="list-group-item"><h3 class="pull-right"><i class="fa fa-twitter-square"></i></h3>
-      <h4 class="list-group-item-heading">5,845</h4>
-
-      <p class="list-group-item-text">Twitter Followers</p>
-
-    </a>
-  </div>
-  <!-- /.list-group -->
-
-  <br/>
-
-
-  <div class="well">
-    <h4>最近活动</h4>
-
-
-    <ul class="icons-list text-md">
-
-      <li>
-        <i class="icon-li fa fa-location-arrow"></i>
-
-        <strong>Rod</strong> uploaded 6 files.
-        <br/>
-        <small>about 4 hours ago</small>
-      </li>
-
-      <li>
-        <i class="icon-li fa fa-location-arrow"></i>
-
-        <strong>Rod</strong> followed the research interest: <a href="javascript:;">Open Access Books in Linguistics</a>.
-        <br/>
-        <small>about 23 hours ago</small>
-      </li>
-
-      <li>
-        <i class="icon-li fa fa-location-arrow"></i>
-
-        <strong>Rod</strong> added 51 papers.
-        <br/>
-        <small>2 days ago</small>
-      </li>
-    </ul>
-
+  <div class="col-md-3 col-sm-12 col-sidebar-right">
+    <h4>统计数据</h4>
+    <div class="list-group icon-red">
+      <a href="javascript:;" class="list-group-item"><h3 class="pull-right"><i class="fa fa-eye"></i></h3>
+        <h4 class="list-group-item-heading">0</h4>
+        <p class="list-group-item-text">点击</p>
+      </a>
+      <a href="javascript:;" class="list-group-item"><h3 class="pull-right"><i class="fa fa-cloud-download"></i></h3>
+        <h4 class="list-group-item-heading">0</h4>
+        <p class="list-group-item-text">攻略下载</p>
+      </a>
+      <a href="javascript:;" class="list-group-item"><h3 class="pull-right"><i class="fa fa-money"></i></h3>
+        <h4 class="list-group-item-heading">0</h4>
+        <p class="list-group-item-text">游戏下载</p>
+      </a>
+    </div>
+    <!-- /.list-group -->
   </div>
 </div>
+<div class="row game-profile profile-page">
+  <div class="col-md-3 col-sm-12">
+    <div class="list-group icon-red smart-list" data-url="api/article/category.php">
+      <a href="javascript:;" class="list-group-item">
+        <i class="fa fa-spin fa-spinner"></i> &nbsp;&nbsp;加载中....
+      </a>
+      <script type="text/x-handlebars-template">
+        {{#each list}}
+        <a href="#/article/list/game{{guide_name}}/category{{id}}" class="list-group-item">
+          <i class="fa fa-asterisk"></i> &nbsp;&nbsp;{{label}}
 
-  </script>
+          <i class="fa fa-chevron-right list-group-chevron"></i>
+          <span class="badge">{{NUM}}</span>
+        </a>
+        {{/each}}
+      </script>
+    </div>
+  </div>
+
+  <div class="col-md-6 col-sm-12">
+    <h4>轮播图</h4>
+    <table class="table table-bordered table-hover smart-table" data-url="api/game/profile.php">
+      <thead>
+      <tr>
+        <th>图片</th>
+        <th>链接</th>
+        <th>操作</th>
+      </tr>
+      </thead>
+      <tbody>
+      <script type="text/x-handlebars-template">
+        {{#each list}}
+        <tr>
+          <td><a href="#image" class="edit img-thumbnail" data-type="img"><img src="{{image}}" class="img-200"></a></td>
+          <td><a href="#url" class="url">{{url}}</a></td>
+          <td><button type="button" class="btn btn-danger delete-button"><i class="fa fa-trash-o"></i></button></td>
+        </tr>
+        {{/each}}
+      </script>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col-md-3 col-sm-12">
+    <div class="well">
+      <h4>最近活动</h4>
+      <ul class="icons-list text-md">
+
+      </ul>
+
+    </div>
+  </div>
 </div>

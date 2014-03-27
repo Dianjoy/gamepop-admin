@@ -37,18 +37,27 @@ switch ($_SERVER['REQUEST_METHOD']) {
     break;
 }
 
-function fetch($game, $args, $article) {
+function fetch($game, $args) {
   $pagesize = isset($args['pagesize']) ? (int)$args['pagesize'] : 20;
   $page = isset($args['page']) ? (int)$args['page'] : 0;
   $keyword = empty($args['keyword']) ? '' : trim(addslashes(strip_tags($args['keyword'])));
+  $conditions = array(
+    'status' => Game::NORMAL,
+  );
 
-  $total = $game->get_game_number($keyword);
-  $games = $game->get_all_games($pagesize, $page, $keyword);
+  $games = $game->select(Game::$ALL)
+    ->where($conditions)
+    ->search($keyword)
+    ->order(Game::$ORDER_HOT, 'DESC')
+    ->execute()
+    ->fetchAll(PDO::FETCH_ASSOC);
+  $total = count($games);
+  $games = array_slice($games, $page * $pagesize, $pagesize);
 
   if (DEBUG) {
-    foreach ($games as &$row) {
+    foreach ($games as $key => $row) {
       if (substr($row['icon_path'], 0, 7) === 'upload/') {
-        $row['icon_path'] = 'http://admin.yxpopo.com/' . $row['icon_path'];
+        $games[$key]['icon_path'] = 'http://admin.yxpopo.com/' . $row['icon_path'];
       }
     }
   }
@@ -56,15 +65,20 @@ function fetch($game, $args, $article) {
   // 取每个游戏的文章数量
   $guide_names = array();
   foreach ($games as $row) {
-    $guide_names[] = $row['guide_name'];
+    $guide_names[] = $row[Game::ID];
   }
   include_once "../../inc/Article.class.php";
   $article = new Article();
-  $article_number = $article->get_article_number_by_id($guide_names);
-  foreach ($games as &$row) {
-    $row['article_number'] = $article_number[$row['guide_name']];
-  }
 
+  $article_number = $article->select($article->count(Game::ID))
+    ->where(array(Game::ID => $guide_names), true)
+    ->where($conditions)
+    ->group(Game::ID)
+    ->execute()
+    ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
+  foreach ($games as &$row) {
+    $row['article_number'] = $article_number[$row[Game::ID]];
+  }
 
   $result = array(
     'total' => $total,

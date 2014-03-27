@@ -4,7 +4,7 @@
   ns.AdminPanel = Backbone.Router.extend({
     $mainPage: null,
     $subPage: null,
-    lastPage: '',
+    lastPage: null,
     routes: {
       '': 'showHomepage',
       'admin/:sub': 'showAdminPage',
@@ -35,7 +35,7 @@
             arr = reg.exec(path);
           }
         } else {
-          data = path.substr(1);
+          data = path;
         }
       }
       var url = baseURL + cate + '/template/' + sub + '.html';

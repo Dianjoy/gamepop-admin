@@ -10,15 +10,43 @@ include_once '../../inc/session.php';
  * Time: 下午4:10
  */
 
-header("Content-Type:application/json;charset=utf-8");
 include_once "../../inc/Game.class.php";
-include_once "../../inc/Article.class.php";
 $game = new Game();
 
-$url = $_SERVER['PATH_INFO'];
-$id = substr($url, 1);
-$info = $game->get_info($id);
+$args = $_REQUEST;
+$request = file_get_contents('php://input');
+if ($request) {
+  $args = array_merge($_POST, json_decode($request, true));
+}
+header("Content-Type:application/json;charset=utf-8");
+switch ($_SERVER['REQUEST_METHOD']) {
+  case 'GET':
+    fetch($game, $args);
+    break;
 
-$result = array();
+  default:
+    header("HTTP/1.1 406 Not Acceptable");
+    break;
+}
 
-echo json_encode(json_encode($info));
+function fetch($game, $args) {
+  $status = array(
+    'status' => 0,
+  );
+  $conditions = array();
+  foreach (array('game', 'category', 'author', 'id') as $row) {
+    if (isset($args[$row])) {
+      $conditions[$row === 'game' || $row === 'id' ? 'guide_name' : $row] = $args[$row];
+    }
+  }
+  $result = $game->select(Game::$SLIDE)
+    ->where($status)
+    ->where($conditions)
+    ->execute()
+    ->fetchAll(PDO::FETCH_ASSOC);
+
+  echo json_encode(array(
+    'total' => count($result),
+    'list' => $result,
+  ));
+}
