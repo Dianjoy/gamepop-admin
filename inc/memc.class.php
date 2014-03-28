@@ -7,6 +7,26 @@
  * Time: 下午2:26
  * To change this template use File | Settings | File Templates.
  */
+class MemcacheMock {
+  function __construct() {
+
+  }
+  function close() {
+
+  }
+  function delete($key) {
+
+  }
+  function getstats() {
+    return 'I am a mock';
+  }
+  function get($key) {
+    return null;
+  }
+  function set($key, $value, $exp_time, $is_compressed) {
+
+  }
+}
 class memc {
   private $mc = null;
 
@@ -14,9 +34,14 @@ class memc {
    * 构造方法,用于添加服务器并创建memcahced对象
    */
   function __construct($host, $port) {
-    //目前暂不考虑多个server的情况
-    $this->mc = new Memcache;
-    $this->mc->addserver($host, $port);
+    // 如果环境里没有memcache，则使用mock类，这样可以正常使用
+    if (defined('Memcache')) {
+      // 目前暂不考虑多个server的情况
+      $this->mc = new Memcache;
+      $this->mc->addserver($host, $port);
+    } else {
+      $this->mc = new MemcacheMock();
+    }
   }
 
   function status() {

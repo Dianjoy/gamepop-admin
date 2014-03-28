@@ -21,7 +21,7 @@ if ($request) {
 header("Content-Type:application/json;charset=utf-8");
 switch ($_SERVER['REQUEST_METHOD']) {
   case 'GET':
-    fetch($game, $args, $article);
+    fetch($game, $args);
     break;
 
   case 'PATCH':
