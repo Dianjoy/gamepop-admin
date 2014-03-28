@@ -28,4 +28,4 @@
       this.$el.html(this.template(model.toJSON()));
     }
   });
-}(Nervenet.createNameSpace('dianjoy.page')));
+}(Nervenet.createNameSpace('gamepop.page')));

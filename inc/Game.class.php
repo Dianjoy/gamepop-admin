@@ -18,8 +18,7 @@ class Game extends \gamepop\Base {
 
   const ID = 'guide_name';
 
-  static $ALL = "g.`guide_name`, `game_name`, `game_desc`, g.`update_time`, i.`icon_path`,
-              g.`icon_path` AS `new_icon`";
+  static $ALL = "g.`guide_name`, `game_name`, `game_desc`, g.`update_time`, g.`icon_path`";
   static $SLIDE = "`id`, `image`, `link`, `seq`";
   static $ORDER_HOT = "i.now_use-i.pre_use";
 
@@ -31,14 +30,6 @@ class Game extends \gamepop\Base {
     $this->builder->search('guide_name', $keyword);
     return $this;
   }
-  public function fetchAll($method) {
-    $result = parent::fetchAll($method);
-    foreach ($result as $key => $row) {
-      $result[$key] = $this->get_icon_path($row);
-    }
-    return $result;
-  }
-
   protected function getTable($fields) {
     if ($fields === self::$ALL) {
       return self::MIDDLE . " m JOIN " . self::TABLE . " g ON m.`guide_name`=g.`guide_name`
@@ -116,9 +107,5 @@ class Game extends \gamepop\Base {
 
   private function get_keyword_condition($keyword, $table = '') {
     return $keyword ? "AND ($table`guide_name` LIKE '%$keyword%' OR `game_name` LIKE '%$keyword%')" : '';
-  }
-  private function get_icon_path($game) {
-    $game['icon_path'] = empty($game['new_icon']) ? (empty($game['icon_path']) ? '' : '//r.yxpopo.com/popoicon' . $game['icon_path']) : $game['new_icon'];
-    return $game;
   }
 }

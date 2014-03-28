@@ -1,0 +1,72 @@
+<div class="game-homepage" data-class="gamepop.game.Homepage">
+  <div class="emulator" data-class="gamepopo.game.emulator">
+    <div class="carousel slide" data-ride="carousel" id="homepage-slide" data-url="api/game/slide-image.php">
+      <script type="text/x-handlebars-template" id="slide-template">
+        <ol class="carousel-indicators">
+          {{#each list}}
+          <li data-target="#homepage-slide" data-slide-to="{{@index}}"></li>
+          {{/each}}
+        </ol>
+        <div class="carousel-inner">
+          {{#each list}}
+          <div class="item">
+            <a href="{{link}}" target="_blank"><img src="{{image}}" /></a>
+          </div>
+          {{/each}}
+        </div>
+      </script>
+      <a class="left carousel-control" href="#homepage-slide" data-slide="prev"><i class="fa fa-chevron-left"></i></a>
+      <a class="right carousel-control" href="#homepage-slide" data-slide="next"><i class="fa fa-chevron-right"></i></a>
+    </div>
+    <nav class="homepage-nav row" data-url="api/game/homepage-nav.php">
+      <script type="text/x-handlebars-template" id="nav-template">
+        {{#each list}}
+        <div class="item" style="background-image: url({{image}});">
+          <a href="#/artilce/list/category{{category}}/game{{guide_name}}">{{label}}</a>
+        </div>
+        {{/each}}
+      </script>
+    </nav>
+  </div>
+  <div class="tables">
+    <table class="table table-bordered table-hover smart-table" data-url="api/game/slide-image.php">
+      <thead>
+      <tr>
+        <th>图片</th>
+        <th>链接</th>
+        <th>操作</th>
+      </tr>
+      </thead>
+      <tbody>
+      <script type="text/x-handlebars-template">
+        <tr>
+          <td><a href="#image" class="edit" data-type="img"><img src="{{image}}" class="img-thumbnail" /></a></td>
+          <td><a href="#link" class="edit">{{link}}</a></td>
+          <td><button type="button" class="btn btn-danger delete-button"><i class="fa fa-trash-o"></i></button></td>
+        </tr>
+      </script>
+      </tbody>
+      <tfoot>
+      <tr>
+        <td colspan="3"><button type="button" class="btn btn-primary upload-button">添加图片</button></td>
+      </tr>
+      </tfoot>
+    </table>
+    <table class="table table-bordered table-bordered smart-table" data-url="api/game/homepage-nav.php">
+      <thead>
+      <tr>
+        <th>背景图片</th>
+        <th>类别</th>
+      </tr>
+      </thead>
+      <tbody>
+      <script type="text/x-handlebars-template">
+        <tr>
+          <td><a href="#image" class="edit" data-type="img"><img src="{{image}}" class="img-thumbnail"></a></td>
+          <td>{{label}}</td>
+        </tr>
+      </script>
+      </tbody>
+    </table>
+  </div>
+</div>
