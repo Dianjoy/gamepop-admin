@@ -92,7 +92,9 @@ function update($article, $args, $success = '修改成功', $error = '修改失�
   $url = $_SERVER['PATH_INFO'];
   $id = (int)substr($url, 1);
 
-  $result = $article->update_category($id, $args);
+  $result = $article->update($args)
+    ->where(array('id' => $id))
+    ->execute();
   if ($result) {
     $result = array('code' => 0, 'msg' => $success);
   } else {

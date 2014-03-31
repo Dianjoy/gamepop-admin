@@ -108,20 +108,4 @@ class Admin extends \gamepop\Base {
             WHERE `user`='$username'";
     return self::$READ->query($sql)->fetchColumn();
   }
-
-  public function update($id, $fullname, $password, $role) {
-    $sql = "SELECT `user`
-            FROM " . self::TABLE . "
-            WHERE `id`=$id";
-    $username = self::$READ->query($sql)->fetchColumn();
-    if (!$username) {
-      return false;
-    }
-    self::init_write();
-    $password = $this->encrypt($username, $password);
-    $sql = "UPDATE " . self::TABLE . "
-            SET `fullname`='$fullname', `password`='$password', `role`=$role
-            WHERE `id`=$id";
-    return self::$WRITE->exec($sql);
-  }
 }

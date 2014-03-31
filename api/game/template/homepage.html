@@ -1,22 +1,25 @@
-<div class="game-homepage" data-class="gamepop.game.Homepage">
-  <div class="emulator" data-class="gamepopo.game.emulator">
-    <div class="carousel slide" data-ride="carousel" id="homepage-slide" data-url="api/game/slide-image.php">
+<div class="game-homepage row-container">
+  <div class="emulator">
+    <div class="carousel slide smart-slide" data-ride="carousel" id="homepage-slide" data-url="api/game/slide-image.php">
       <script type="text/x-handlebars-template" id="slide-template">
         <ol class="carousel-indicators">
           {{#each list}}
-          <li data-target="#homepage-slide" data-slide-to="{{@index}}"></li>
+          <li data-target="#homepage-slide" data-slide-to="{{@index}}" class="{{active}}"></li>
           {{/each}}
         </ol>
         <div class="carousel-inner">
           {{#each list}}
-          <div class="item">
+          <div class="item {{active}}" id="slide-item-{{id}}">
             <a href="{{link}}" target="_blank"><img src="{{image}}" /></a>
           </div>
           {{/each}}
         </div>
+        <a class="left carousel-control" href="#homepage-slide" data-slide="prev"><i class="glyphicon glyphicon-chevron-left"></i></a>
+        <a class="right carousel-control" href="#homepage-slide" data-slide="next"><i class="glyphicon glyphicon-chevron-right"></i></a>
       </script>
-      <a class="left carousel-control" href="#homepage-slide" data-slide="prev"><i class="fa fa-chevron-left"></i></a>
-      <a class="right carousel-control" href="#homepage-slide" data-slide="next"><i class="fa fa-chevron-right"></i></a>
+    </div>
+    <div class="game-header">
+      <h2>模拟器</h2>
     </div>
     <nav class="homepage-nav row" data-url="api/game/homepage-nav.php">
       <script type="text/x-handlebars-template" id="nav-template">
@@ -28,8 +31,8 @@
       </script>
     </nav>
   </div>
-  <div class="tables">
-    <table class="table table-bordered table-hover smart-table" data-url="api/game/slide-image.php">
+  <div class="tables flex-auto">
+    <table class="table table-bordered table-hover smart-table sortable" data-url="api/game/slide-image.php">
       <thead>
       <tr>
         <th>图片</th>
@@ -39,11 +42,13 @@
       </thead>
       <tbody>
       <script type="text/x-handlebars-template">
-        <tr>
-          <td><a href="#image" class="edit" data-type="img"><img src="{{image}}" class="img-thumbnail" /></a></td>
-          <td><a href="#link" class="edit">{{link}}</a></td>
+        {{#each list}}
+        <tr id="{{id}}">
+          <td><a href="#image" class="edit" data-type="img"><img src="{{image}}" class="img-thumbnail icon-mh-100" /></a></td>
+          <td><a href="#link" class="edit">{{#if link}}{{link}}{{else}}（添加）{{/if}}</a></td>
           <td><button type="button" class="btn btn-danger delete-button"><i class="fa fa-trash-o"></i></button></td>
         </tr>
+        {{/each}}
       </script>
       </tbody>
       <tfoot>
@@ -57,16 +62,23 @@
       <tr>
         <th>背景图片</th>
         <th>类别</th>
+        <th>操作</th>
       </tr>
       </thead>
       <tbody>
       <script type="text/x-handlebars-template">
-        <tr>
+        {{#each list}}
+        <tr id="{{id}}">
           <td><a href="#image" class="edit" data-type="img"><img src="{{image}}" class="img-thumbnail"></a></td>
           <td>{{label}}</td>
+          <td><button type="button" class="btn btn-warning" title="不显示"><i class="fa fa-ban"></i></button></td>
         </tr>
+        {{/each}}
       </script>
       </tbody>
+      <tfoot class="recycle">
+
+      </tfoot>
     </table>
   </div>
 </div>

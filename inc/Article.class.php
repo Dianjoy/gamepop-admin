@@ -36,6 +36,13 @@ class Article extends \gamepop\Base {
     if ($fields == self::$ALL || $fields == self::$DETAIL || strpos($fields, self::$ALL_CATEGORY) !== false) {
       return self::TABLE . " JOIN " . self::CATEGORY . " ON " . self::TABLE . ".`category`=" . self::CATEGORY . ".`id`";
     }
+    if (is_array($fields)) {
+      foreach ($fields as $key => $value) {
+        if ($key === 'label' || $key === 'cate') {
+          return self::CATEGORY;
+        }
+      }
+    }
     return self::TABLE;
   }
 
@@ -64,74 +71,6 @@ class Article extends \gamepop\Base {
       return self::$WRITE->lastInsertId();
     }
     return $check;
-  }
-
-  public function get_all_categories() {
-    $sql = "SELECT `id`, `cate`, `label`, `nav_pic`
-            FROM " . self::CATEGORY . "
-            WHERE `status`=0";
-    $result = self::$READ->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-    $sql = "SELECT `category`, COUNT('x') AS NUM
-            FROM " . self::TABLE . "
-            WHERE `st`=0
-            GROUP BY `category`";
-    $number = self::$READ->query($sql)->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE | PDO::FETCH_GROUP);
-    foreach ($result as &$row) {
-      $row['number'] = $number[$row['id']];
-    }
-    return $result;
-  }
-
-  public function update($id, $args) {
-    self::init_write();
-    $params = '';
-    $now = date('Y-m-d H:i:s');
-    $me = (int)$_SESSION['id'];
-    foreach ($args as $key => $value) {
-      if ($key === 'label') {
-        unset($args['label']);
-        continue;
-      }
-      $params .= "`$key`=:$key,";
-    }
-
-    $sql = "UPDATE " . self::TABLE . "
-            SET " . $params . " `update_time`='$now', `update_editor`=$me
-            WHERE `id`=:id" ;
-    $sth = self::$WRITE->prepare($sql);
-    $params = array(
-      ':id' => $id,
-    );
-    foreach ($args as $key => $value) {
-      if ($key === 'content') {
-        require_once('Markdown.inc.php');
-        $value = \Michelf\Markdown::defaultTransform($value);
-      }
-      $params[':' . $key] = $value;
-    }
-    $result = $sth->execute($params);
-    return $result;
-  }
-
-  public function update_category($id, $args) {
-    self::init_write();
-    $params = '';
-    foreach ($args as $key => $value) {
-      $params .= "`$key`=:$key,";
-    }
-
-    $sql = "UPDATE " . self::CATEGORY . "
-            SET " . substr($params, 0, -1) . "
-            WHERE `id`=:id" ;
-    $sth = self::$WRITE->prepare($sql);
-    $params = array(
-      ':id' => $id,
-    );
-    foreach ($args as $key => $value) {
-      $params[':' . $key] = $value;
-    }
-    $result = $sth->execute($params);
-    return $result;
   }
 
 

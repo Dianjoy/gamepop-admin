@@ -8,6 +8,13 @@
 namespace gamepop;
 
 class SQLBuilder {
+  const SELECT = "SELECT {{fields}}
+    FROM {{tables}}
+    WHERE {{conditions}}";
+  const UPDATE = "UPDATE {{tables}}
+    SET {{fields}}
+    WHERE {{conditions}}";
+
   public $is_select = false;
   public $args = array();
   private $sql;
@@ -16,23 +23,42 @@ class SQLBuilder {
   private $conditions = array();
   private $order_sql = '';
   private $group_by = '';
-  private $template = "SELECT {{fields}}
-    FROM {{tables}}
-    WHERE {{conditions}}";
+  private $template = '';
   private $reg = '/{{(\w+)}}/';
 
   public function __construct() {
 
   }
 
+  // --> 生成select
   public function select($fields) {
     $this->sql = null;
     $this->is_select = true;
+    $this->template = self::SELECT;
     $this->fields = $fields;
     return $this;
   }
   public function from($table) {
     $this->sql = null;
+    $this->tables = $table;
+    return $this;
+  }
+  // --> 生成update
+  public function update($args) {
+    $params = array();
+    $conditions = array();
+    foreach ($args as $key => $value) {
+      $params[] = "`$key`=:$key";
+      $conditions[":$key"] = $value;
+    }
+    $this->sql = null;
+    $this->is_select = false;
+    $this->fields = implode(", ", $params);
+    $this->args = $conditions;
+    $this->template = self::UPDATE;
+    return $this;
+  }
+  public function on($table) {
     $this->tables = $table;
     return $this;
   }
@@ -165,6 +191,14 @@ class Base {
     $fields = implode(",", $vars);
     $this->builder = new SQLBuilder(self::$READ);
     $this->builder->select($fields)->from($this->getTable($fields));
+    $this->sth = null;
+    return $this;
+  }
+  public function update($args) {
+    self::init_write();
+    $this->builder = new SQLBuilder(self::$WRITE);
+    $this->builder->update($args)->on($this->getTable($args));
+    $this->sth = null;
     return $this;
   }
   public function where($args, $is_in = false, $table = '') {
@@ -179,7 +213,7 @@ class Base {
     $this->builder->group($key, $table);
     return $this;
   }
-  public function order($key, $order) {
+  public function order($key, $order = 'DESC') {
     $this->builder->order($key, $order);
     return $this;
   }
@@ -205,6 +239,9 @@ class Base {
     return $this;
   }
   public function fetch($method, $is_all = false) {
+    if (!$this->sth) {
+      $this->execute($this->is_debug);
+    }
     if ($this->has_cache && $this->cache) {
       header('From: Memcache');
       $cache = $this->cache;
