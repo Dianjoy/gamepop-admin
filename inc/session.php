@@ -1,7 +1,6 @@
 <?php
 defined('OPTIONS') or exit();
 session_start();
-define('DEBUG', true);
 
 $string = OPTIONS;
 $pos_right = strpos($string, ')');

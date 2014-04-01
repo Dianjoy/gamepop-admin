@@ -19,7 +19,7 @@ class Spokesman {
             $args['list'][$key] = self::checkImageUrl($item);
           }
         }
-        self::checkImageUrl($args);
+        $args = self::checkImageUrl($args);
       }
       exit(json_encode($args));
     }
@@ -34,18 +34,18 @@ class Spokesman {
       ), (array)$args));
     } else {
       header("HTTP/1.1 400 Bad Request");
-      echo json_encode(array(
+      echo json_encode(array_merge(array(
         'code' => 1,
         'msg' => $error,
-      ));
+      ), $args));
     }
   }
 
   private static function checkImageUrl($item) {
-    if (isset($item['image'])) {
+    if (isset($item['image']) && !file_exists('../../' . $item['image'])) {
       $item['image'] = self::addDomain($item['image']);
     }
-    if (isset($item['icon_path'])) {
+    if (isset($item['icon_path']) && !file_exists('../../' . $item['icon_path'])) {
       $item['icon_path'] = self::addDomain($item['icon_path']);
     }
     return $item;

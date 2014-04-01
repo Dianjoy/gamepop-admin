@@ -16,7 +16,7 @@ class SQLBuilder {
     WHERE {{conditions}}";
   const INSERT = "INSERT INTO {{tables}}
     ({{fields}})
-    VALUES ({{conditions}})";
+    VALUES ({{values}})";
 
   public $is_select = false;
   public $args = array();
@@ -165,6 +165,10 @@ class SQLBuilder {
           return $this->tables;
           break;
 
+        case 'values':
+          return $this->conditions ? implode(", ", $this->conditions) : '';
+          break;
+
         default:
           return '';
           break;
@@ -221,10 +225,10 @@ class Base {
     $this->sth = null;
     return $this;
   }
-  public function update($args) {
+  public function update($args, $table = '') {
     self::init_write();
     $this->builder = new SQLBuilder(self::$WRITE);
-    $this->builder->update($args)->on($this->getTable($args));
+    $this->builder->update($args)->on($table ? $table : $this->getTable($args));
     $this->sth = null;
     return $this;
   }
@@ -267,7 +271,7 @@ class Base {
 
     $this->sth = $this->builder->is_select ? self::$READ->prepare($sql) : self::$WRITE->prepare($sql);
     $this->result = $this->sth->execute($this->builder->args);
-    if ($this->is_debug) {
+    if ($this->is_debug || $debug) {
       var_dump($this->builder->args);
     }
     return $this;

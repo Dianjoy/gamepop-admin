@@ -1,3 +1,26 @@
+<div class="game-info well well-sm smart-info" data-url="api/game/info.php">
+  <div class="media">
+    <div class="pull-left">
+      <img src="img/image.png" class="img-thumbnail icon-100">
+    </div>
+    <div class="media-body">
+      <h4><i class="fa fa-spin fa-spinner"></i></h4>
+      <p>加载中，请稍后</p>
+    </div>
+  </div>
+  <script type="text/x-handlebars-template">
+    <div class="media">
+      <a href="#/game/profile/{{guide_name}}" class="pull-left">
+        <img src="{{#if icon_path}}{{icon_path}}{{else}}img/image.png{{/if}}" class="img-thumbnail icon-100">
+      </a>
+      <div class="media-body">
+        <h4>{{{game_name}}} <small>{{guide_name}}</small></h4>
+        <p>{{game_desc}}</p>
+      </div>
+    </div>
+  </script>
+</div>
+
 <div class="game-homepage row-container">
   <div class="emulator">
     <div class="smart-slide" data-ride="carousel" id="homepage-slide" data-url="api/game/slide-image.php">
@@ -35,7 +58,7 @@
     </nav>
   </div>
   <div class="tables flex-auto">
-    <table class="table table-bordered table-hover smart-table sortable" data-url="api/game/slide-image.php">
+    <table class="table table-bordered table-hover smart-table sortable" data-url="api/game/slide-image.php" data-guide_name="id">
       <thead>
       <tr>
         <th>图片</th>
@@ -56,7 +79,7 @@
       </tbody>
       <tfoot>
       <tr>
-        <td colspan="3"><button type="button" class="btn btn-primary add-row-button">添加图片</button></td>
+        <td colspan="3"><button type="button" class="btn btn-primary add-row-button" data-map="guide_name:id">添加图片</button></td>
       </tr>
       </tfoot>
     </table>

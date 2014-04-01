@@ -32,7 +32,7 @@ class Article extends \gamepop\Base {
     $this->builder->search('content', $keyword);
     return $this;
   }
-  public function update($args) {
+  public function update($args, $table = '') {
     $args['update_time'] = date('Y-m-d H:i:s');
     $args['update_editor'] = (int)$_SESSION['id'];
     if (isset($args['label'])) {
@@ -42,7 +42,7 @@ class Article extends \gamepop\Base {
       require_once('Markdown.inc.php');
       $args['content'] = \Michelf\Markdown::defaultTransform($args['content']);
     }
-    parent::update($args);
+    parent::update($args, $table);
   }
 
   protected function getTable($fields) {

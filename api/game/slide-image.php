@@ -33,7 +33,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
     break;
 
   case 'POST':
-    create($game);
+    create($game, $args);
+    break;
 
   default:
     header("HTTP/1.1 406 Not Acceptable");
@@ -52,33 +53,25 @@ function fetch($game, $args) {
     ->fetchAll(PDO::FETCH_ASSOC);
   $total = count($games);
 
-  if (DEBUG) {
-    foreach ($games as $key => $row) {
-      if (substr($row['image'], 0, 7) === 'upload/') {
-        $games[$key]['image'] = 'http://admin.yxpopo.com/' . $row['image'];
-      }
-    }
-  }
-
   $result = array(
     'total' => $total,
     'list' => $games
   );
 
-  echo json_encode($result);
+  Spokesman::say($result);
 }
 
 function delete($game) {
   $args = array(
     'status' => 1,
   );
-  update($game, $args);
+  update($game, $args, Game::SLIDE, '删除成功', '删除失败');
 }
 
-function update($game, $args, $success = '更新成功', $error = '更新失败') {
+function update($game, $args, $table = '', $success = '更新成功', $error = '更新失败') {
   $url = $_SERVER['PATH_INFO'];
   $id = substr($url, 1);
-  $result = $game->update($args)
+  $result = $game->update($args, $table)
     ->where(array('id' => $id))
     ->execute();
   Spokesman::judge($result, $success, $error);

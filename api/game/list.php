@@ -10,6 +10,7 @@ include_once '../../inc/session.php';
  * Time: 下午6:10
  */
 
+include_once "../../inc/Spokesman.class.php";
 include_once "../../inc/Game.class.php";
 $game = new Game();
 
@@ -54,14 +55,6 @@ function fetch($game, $args) {
   $total = count($games);
   $games = array_slice($games, $page * $pagesize, $pagesize);
 
-  if (DEBUG) {
-    foreach ($games as $key => $row) {
-      if (substr($row['icon_path'], 0, 7) === 'upload/') {
-        $games[$key]['icon_path'] = 'http://admin.yxpopo.com/' . $row['icon_path'];
-      }
-    }
-  }
-
   // 取每个游戏的文章数量
   $guide_names = array();
   foreach ($games as $row) {
@@ -85,26 +78,22 @@ function fetch($game, $args) {
     'list' => $games
   );
 
-  echo json_encode($result);
+  Spokesman::say($result);
 }
 
 function delete($game) {
   $args = array(
     'status' => 1,
   );
-  update($game, $args);
+  update($game, $args, '删除成功', '删除失败');
 }
 
 function update($game, $args, $success = '更新成功', $error = '更新失败') {
   $game->init_write();
   $url = $_SERVER['PATH_INFO'];
   $id = substr($url, 1);
-  $result = $game->update($id, $args) ? array(
-    'code' => 0,
-    'msg' => $success,
-  ) : array(
-    'code' => 1,
-    'msg' => $error,
-  );
-  echo json_encode($result);
+  $result = $game->update($args)
+    ->where(array('guide_name' => $id))
+    ->execute();
+  Spokesman::judge($result, $success, $error, $args);
 }

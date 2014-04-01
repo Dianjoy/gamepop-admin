@@ -12,6 +12,7 @@ header("Content-Type: application/json; charset: utf-8");
 
 $up_path = array(
   'icon_path' => 'icon/',
+  'image' => 'image/',
 );
 $upload_user = $_SESSION['id'];
 
@@ -36,7 +37,7 @@ if ($type == 'app_pic' && ($width < 320 || $height < 480)) {
     'msg' => '应用截图宽应不小于320，高应不小于480',
   );
 }
-if ($result['code'] === 1) {
+if (isset($result) && $result['code'] === 1) {
   exit(json_encode($result));
 }
 
@@ -63,7 +64,6 @@ upload::insert($DB, $id, $type, $new_path, $upload_user, $file['name']);
 
 $result = array(
   'code' => 0,
-  'id' => $id,
   'url' => $new_path,
   'filename' => $file['name'],
 );
