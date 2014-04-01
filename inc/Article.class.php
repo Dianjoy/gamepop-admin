@@ -29,7 +29,20 @@ class Article extends \gamepop\Base {
   // overrides parent's method
   public function search($keyword) {
     $this->builder->search('topic', $keyword);
+    $this->builder->search('content', $keyword);
     return $this;
+  }
+  public function update($args) {
+    $args['update_time'] = date('Y-m-d H:i:s');
+    $args['update_editor'] = (int)$_SESSION['id'];
+    if (isset($args['label'])) {
+      unset($args['label']);
+    }
+    if (isset($args['content'])) {
+      require_once('Markdown.inc.php');
+      $args['content'] = \Michelf\Markdown::defaultTransform($args['content']);
+    }
+    parent::update($args);
   }
 
   protected function getTable($fields) {
@@ -72,6 +85,4 @@ class Article extends \gamepop\Base {
     }
     return $check;
   }
-
-
 } 

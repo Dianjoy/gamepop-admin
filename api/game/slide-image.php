@@ -9,6 +9,7 @@ include_once '../../inc/session.php';
  * Date: 14-3-31
  * Time: 下午1:44
  */
+include_once "../../inc/Spokesman.php";
 include_once "../../inc/Game.class.php";
 $game = new Game();
 
@@ -30,6 +31,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
   case 'DELETE':
     delete($game);
     break;
+
+  case 'POST':
+    create($game);
 
   default:
     header("HTTP/1.1 406 Not Acceptable");
@@ -72,22 +76,17 @@ function delete($game) {
 }
 
 function update($game, $args, $success = '更新成功', $error = '更新失败') {
-  $game->init_write();
   $url = $_SERVER['PATH_INFO'];
   $id = substr($url, 1);
   $result = $game->update($args)
     ->where(array('id' => $id))
     ->execute();
-  if ($result) {
-    echo json_encode(array(
-      'code' => 0,
-      'msg' => $success,
-    ));
-  } else {
-    header("HTTP/1.1 400 Bad Request");
-    echo json_encode(array(
-      'code' => 1,
-      'msg' => $error,
-    ));
-  }
+  Spokesman::judge($result, $success, $error);
+}
+
+function create($game) {
+  $result = $game->insert(Game::SLIDE)
+    ->execute()
+    ->lastInsertId();
+  Spokesman::judge($result, '创建成功', '创建失败', array('id' => $result));
 }

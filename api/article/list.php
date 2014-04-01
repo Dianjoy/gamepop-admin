@@ -77,15 +77,6 @@ function fetch($article, $args) {
 function update($article, $args, $success = '更新成功', $error = '更新失败') {
   $url = $_SERVER['PATH_INFO'];
   $id = substr($url, 1);
-  $args['update_time'] = date('Y-m-d H:i:s');
-  $args['update_editor'] = (int)$_SESSION['id'];
-  if (isset($args['label'])) {
-    unset($args['label']);
-  }
-  if (isset($args['content'])) {
-    require_once('Markdown.inc.php');
-    $args['content'] = \Michelf\Markdown::defaultTransform($args['content']);
-  }
 
   $result = $article->update($args)
     ->where(array('id' => $id))
