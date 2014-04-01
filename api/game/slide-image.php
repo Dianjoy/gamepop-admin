@@ -9,7 +9,7 @@ include_once '../../inc/session.php';
  * Date: 14-3-31
  * Time: 下午1:44
  */
-include_once "../../inc/Spokesman.php";
+include_once "../../inc/Spokesman.class.php";
 include_once "../../inc/Game.class.php";
 $game = new Game();
 
@@ -84,9 +84,10 @@ function update($game, $args, $success = '更新成功', $error = '更新失败'
   Spokesman::judge($result, $success, $error);
 }
 
-function create($game) {
-  $result = $game->insert(Game::SLIDE)
+function create($game, $args) {
+  $result = $game->insert($args)
     ->execute()
     ->lastInsertId();
-  Spokesman::judge($result, '创建成功', '创建失败', array('id' => $result));
+  $args = array_merge(array('id' => $result), $args);
+  Spokesman::judge($result, '创建成功', '创建失败', $args);
 }

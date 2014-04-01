@@ -228,10 +228,10 @@ class Base {
     $this->sth = null;
     return $this;
   }
-  public function insert($args) {
+  public function insert($args, $table = '') {
     self::init_write();
     $this->builder = new SQLBuilder(self::$WRITE);
-    $this->builder->insert($args)->into($this->getTable($args));
+    $this->builder->insert($args)->into($table ? $table : $this->getTable($args));
     $this->sth = null;
     return $this;
   }
@@ -295,6 +295,9 @@ class Base {
   }
   public function fetchAll($method) {
     return $this->fetch($method, true);
+  }
+  public function lastInsertId() {
+    return self::$WRITE->lastInsertId();
   }
   public function debug_info() {
     var_dump($this->sth->errorInfo());

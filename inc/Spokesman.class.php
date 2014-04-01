@@ -27,19 +27,17 @@ class Spokesman {
 
   public static function judge($result, $success, $error, $args = null) {
     // boolean，输出信息
-    if (is_bool($result)) {
-      if ($result) {
-        echo json_encode(array_merge(array(
-          'code' => 0,
-          'msg' => $success,
-        ), (array)$args));
-      } else {
-        header("HTTP/1.1 400 Bad Request");
-        echo json_encode(array(
-          'code' => 1,
-          'msg' => $error,
-        ));
-      }
+    if ($result) {
+      echo json_encode(array_merge(array(
+        'code' => 0,
+        'msg' => $success,
+      ), (array)$args));
+    } else {
+      header("HTTP/1.1 400 Bad Request");
+      echo json_encode(array(
+        'code' => 1,
+        'msg' => $error,
+      ));
     }
   }
 
