@@ -1,6 +1,6 @@
 <div class="game-homepage row-container">
   <div class="emulator">
-    <div class="carousel slide smart-slide" data-ride="carousel" id="homepage-slide" data-url="api/game/slide-image.php">
+    <div class="smart-slide" data-ride="carousel" id="homepage-slide" data-url="api/game/slide-image.php">
       <script type="text/x-handlebars-template" id="slide-template">
         <ol class="carousel-indicators">
           {{#each list}}
@@ -8,15 +8,18 @@
           {{/each}}
         </ol>
         <div class="carousel-inner">
-          {{#each list}}
-          <div class="item {{active}}" id="slide-item-{{id}}">
-            <a href="{{link}}" target="_blank"><img src="{{image}}" /></a>
-          </div>
-          {{/each}}
+          {{> slide-item}}
         </div>
-        <a class="left carousel-control" href="#homepage-slide" data-slide="prev"><i class="glyphicon glyphicon-chevron-left"></i></a>
-        <a class="right carousel-control" href="#homepage-slide" data-slide="next"><i class="glyphicon glyphicon-chevron-right"></i></a>
       </script>
+      <script type="text/x-handlebars-template" id="item-template">
+        {{#each list}}
+        <div class="item {{active}}" id="slide-item-{{id}}">
+          <a href="{{link}}" target="_blank"><img src="{{image}}" /></a>
+        </div>
+        {{/each}}
+      </script>
+      <a class="left carousel-control" href="#homepage-slide" data-slide="prev"><i class="glyphicon glyphicon-chevron-left"></i></a>
+      <a class="right carousel-control" href="#homepage-slide" data-slide="next"><i class="glyphicon glyphicon-chevron-right"></i></a>
     </div>
     <div class="game-header">
       <h2>模拟器</h2>
@@ -53,7 +56,7 @@
       </tbody>
       <tfoot>
       <tr>
-        <td colspan="3"><button type="button" class="btn btn-primary upload-button">添加图片</button></td>
+        <td colspan="3"><button type="button" class="btn btn-primary add-button">添加图片</button></td>
       </tr>
       </tfoot>
     </table>

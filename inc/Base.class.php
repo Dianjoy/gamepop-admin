@@ -14,6 +14,9 @@ class SQLBuilder {
   const UPDATE = "UPDATE {{tables}}
     SET {{fields}}
     WHERE {{conditions}}";
+  const INSERT = "INSERT INTO {{tables}}
+    ({{fields}})
+    VALUES ({{conditions}})";
 
   public $is_select = false;
   public $args = array();
@@ -39,7 +42,6 @@ class SQLBuilder {
     return $this;
   }
   public function from($table) {
-    $this->sql = null;
     $this->tables = $table;
     return $this;
   }
@@ -59,6 +61,27 @@ class SQLBuilder {
     return $this;
   }
   public function on($table) {
+    $this->tables = $table;
+    return $this;
+  }
+  public function insert($args) {
+    $keys = array();
+    $values = array();
+    $conditions = array();
+    foreach ($args as $key => $value) {
+      $keys[] = "`$key`";
+      $conditions[] = ":$key";
+      $values[":$key"] = $value;
+    }
+    $this->sql = null;
+    $this->is_select = false;
+    $this->fields = implode(", ", $keys);
+    $this->conditions = $conditions;
+    $this->args = $values;
+    $this->template = self::INSERT;
+    return $this;
+  }
+  public function into($table) {
     $this->tables = $table;
     return $this;
   }
@@ -141,6 +164,10 @@ class SQLBuilder {
         case 'tables':
           return $this->tables;
           break;
+
+        default:
+          return '';
+          break;
       }
     }, $this->template);
     $this->sql = $sql . $this->order_sql . $this->group_by;
@@ -198,6 +225,13 @@ class Base {
     self::init_write();
     $this->builder = new SQLBuilder(self::$WRITE);
     $this->builder->update($args)->on($this->getTable($args));
+    $this->sth = null;
+    return $this;
+  }
+  public function insert($args) {
+    self::init_write();
+    $this->builder = new SQLBuilder(self::$WRITE);
+    $this->builder->insert($args)->into($this->getTable($args));
     $this->sth = null;
     return $this;
   }
