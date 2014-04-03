@@ -50,8 +50,8 @@
     <th>类型</th>
     <th>来源</th>
     <th>作者</th>
+    <th>游戏</th>
     <th>标题</th>
-    <th>排序</th>
     <th>发布日期</th>
     <th>更新日期</th>
     <th>操作</th>
@@ -64,8 +64,8 @@
       <td><a href="#category" class="label label-default label-{{category}} edit" data-type="select" data-url="api/article/category.php" data-display="label" data-refresh="true">{{label}}</a></td>
       <td><a href="{{src_url}}" target="_blank">{{source}} <i class="fa fa-external-link"></i></a></td>
       <td>{{author}}</td>
+      <td><a href="#/game/profile/{{guide_name}}">{{game_name}}</a></td>
       <td><a href="#/article/detail/{{id}}">{{topic}} <i class="fa fa-edit"></i></a></td>
-      <td>{{seq}}</td>
       <td>{{pub_date}}</td>
       <td>{{update_time}} / {{update_editor_label}}</td>
       <td>

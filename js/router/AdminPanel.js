@@ -39,7 +39,7 @@
         }
       }
       var url = baseURL + cate + '/template/' + sub + '.html';
-      this.$subPage.load(url, data);
+      this.$subPage.load(url, data, path);
     },
     showAdminPage: function (sub) {
       var url = baseURL + '/admin/' + sub + '.php';

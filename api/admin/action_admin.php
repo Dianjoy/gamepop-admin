@@ -30,10 +30,13 @@ function add($admin){
 	}
 
   $permission = $_POST['role'];
-  $admin->add($username, $fullname, $password, $permission, $qq);
-  $result = array(
+  $result = $admin->add($username, $fullname, $password, $permission, $qq);
+  $result = $result ? array(
     'code' => 0,
-    'msg' => '添加成功'
+    'msg' => '添加成功',
+  ) : array(
+    'code' => 1,
+    'msg' => '添加失败',
   );
 	echo json_encode($result);
 }

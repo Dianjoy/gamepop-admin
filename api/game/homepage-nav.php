@@ -5,6 +5,7 @@
  * Date: 14-3-31
  * Time: 下午1:44
  */
+include_once "../../inc/Spokesman.class.php";
 include_once "../../inc/Game.class.php";
 $game = new Game();
 
@@ -27,38 +28,63 @@ switch ($_SERVER['REQUEST_METHOD']) {
     delete($game);
     break;
 
+  case 'POST':
+    create($game, $args);
+    break;
+
   default:
     header("HTTP/1.1 406 Not Acceptable");
     break;
 }
 
 function fetch($game, $args) {
-  /*$conditions = array(
-    'status' => Game::NORMAL,
+  require_once "../../inc/Article.class.php";
+  $article = new Article();
+  $conditions = array(
     'guide_name' => $args['id'],
   );
+  $status = array(
+    'status' => Article::NORMAL,
+  );
 
-  $games = $game->select(Game::$SLIDE)
+  $categories = $article->select(Article::$ALL_CATEGORY, $article->count())
+    ->where($conditions)
+    ->where($status, false, Article::TABLE)
+    ->group('id', Article::CATEGORY)
+    ->execute()
+    ->fetchAll(PDO::FETCH_ASSOC);
+
+  $nav = $game->select(Game::$HOMEPAGE_NAV)
     ->where($conditions)
     ->order('`seq`')
     ->execute()
-    ->fetchAll(PDO::FETCH_ASSOC);
-  $total = count($games);
+    ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
 
-  if (DEBUG) {
-    foreach ($games as $key => $row) {
-      if (substr($row['image'], 0, 7) === 'upload/') {
-        $games[$key]['image'] = 'http://admin.yxpopo.com/' . $row['image'];
-      }
-    }
-  }*/
+  foreach ($categories as $key => $value) {
+    $value['category'] = $value['id'];
+    unset($value['id']);
+    $categories[$key] = array_merge($value, (array)$nav[$value['category']]);
+  }
+  uasort($categories, compare);
 
   $result = array(
-    'total' => $total,
-    'list' => $games
+    'total' => count($categories),
+    'list' => array_values($categories),
   );
 
-  echo json_encode($result);
+  Spokesman::say($result);
+}
+
+function create($game, $args) {
+  unset($args['NUM']);
+  unset($args['cate']);
+  unset($args['label']);
+  $args = array_merge($args, Spokesman::extract(true));
+  $result = $game->insert($args, Game::HOMEPAGE_NAV)
+    ->execute()
+    ->lastInsertId();
+  $args = array_merge(array('id' => $result), $args);
+  Spokesman::judge($result, '创建成功', '创建失败', $args);
 }
 
 function delete($game) {
@@ -80,4 +106,8 @@ function update($game, $args, $success = '更新成功', $error = '更新失败'
     'msg' => $error,
   );
   echo json_encode($result);
+}
+
+function compare($a, $b) {
+  return (int)$b['seq'] - (int)$a['seq'];
 }

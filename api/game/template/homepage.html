@@ -47,18 +47,25 @@
     <div class="game-header">
       <h2>模拟器</h2>
     </div>
-    <nav class="homepage-nav row" data-url="api/game/homepage-nav.php">
+    <nav class="homepage-nav" data-url="api/game/homepage-nav.php" data-mediator-class="gamepop.game.HomepageNav">
       <script type="text/x-handlebars-template" id="nav-template">
-        {{#each list}}
-        <div class="item" style="background-image: url({{image}});">
-          <a href="#/artilce/list/category{{category}}/game{{guide_name}}">{{label}}</a>
+        <div class="row">
+          {{#each list}}
+          {{#if image}}
+          <div class="col-md-6">
+            <div class="item" style="background-image: url({{image}});">
+              <a href="#/artilce/list/category{{category}}/game{{guide_name}}">{{label}}</a>
+            </div>
+          </div>
+
+          {{/if}}
+          {{/each}}
         </div>
-        {{/each}}
       </script>
     </nav>
   </div>
   <div class="tables flex-auto">
-    <table class="table table-bordered table-hover smart-table sortable" data-url="api/game/slide-image.php" data-guide_name="id">
+    <table class="table table-bordered table-hover smart-table sortable" data-url="api/game/slide-image.php" data-map="guide_name:id">
       <thead>
       <tr>
         <th>图片</th>
@@ -79,7 +86,7 @@
       </tbody>
       <tfoot>
       <tr>
-        <td colspan="3"><button type="button" class="btn btn-primary add-row-button" data-map="guide_name:id">添加图片</button></td>
+        <td colspan="3"><button type="button" class="btn btn-primary add-row-button">添加图片</button></td>
       </tr>
       </tfoot>
     </table>
@@ -95,9 +102,12 @@
       <script type="text/x-handlebars-template">
         {{#each list}}
         <tr id="{{id}}">
-          <td><a href="#image" class="edit" data-type="img"><img src="{{image}}" class="img-thumbnail"></a></td>
+          <td><a href="#image" class="edit" data-type="img"><img src="{{#if image}}{{image}}{{else}}./img/image.png{{/if}}" class="img-thumbnail icon-mh-100"></a></td>
           <td>{{label}}</td>
-          <td><button type="button" class="btn btn-warning" title="不显示"><i class="fa fa-ban"></i></button></td>
+          <td class="btn-group">
+            <a href="#/article/list/category{{category}}/game{{guide_name}}" class="btn btn-info"><i class="fa fa-list"></i> {{NUM}}</a>
+            <button type="button" class="btn btn-warning" title="不显示"><i class="fa fa-ban"></i></button>
+          </td>
         </tr>
         {{/each}}
       </script>

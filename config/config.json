@@ -2,10 +2,13 @@
   "img_url": "web",
   "module": "web",
   "config": ".",
-  "router": ".",
   "project": {
     "name": "游戏泡泡",
     "welcome": "欢迎，泡泡的未来在你手中"
+  },
+  "custom": {
+    "css": "css/style.css",
+    "router": "js/router/AdminPanel.js"
   },
   "login": {
     "action": "login_do.php",

@@ -12,13 +12,19 @@
         <h2>加载中</h2>
         <p>....</p>
         <hr/>
-        <p>
-          <button type="button" class="btn btn-primary" disabled><i class="fa fa-android"></i> 发布单行本</button>
-          &nbsp;&nbsp;
+        <div>
+          <a href="#/game/homepage/{{guide_name}}" class="btn btn-info"><i class="fa fa-edit"></i> 修改首页</a>&nbsp;&nbsp;
+          <div class="btn-group">
+            <button type="button" class="btn btn-primary" disabled><i class="fa fa-android"></i> 发布单行本</button>
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" disabled>
+              <span class="caret"></span>
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+          </div>
           <button type="button" class="btn btn-secondary" disabled><i class="fa fa-archive"></i> 发布攻略包</button>
           &nbsp;&nbsp;
           <button type="button" class="btn btn-danger delete-button" disabled><i class="fa fa-trash-o"></i> 删除</button>
-        </p>
+        </div>
         <hr/>
       </div>
       <script type="text/x-handlebars-template">
@@ -32,14 +38,26 @@
           <h4>{{guide_name}}</h4>
           <p>{{game_desc}}</p>
           <hr/>
-          <p>
-            <button type="button" class="btn btn-primary" disabled><i class="fa fa-android"></i> 发布单行本</button>
+          <div>
+            <a href="#/game/homepage/{{guide_name}}" class="btn btn-info"><i class="fa fa-edit"></i> 修改首页</a>&nbsp;&nbsp;
+            <div class="btn-group">
+              <button type="button" class="btn btn-primary" disabled><i class="fa fa-android"></i> 发布单行本</button>
+              <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" disabled>
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#android"><i class="fa fa-android"></i> 只发布Android</a></li>
+                <li><a href="#ios"><i class="fa fa-apple"></i> 只发布iOS</a></li>
+              </ul>
+            </div>
             &nbsp;&nbsp;
             <button type="button" class="btn btn-secondary" disabled><i class="fa fa-archive"></i> 发布攻略包</button>
             &nbsp;&nbsp;
             <button type="button" class="btn btn-danger delete-button"><i class="fa fa-trash-o"></i> 删除</button>
-          </p>
+          </div>
           <hr/>
+          <div></div>
         </div>
       </script>
     </div>
@@ -85,7 +103,7 @@
 
   <div class="col-md-6 col-sm-12">
     <h4>轮播图</h4>
-    <table class="table table-bordered table-hover smart-table" data-url="api/game/profile.php">
+    <table class="table table-bordered table-hover smart-table" data-url="api/game/slide-image.php">
       <thead>
       <tr>
         <th>图片</th>

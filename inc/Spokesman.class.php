@@ -14,7 +14,7 @@ class Spokesman {
     if (is_array($args)) {
       if (defined('DEBUG')) {
         // 判断下是否需要给图片加绝对路径
-        if (isset($args['list'])) {
+        if (isset($args['list']) && is_array($args['list'])) {
           foreach ($args['list'] as $key => $item) {
             $args['list'][$key] = self::checkImageUrl($item);
           }
@@ -39,6 +39,25 @@ class Spokesman {
         'msg' => $error,
       ), $args));
     }
+  }
+
+  /**
+   * @param bool $is_game 是否读游戏相关，游戏的id是guide_name
+   * @return array
+   */
+  public static function extract($is_game = false) {
+    $param = array();
+    $url = $_SERVER['PATH_INFO'];
+    $arr = array_values(array_filter(explode('/', $url)));
+    foreach ($arr as $key => $value) {
+      preg_match('/(category|game|author)(\w+)/', $value, $matches);
+      if (count($matches) > 0) {
+        $param[$matches[1]] = $matches[2];
+      } else {
+        $param[$is_game && $key === 0 ? 'guide_name' : 'id'] = $value;
+      }
+    }
+    return $param;
   }
 
   private static function checkImageUrl($item) {

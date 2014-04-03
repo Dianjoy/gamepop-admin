@@ -11,6 +11,7 @@ include_once '../../inc/session.php';
  * 操作文章分类
  */
 
+include_once "../../inc/Spokesman.class.php";
 include_once "../../inc/Article.class.php";
 $article = new Article();
 
@@ -46,18 +47,9 @@ function create($article, $args) {
   // 新建分类
   $category = (int)$article->add_category($args['label']);
 
-  if ($category) {
-    exit(json_encode(array(
-      'code' => 0,
-      'category' => $category,
-      'id' => $category,
-    )));
-  }
-
-  header("HTTP/1.1 400 Bad Request");
-  echo json_encode(array(
-    'code' => 1,
-    'msg' => '创建分类失败',
+  Spokesman::judge($category, '创建成功', '创建失败', array(
+    'category' => $category,
+    'id' => $category,
   ));
 }
 function delete($article) {
@@ -83,9 +75,10 @@ function fetch($article, $args) {
     ->execute()
     ->fetchAll(PDO::FETCH_ASSOC);
 
-  echo json_encode(array(
+  // 倒序输出，一般新建的分类更有效些
+  Spokesman::say(array(
     'total' => count($result),
-    'list' => $result,
+    'list' => array_reverse($result),
   ));
 }
 function update($article, $args, $success = '修改成功', $error = '修改失败') {
@@ -95,11 +88,6 @@ function update($article, $args, $success = '修改成功', $error = '修改失�
   $result = $article->update($args)
     ->where(array('id' => $id))
     ->execute();
-  if ($result) {
-    $result = array('code' => 0, 'msg' => $success);
-  } else {
-    header('HTTP/1.1 400 Bad Request');
-    $result = array('code' => 1, 'msg' => $error);
-  }
-  echo json_encode($result);
+
+  Spokesman::judge($result, $success, $error);
 }

@@ -12,3 +12,6 @@ upload/
 
 # case
 admin.class.php
+
+# build
+css/*.css
