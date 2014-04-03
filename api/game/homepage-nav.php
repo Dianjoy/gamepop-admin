@@ -51,21 +51,19 @@ function fetch($game, $args) {
     ->where($conditions)
     ->where($status, false, Article::TABLE)
     ->group('id', Article::CATEGORY)
-    ->execute()
     ->fetchAll(PDO::FETCH_ASSOC);
 
   $nav = $game->select(Game::$HOMEPAGE_NAV)
     ->where($conditions)
-    ->order('`seq`')
-    ->execute()
     ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
 
   foreach ($categories as $key => $value) {
     $value['category'] = $value['id'];
+    $nav[$value['id']]['status'] = (int)$nav[$value['id']]['status'];
     unset($value['id']);
     $categories[$key] = array_merge($value, (array)$nav[$value['category']]);
   }
-  uasort($categories, compare);
+  usort($categories, compare);
 
   $result = array(
     'total' => count($categories),
@@ -96,16 +94,11 @@ function delete($game) {
 
 function update($game, $args, $success = '更新成功', $error = '更新失败') {
   $game->init_write();
-  $url = $_SERVER['PATH_INFO'];
-  $id = substr($url, 1);
-  $result = $game->update($id, $args) ? array(
-    'code' => 0,
-    'msg' => $success,
-  ) : array(
-    'code' => 1,
-    'msg' => $error,
-  );
-  echo json_encode($result);
+  $conditions = Spokesman::extract(true);
+  $result = $game->update($args, Game::HOMEPAGE_NAV)
+    ->where($conditions)
+    ->execute();
+  Spokesman::judge($result, $success, $error, $args);
 }
 
 function compare($a, $b) {

@@ -22,7 +22,7 @@ class Game extends \gamepop\Base {
   static $ALL = "g.`guide_name`, `game_name`, `game_desc`, g.`update_time`, g.`icon_path`";
   static $INFO = "`guide_name`, `game_name`, `game_desc`, `update_time`, `icon_path`";
   static $SLIDE = "`id`, `image`, `link`, `seq`";
-  static $HOMEPAGE_NAV = "`category`, `id`, `image`, `seq`";
+  static $HOMEPAGE_NAV = "`category`, `id`, `guide_name`, `image`, `seq`, `status`";
   static $ORDER_HOT = "i.now_use-i.pre_use";
 
   public function __construct($need_write = false, $need_cache = true, $is_debug = false) {

@@ -25,7 +25,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
     break;
 
   case 'PATCH':
-    update($game, $args);
+    update($game, $args, Game::SLIDE);
     break;
 
   case 'DELETE':
@@ -48,10 +48,9 @@ function fetch($game, $args) {
   );
   $games = $game->select(Game::$SLIDE)
     ->where($conditions)
-    ->order('`seq`')
-    ->execute()
     ->fetchAll(PDO::FETCH_ASSOC);
   $total = count($games);
+  usort($games, compare);
 
   $result = array(
     'total' => $total,
@@ -69,12 +68,11 @@ function delete($game) {
 }
 
 function update($game, $args, $table = '', $success = '更新成功', $error = '更新失败') {
-  $url = $_SERVER['PATH_INFO'];
-  $id = substr($url, 1);
+  $conditions = Spokesman::extract(true);
   $result = $game->update($args, $table)
-    ->where(array('id' => $id))
+    ->where($conditions)
     ->execute();
-  Spokesman::judge($result, $success, $error);
+  Spokesman::judge($result, $success, $error, $args);
 }
 
 function create($game, $args) {
@@ -83,4 +81,8 @@ function create($game, $args) {
     ->lastInsertId();
   $args = array_merge(array('id' => $result), $args);
   Spokesman::judge($result, '创建成功', '创建失败', $args);
+}
+
+function compare($a, $b) {
+  return (int)$a['seq'] - (int)$b['seq'];
 }

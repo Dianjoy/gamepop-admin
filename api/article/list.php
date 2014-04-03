@@ -84,24 +84,12 @@ function fetch($article, $args) {
 }
 
 function update($article, $args, $success = '更新成功', $error = '更新失败') {
-  $url = $_SERVER['PATH_INFO'];
-  $id = substr($url, 1);
+  $conditions = Spokesman::extract();
 
   $result = $article->update($args)
-    ->where(array('id' => $id))
+    ->where($conditions)
     ->execute();
-  if ($result) {
-    echo json_encode(array(
-      'code' => 0,
-      'msg' => $success,
-    ));
-  } else {
-    header("HTTP/1.1 400 Bad Request");
-    echo json_encode(array(
-      'code' => 1,
-      'msg' => $error,
-    ));
-  }
+  Spokesman::judge($result, $success, $error, $args);
 }
 
 function delete($article) {
