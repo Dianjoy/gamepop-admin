@@ -90,7 +90,7 @@
       </a>
       <script type="text/x-handlebars-template">
         {{#each list}}
-        <a href="#/article/list/game{{guide_name}}/category{{id}}" class="list-group-item">
+        <a href="#/article/list/{{guide_name}}/category{{id}}" class="list-group-item">
           <i class="fa fa-asterisk"></i> &nbsp;&nbsp;{{label}}
 
           <i class="fa fa-chevron-right list-group-chevron"></i>
@@ -115,7 +115,7 @@
       <script type="text/x-handlebars-template">
         {{#each list}}
         <tr>
-          <td><a href="#image" class="edit img-thumbnail" data-type="img"><img src="{{image}}" class="img-200"></a></td>
+          <td><a href="#image" class="edit img-thumbnail" data-type="img"><img src="{{image}}" class="icon-mh-100"></a></td>
           <td><a href="#url" class="url">{{url}}</a></td>
           <td><button type="button" class="btn btn-danger delete-button"><i class="fa fa-trash-o"></i></button></td>
         </tr>

@@ -21,7 +21,7 @@ class Article extends \gamepop\Base {
   static $DETAIL = "`guide_name`, `category`, `label`, `source`,
     `topic`, `author`, `icon_path`, `content`,
     `pub_date`, `src_url`, `seq`, `update_time`, `update_editor`";
-  static $ALL_CATEGORY = "`t_article_category`.`id`, `cate`, `label`";
+  static $ALL_CATEGORY = "`t_article_category`.`id`, `guide_name`, `cate`, `label`";
 
   public function __construct($need_write = false, $need_cache = true, $is_debug = false) {
     parent::__construct($need_write, $need_cache, $is_debug);
@@ -35,18 +35,16 @@ class Article extends \gamepop\Base {
   public function update($args, $table = '') {
     $args['update_time'] = date('Y-m-d H:i:s');
     $args['update_editor'] = (int)$_SESSION['id'];
-    if (isset($args['label'])) {
-      unset($args['label']);
-    }
     if (isset($args['content'])) {
       require_once('Markdown.inc.php');
       $args['content'] = \Michelf\Markdown::defaultTransform($args['content']);
     }
     parent::update($args, $table);
+    return $this;
   }
 
   protected function getTable($fields) {
-    if ($fields == self::$ALL || $fields == self::$DETAIL || strpos($fields, self::$ALL_CATEGORY) !== false) {
+    if (is_string($fields) && ($fields == self::$ALL || $fields == self::$DETAIL || strpos($fields, self::$ALL_CATEGORY) !== false)) {
       return self::TABLE . " JOIN " . self::CATEGORY . " ON " . self::TABLE . ".`category`=" . self::CATEGORY . ".`id`";
     }
     if (is_array($fields)) {

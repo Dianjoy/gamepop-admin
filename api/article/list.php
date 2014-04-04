@@ -85,6 +85,10 @@ function fetch($article, $args) {
 
 function update($article, $args, $success = '更新成功', $error = '更新失败') {
   $conditions = Spokesman::extract();
+  // label 不能在文章列表修改
+  unset($args['label']);
+  // 去掉条件中和更新中重复的键
+  $conditions = array_diff_key($conditions, $args);
 
   $result = $article->update($args)
     ->where($conditions)

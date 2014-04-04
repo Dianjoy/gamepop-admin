@@ -27,15 +27,15 @@
     },
     showNormalPage: function (cate, sub, path) {
       if (path) {
-        var arr = reg.exec(path)
+        var params = path.split('/')
           , data = {};
-        if (arr) {
-          while(arr) {
+        for (var i = 0, len = params.length; i < len; i++) {
+          var arr = reg.exec(params[i]);
+          if (arr) {
             data[arr[1]] = arr[2];
-            arr = reg.exec(path);
+          } else {
+            data.id = params[i];
           }
-        } else {
-          data = path;
         }
       }
       var url = baseURL + cate + '/template/' + sub + '.html';
