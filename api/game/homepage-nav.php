@@ -102,5 +102,5 @@ function update($game, $args, $success = '更新成功', $error = '更新失败'
 }
 
 function compare($a, $b) {
-  return (int)$b['seq'] - (int)$a['seq'];
+  return (int)$a['seq'] - (int)$b['seq'];
 }
