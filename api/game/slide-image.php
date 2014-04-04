@@ -76,6 +76,7 @@ function update($game, $args, $table = '', $success = '更新成功', $error = '
 }
 
 function create($game, $args) {
+  $args = array_merge($args, Spokesman::extract(true));
   $result = $game->insert($args)
     ->execute()
     ->lastInsertId();

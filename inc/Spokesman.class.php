@@ -52,7 +52,7 @@ class Spokesman {
     foreach ($arr as $key => $value) {
       preg_match('/(category|game|author)(\w+)/', $value, $matches);
       if (count($matches) > 0) {
-        $param[$matches[1]] = $matches[2];
+        $param[$matches[1] === 'game' ? 'guide_name' : $matches[1]] = $matches[2];
       } else {
         $param[$is_game && $key === 0 ? 'guide_name' : 'id'] = $value;
       }
