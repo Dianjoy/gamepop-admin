@@ -132,8 +132,8 @@ class SQLBuilder {
       return $this;
     }
     $this->sql = null;
-    $this->conditions[] = "`$key` LIKE '%$query'";
-    $this->args[$key] = $query;
+    $this->conditions[] = "`$key` LIKE :$key";
+    $this->args[$key] = "%$query%";
     return $this;
   }
   public function order($key, $order = "DESC") {

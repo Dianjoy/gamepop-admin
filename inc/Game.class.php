@@ -30,7 +30,6 @@ class Game extends \gamepop\Base {
   }
 
   public function search($keyword) {
-    $this->builder->search('guide_name', $keyword);
     $this->builder->search('game_name', $keyword);
     return $this;
   }
