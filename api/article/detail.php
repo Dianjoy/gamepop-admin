@@ -9,7 +9,7 @@ include_once '../../inc/session.php';
  * Date: 14-3-17
  * Time: 下午5:13
  */
-
+include_once "../../inc/Spokesman.class.php";
 include_once "../../inc/Article.class.php";
 $article = new Article();
 
@@ -23,8 +23,6 @@ $request = file_get_contents('php://input');
 if ($request) {
   $args = array_merge($_POST, json_decode($request, true));
 }
-$url = $_SERVER['PATH_INFO'];
-$id = (int)substr($url, 1);
 
 header("Content-Type:application/json;charset=utf-8");
 if (!isset($_SERVER['REQUEST_METHOD'], $methods)) {
@@ -36,13 +34,14 @@ if (!isset($_SERVER['REQUEST_METHOD'], $methods)) {
 }
 $method = $methods[$_SERVER['REQUEST_METHOD']];
 if ($method) {
-  $method($article, $id, $args);
+  $method($article, $args);
 }
 
-function fetch($article, $id) {
+function fetch($article, $args) {
   require_once(dirname(__FILE__) . '/../../inc/HTML_To_Markdown.php');
+  $conditions = Spokesman::extract();
   $result = $article->select(Article::$DETAIL)
-    ->where(array('id' => $id), false, Article::TABLE)
+    ->where($conditions, false, Article::TABLE)
     ->execute()
     ->fetch(PDO::FETCH_ASSOC);
   if (get_magic_quotes_gpc()) {
@@ -51,16 +50,19 @@ function fetch($article, $id) {
   $markdown = new HTML_To_Markdown($result['content']);
   $result['content'] = str_replace('](/', '](http://r.yxpopo.com/yxpopo/', $markdown);
 
-  echo json_encode($result);
+  Spokesman::say($result);
 }
 
-function update($article, $id, $args) {
-  $result = $article->update($id, $args);
-  if ($result) {
-    $result = array('code' => 0, 'msg' => '修改成功');
-  } else {
-    header('HTTP/1.1 400 Bad Request');
-    $result = array('code' => 1, 'msg' => '修改失败');
+function update($article, $args) {
+  $args['update_time'] = date('Y-m-d H:i:s');
+  $args['update_editor'] = (int)$_SESSION['id'];
+  if (isset($args['content'])) {
+    require_once('Markdown.inc.php');
+    $args['content'] = \Michelf\Markdown::defaultTransform($args['content']);
   }
-  echo json_encode($result);
+  $conditions = Spokesman::extract();
+  $result = $article->update($args)
+    ->where($conditions)
+    ->execute();
+  Spokesman::judge($result, '修改成功', '修改失败');
 }

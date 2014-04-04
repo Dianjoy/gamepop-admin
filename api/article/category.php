@@ -82,12 +82,11 @@ function fetch($article, $args) {
   ));
 }
 function update($article, $args, $success = '修改成功', $error = '修改失败') {
-  $url = $_SERVER['PATH_INFO'];
-  $id = (int)substr($url, 1);
+  $conditions = Spokesman::extract();
 
   $result = $article->update($args)
-    ->where(array('id' => $id))
+    ->where($conditions)
     ->execute();
 
-  Spokesman::judge($result, $success, $error);
+  Spokesman::judge($result, $success, $error, $args);
 }

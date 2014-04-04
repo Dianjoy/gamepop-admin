@@ -32,16 +32,6 @@ class Article extends \gamepop\Base {
     $this->builder->search('content', $keyword);
     return $this;
   }
-  public function update($args, $table = '') {
-    $args['update_time'] = date('Y-m-d H:i:s');
-    $args['update_editor'] = (int)$_SESSION['id'];
-    if (isset($args['content'])) {
-      require_once('Markdown.inc.php');
-      $args['content'] = \Michelf\Markdown::defaultTransform($args['content']);
-    }
-    parent::update($args, $table);
-    return $this;
-  }
 
   protected function getTable($fields) {
     if (is_string($fields) && ($fields == self::$ALL || $fields == self::$DETAIL || strpos($fields, self::$ALL_CATEGORY) !== false)) {

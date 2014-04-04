@@ -26,7 +26,7 @@
     {{#each list}}
     <tr id="{{id}}">
       <td data-title="类名"><a href="#label" class="edit">{{label}}</a></td>
-      <td data-title="别名"><a href="#cate" class="edit">{{cate}}</a></td>
+      <td data-title="别名"><a href="#cate" class="edit">{{#if cate}}{{cate}}{{else}}（可添加，勿使用中文）{{/if}}</a></td>
       <td data-title="父类">{{parent}}</td>
       <td>
         <a href="#/article/list/category{{id}}" class="btn btn-info"><i class="fa fa-list"></i> {{NUM}}</a>
