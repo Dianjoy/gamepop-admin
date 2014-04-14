@@ -12,15 +12,13 @@ class Spokesman {
   public static function say($args) {
     // 数组，正常输出json
     if (is_array($args)) {
-      if (defined('DEBUG')) {
-        // 判断下是否需要给图片加绝对路径
-        if (isset($args['list']) && is_array($args['list'])) {
-          foreach ($args['list'] as $key => $item) {
-            $args['list'][$key] = self::checkImageUrl($item);
-          }
+      // 判断下是否需要给图片加绝对路径
+      if (isset($args['list']) && is_array($args['list'])) {
+        foreach ($args['list'] as $key => $item) {
+          $args['list'][$key] = self::checkImageUrl($item);
         }
-        $args = self::checkImageUrl($args);
       }
+      $args = self::checkImageUrl($args);
       exit(json_encode($args));
     }
   }
