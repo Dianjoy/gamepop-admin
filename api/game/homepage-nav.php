@@ -59,6 +59,7 @@ function fetch($game, $args) {
 
   foreach ($categories as $key => $value) {
     $value['category'] = $value['id'];
+    $value['guide_name'] = $args['id'];
     $nav[$value['id']]['status'] = (int)$nav[$value['id']]['status'];
     unset($value['id']);
     $categories[$key] = array_merge($value, (array)$nav[$value['category']]);
@@ -67,7 +68,6 @@ function fetch($game, $args) {
 
   $result = array(
     'total' => count($categories),
-    'guide_name' => $args['id'],
     'list' => array_values($categories),
   );
 
