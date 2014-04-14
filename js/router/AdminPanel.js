@@ -1,6 +1,6 @@
 ;(function (ns) {
   'use strict';
-  var reg = /\/?(game|category|artcile|author)(\w+)/g;
+  var reg = /\/?(game|category|artcile|author)(\w+)/;
   ns.AdminPanel = Backbone.Router.extend({
     $mainPage: null,
     $subPage: null,
@@ -32,7 +32,7 @@
         for (var i = 0, len = params.length; i < len; i++) {
           var arr = reg.exec(params[i]);
           if (arr) {
-            data[arr[1]] = arr[2];
+            data[arr[1] !== 'game' ? arr[1] : 'id'] = arr[2];
           } else {
             data.id = params[i];
           }

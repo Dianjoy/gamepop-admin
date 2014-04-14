@@ -57,7 +57,7 @@ function update($article, $args) {
   $args['update_time'] = date('Y-m-d H:i:s');
   $args['update_editor'] = (int)$_SESSION['id'];
   if (isset($args['content'])) {
-    require_once('Markdown.inc.php');
+    require_once(dirname(__FILE__) . '/../../inc/Markdown.inc.php');
     $args['content'] = \Michelf\Markdown::defaultTransform($args['content']);
   }
   $conditions = Spokesman::extract();

@@ -67,6 +67,7 @@ function fetch($game, $args) {
 
   $result = array(
     'total' => count($categories),
+    'guide_name' => $args['id'],
     'list' => array_values($categories),
   );
 
