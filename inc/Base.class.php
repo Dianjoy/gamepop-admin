@@ -307,8 +307,8 @@ class Base {
     var_dump($this->sth->errorInfo());
   }
 
-  public function count($key = '') {
-    return ($key ? "`$key`," : "") . "COUNT('X') AS NUM";
+  public function count($key = '', $table = '') {
+    return "COUNT(" . ($table ? "`$table`" : "") . ($key ? "`$key`" : "'X'") . ") AS NUM";
   }
 
   protected function getTable($fields) {

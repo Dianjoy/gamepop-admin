@@ -21,7 +21,7 @@ class Article extends \gamepop\Base {
   static $DETAIL = "`guide_name`, `category`, `label`, `source`,
     `topic`, `author`, `icon_path`, `content`,
     `pub_date`, `src_url`, `seq`, `update_time`, `update_editor`";
-  static $ALL_CATEGORY = "`t_article_category`.`id`, `guide_name`, `cate`, `label`";
+  static $ALL_CATEGORY = "`t_article_category`.`id`, `cate`, `label`";
 
   public function __construct($need_write = false, $need_cache = true, $is_debug = false) {
     parent::__construct($need_write, $need_cache, $is_debug);
@@ -34,8 +34,13 @@ class Article extends \gamepop\Base {
   }
 
   protected function getTable($fields) {
-    if (is_string($fields) && ($fields == self::$ALL || $fields == self::$DETAIL || strpos($fields, self::$ALL_CATEGORY) !== false)) {
-      return self::TABLE . " JOIN " . self::CATEGORY . " ON " . self::TABLE . ".`category`=" . self::CATEGORY . ".`id`";
+    if (is_string($fields)) {
+      if ($fields == self::$ALL || $fields == self::$DETAIL) {
+        return self::TABLE . " JOIN " . self::CATEGORY . " ON " . self::TABLE . ".`category`=" . self::CATEGORY . ".`id`";
+      }
+      if (strpos($fields, self::$ALL_CATEGORY) !== false) {
+        return self::CATEGORY . " LEFT JOIN " . self::TABLE . " ON " . self::TABLE . ".`category`=" . self::CATEGORY . ".`id`";
+      }
     }
     if (is_array($fields)) {
       foreach ($fields as $key => $value) {

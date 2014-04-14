@@ -63,11 +63,10 @@ function fetch($game, $args) {
   include_once "../../inc/Article.class.php";
   $article = new Article();
 
-  $article_number = $article->select($article->count(Game::ID))
+  $article_number = $article->select(Game::ID, $article->count())
     ->where(array(Game::ID => $guide_names), true)
     ->where($conditions)
     ->group(Game::ID)
-    ->execute()
     ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
   foreach ($games as &$row) {
     $row['article_number'] = $article_number[$row[Game::ID]];

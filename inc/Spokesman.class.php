@@ -70,9 +70,6 @@ class Spokesman {
     return $item;
   }
   private static function addDomain($url) {
-    if (substr($url, 0, 7) === 'upload/') {
-      $url = 'http://admin.yxpopo.com/' . $url;
-    }
-    return $url;
+    return 'http://r.yxpopo.com/' . $url;
   }
 } 

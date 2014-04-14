@@ -64,7 +64,7 @@ upload::insert($DB, $id, $type, $new_path, $upload_user, $file['name']);
 
 $result = array(
   'code' => 0,
-  'url' => $new_path,
+  'url' => substr($new_path, 7),
   'filename' => $file['name'],
 );
 echo json_encode($result);

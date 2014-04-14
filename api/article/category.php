@@ -68,11 +68,10 @@ function fetch($article, $args) {
       $conditions[$row === 'game' || $row === 'id' ? 'guide_name' : $row] = $args[$row];
     }
   }
-  $result = $article->select(Article::$ALL_CATEGORY, $article->count())
+  $result = $article->select(Article::$ALL_CATEGORY, $article->count('topic'))
     ->where($conditions)
-    ->where($status, false, Article::TABLE)
+    ->where($status, false, Article::CATEGORY)
     ->group('id', Article::CATEGORY)
-    ->execute()
     ->fetchAll(PDO::FETCH_ASSOC);
 
   // 倒序输出，一般新建的分类更有效些
