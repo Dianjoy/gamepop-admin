@@ -13,6 +13,7 @@ header("Content-Type: application/json; charset: utf-8");
 $up_path = array(
   'icon_path' => 'icon/',
   'image' => 'image/',
+  'attachment' => 'attachments/',
 );
 $upload_user = $_SESSION['id'];
 
@@ -64,7 +65,7 @@ upload::insert($DB, $id, $type, $new_path, $upload_user, $file['name']);
 
 $result = array(
   'code' => 0,
-  'url' => substr($new_path, 7),
+  'url' => 'http://r.yxpopo.com/' . substr($new_path, 7),
   'filename' => $file['name'],
 );
 echo json_encode($result);
