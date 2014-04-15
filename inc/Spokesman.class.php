@@ -68,6 +68,7 @@ class Spokesman {
     return $item;
   }
   private static function addDomain($url) {
-    return 'http://r.yxpopo.com/' . $url;
+    $prefix = 'http://r.yxpopo.com/';
+    return strpos($url, $prefix) === false ? $prefix . $url : $url;
   }
 } 
