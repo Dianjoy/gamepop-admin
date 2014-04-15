@@ -48,7 +48,7 @@ function fetch($article, $args) {
     $result['content'] = stripslashes($result['content']);
   }
   $markdown = new HTML_To_Markdown($result['content']);
-  $result['content'] = str_replace('](/', '](http://r.yxpopo.com/yxpopo/', $markdown);
+  $result['content'] = preg_replace('/]\(([a-z|^(http)]+)/', '](http://r.yxpopo.com/$1', $markdown);
 
   Spokesman::say($result);
 }
@@ -58,6 +58,7 @@ function update($article, $args) {
   $args['update_editor'] = (int)$_SESSION['id'];
   if (isset($args['content'])) {
     require_once(dirname(__FILE__) . '/../../inc/Markdown.inc.php');
+    $args['content'] = str_replace('http://r.yxpopo.com/', '', $args['content']);
     $args['content'] = \Michelf\Markdown::defaultTransform($args['content']);
   }
   $conditions = Spokesman::extract();
