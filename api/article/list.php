@@ -69,7 +69,7 @@ function fetch($article, $args) {
   foreach ($articles as $item) {
     $guide_names[] = $item['guide_name'];
   }
-  $games = $game->select(Game::$INFO)
+  $games = $game->select(Game::$ALL)
     ->where(array('guide_name' => $guide_names), true)
     ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
   foreach ($articles as $key => $item) {
