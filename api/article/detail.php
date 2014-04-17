@@ -48,7 +48,7 @@ function fetch($article, $args) {
     $result['content'] = stripslashes($result['content']);
   }
   $markdown = new HTML_To_Markdown($result['content']);
-  $result['content'] = preg_replace('/]\(([a-z|^(http)]+)/', '](http://r.yxpopo.com/$1', $markdown);
+  $result['content'] = preg_replace('/]\(\/?([a-z|^(http)]+)/', '](http://r.yxpopo.com/$1', $markdown);
 
   Spokesman::say($result);
 }
