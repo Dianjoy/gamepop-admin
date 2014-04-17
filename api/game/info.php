@@ -19,7 +19,7 @@ $conditions = array(
   'guide_name' => $id,
 );
 
-$result = $game->select(Game::$INFO)
+$result = $game->select(Game::$ALL)
   ->where($conditions)
   ->fetch(PDO::FETCH_ASSOC);
 

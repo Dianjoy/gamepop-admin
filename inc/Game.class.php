@@ -19,11 +19,10 @@ class Game extends \gamepop\Base {
 
   const ID = 'guide_name';
 
-  static $ALL = "g.`guide_name`, `game_name`, `game_desc`, g.`update_time`, g.`icon_path`";
-  static $INFO = "`guide_name`, `game_name`, `game_desc`, `update_time`, `icon_path`";
+  static $ALL = "`guide_name`, `game_name`, `game_desc`, `update_time`, `icon_path`";
   static $SLIDE = "`id`, `image`, `link`, `seq`";
   static $HOMEPAGE_NAV = "`category`, `id`, `guide_name`, `image`, `seq`, `status`";
-  static $ORDER_HOT = "i.now_use-i.pre_use";
+  static $ORDER_HOT = "hot";
 
   public function __construct($need_write = false, $need_cache = true, $is_debug = false) {
     parent::__construct($need_write, $need_cache, $is_debug);
@@ -35,8 +34,7 @@ class Game extends \gamepop\Base {
   }
   protected function getTable($fields) {
     if ($fields === self::$ALL) {
-      return self::MIDDLE . " m JOIN " . self::TABLE . " g ON m.`guide_name`=g.`guide_name`
-              JOIN " . self::APK_INFO . " i ON m.`packagename`=i.`packagename`";
+      return self::TABLE;
     }
     if ($fields === self::$SLIDE) {
       return self::SLIDE;
