@@ -77,7 +77,7 @@ function fetch($article, $args) {
     $articles[$key] = $item;
   }
 
-  echo json_encode(array(
+  Spokesman::say(array(
     'total' => $total,
     'list' => $articles,
   ));

@@ -36,7 +36,7 @@ class Article extends \gamepop\Base {
   protected function getTable($fields) {
     if (is_string($fields)) {
       if ($fields == self::$ALL || $fields == self::$DETAIL) {
-        return self::TABLE . " JOIN " . self::CATEGORY . " ON " . self::TABLE . ".`category`=" . self::CATEGORY . ".`id`";
+        return self::TABLE . " LEFT JOIN " . self::CATEGORY . " ON " . self::TABLE . ".`category`=" . self::CATEGORY . ".`id`";
       }
       if (strpos($fields, self::$ALL_CATEGORY) !== false) {
         return self::CATEGORY . " LEFT JOIN " . self::TABLE . " ON " . self::TABLE . ".`category`=" . self::CATEGORY . ".`id`";
