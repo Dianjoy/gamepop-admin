@@ -1,0 +1,17 @@
+{
+  "icon": "smile-o",
+  "title": "外包工作",
+  "has_sub": true,
+  "sub": [
+    {
+      "icon": "list",
+      "title": "游戏列表",
+      "url": "#/game/list"
+    },
+    {
+      "icon": "check",
+      "title": "绩效统计",
+      "url": "#/outside/stat"
+    }
+  ]
+}

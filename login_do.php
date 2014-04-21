@@ -4,29 +4,21 @@
   $password  = trim($_REQUEST['password']);
   $verifycode  = $_POST['verifycode'];
 
-  //防止sql注入
-  function filter_login($get_value) {
-    $filter = array(
-      (strpos($get_value, ' ') !== false),
-      (strpos($get_value, "'") !== false),
-      (strpos($get_value, '"') !== false),
-    );
-    if (in_array(1, $filter)) {
-      header("location:login.php");
-    }
-  }	
-
   if ($verifycode != $_SESSION["Checknum"]) {
     $_SESSION['msg'] = "验证码错误！";
     header("location:login.php");
+    exit();
   }
 
   if ($username != "" && $password != "") {
-    filter_login($username);
-    filter_login($password);
     include_once('inc/Admin.class.php');
     $admin = new Admin();
-    $info = $admin->get_admin($username, $password);
+    $info = $admin->select(Admin::$ALL)
+      ->where(array(
+        'user' => $username,
+        'password' => $password,
+      ))
+      ->fetch(PDO::FETCH_ASSOC);
     if ($info) {
       unset($_SESSION['Checknum']);
       unset($_SESSION['msg']);

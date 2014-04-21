@@ -99,6 +99,8 @@ function update($article, $args, $success = '更新成功', $error = '更新失�
 function delete($article) {
   $args = array(
     'status' => 1,
+    'update_time' => date('Y-m-d H:i:s'),
+    'update_editor' => (int)$_SESSION['id'],
   );
   update($article, $args, '删除成功', '删除失败');
 }

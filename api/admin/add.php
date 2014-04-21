@@ -8,10 +8,10 @@ require '../../inc/Admin.class.php';
 $result = array(
   'roles' => array(),
 );
-for($i = 0; $i < sizeof(Admin::$ROLES); $i++) {
+foreach (Admin::$ROLES as $key => $value) {
   $admin = array(
-    'id' => $i,
-    'admin' => Admin::$ROLES[$i],
+    'id' => $key,
+    'admin' => $value,
   );
   $result['roles'][] = $admin;
 }

@@ -1,5 +1,5 @@
 <?php
-define('OPTIONS', 'game');
+define('OPTIONS', 'game|article_wb');
 include_once '../../inc/session.php';
 ?>
 <?php
@@ -39,6 +39,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
 }
 
 function fetch($game, $args) {
+  require_once "../../inc/Admin.class.php";
+
   $pagesize = isset($args['pagesize']) ? (int)$args['pagesize'] : 20;
   $page = isset($args['page']) ? (int)$args['page'] : 0;
   $keyword = empty($args['keyword']) ? '' : trim(addslashes(strip_tags($args['keyword'])));
@@ -46,8 +48,21 @@ function fetch($game, $args) {
     'status' => Game::NORMAL,
   );
 
+  // 外包人员只能看到自己的游戏
+  if ($_SESSION['role'] == Admin::OUTSIDER) {
+    $my_games = $game->select(Game::$OUTSIDE)
+      ->where(array('user_id' => $_SESSION['id']))
+      ->fetchAll(PDO::FETCH_ASSOC);
+
+    $guide_names = array();
+    foreach ($my_games as $item) {
+      $guide_names[] = $item['guide_name'];
+    }
+  }
+
   $games = $game->select(Game::$ALL)
     ->where($conditions)
+    ->where(array(Game::ID => $guide_names), true)
     ->search($keyword)
     ->order(Game::$ORDER_HOT, 'DESC')
     ->execute()

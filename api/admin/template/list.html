@@ -1,6 +1,7 @@
 <table class="table table-bordered table-hover">
   <thead>
   <tr>
+    <th>ID</th>
     <th>账号</th>
     <th>姓名</th>
     <th>角色</th>
@@ -11,14 +12,15 @@
   </thead>
   <tbody>
   {{#admins}}
-  <tr>
+  <tr id="{{id}}">
+    <td>{{id}}</td>
     <td>{{user}}</td>
     <td>{{fullname}}</td>
     <td>{{role_label}}</td>
     <td>{{qq}}</td>
     <td>{{last_login}}</td>
     <td class="btn-group">
-      <a class="btn btn-danger delete-button" href="api/admin/action_admin?m=del&id={{id}}"><i class="fa fa-fw fa-times"></i></a>
+      <a class="btn btn-danger delete-button" href="api/admin/action_admin?m=del&id={{id}}"><i class="fa fa-fw fa-ban"></i></a>
     </td>
   </tr>
   {{/admins}}

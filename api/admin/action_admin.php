@@ -21,7 +21,11 @@ function add($admin){
 	$password = trim($_POST['newpassword']);
   $fullname = trim($_POST['fullname']);
   $qq = trim($_POST['qq']);
-	if ($admin->is_exist($username)) {
+
+  $exist = $admin->select('x')
+    ->where(array('user' => $username))
+    ->fetch(PDO::FETCH_COLUMN);
+	if ($exist) {
     $result = array(
       'code' => 1,
       'msg' => '账号已经存在'

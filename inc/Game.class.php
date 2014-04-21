@@ -13,6 +13,7 @@ class Game extends \gamepop\Base {
   const APK_INFO = '`t_app_info`';
   const SLIDE = '`t_game_slide`';
   const HOMEPAGE_NAV = '`t_article_category_image`';
+  const OUTSIDE = '`o_game_user`';
 
   const NORMAL = 0;
   const DELETED = 1;
@@ -22,6 +23,8 @@ class Game extends \gamepop\Base {
   static $ALL = "`guide_name`, `game_name`, `game_desc`, `update_time`, `icon_path`";
   static $SLIDE = "`id`, `image`, `link`, `seq`";
   static $HOMEPAGE_NAV = "`category`, `id`, `guide_name`, `image`, `seq`, `status`";
+  static $OUTSIDE = "`guide_name`, `user_id`, `score`";
+
   static $ORDER_HOT = "hot";
 
   public function __construct($need_write = false, $need_cache = true, $is_debug = false) {
@@ -41,6 +44,9 @@ class Game extends \gamepop\Base {
     }
     if ($fields === self::$HOMEPAGE_NAV) {
       return self::HOMEPAGE_NAV;
+    }
+    if ($fields === self::$OUTSIDE) {
+      return self::OUTSIDE;
     }
     if (is_array($fields)) {
       foreach ($fields as $key => $value) {

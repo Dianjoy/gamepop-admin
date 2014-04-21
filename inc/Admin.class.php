@@ -17,60 +17,64 @@ class Admin extends \gamepop\Base {
   const ROOT = 0;
   const DEVELOPER = 1;
   const EDITOR = 2;
+  const OUTSIDER = 100;
 
+  static $ALL = "`id`, `fullname`, `role`";
   static $BASE = "`id`, `fullname`";
 
   public static $ROLES = array(
-    '管理员',
-    '开发',
-    '编辑'
+    0 => '管理员',
+    1 => '开发',
+    2 => '编辑',
+    100 => '外包编辑',
   );
 
   public static $PERMISSION = array(
-    array( // 管理员权限
+    0 => array( // 管理员权限
       'root',
       'game',
       'upload',
       'article',
+      'article_wb',
     ),
-    array( // 开发权限
+    1 => array( // 开发权限
       'game',
       'article',
       'upload',
+      'article_wb',
     ),
-    array( // 编辑权限
+    2 => array( // 编辑权限
       'game',
       'upload',
       'article',
-    )
+    ),
+    100 => array(
+      'article_wb',
+    ),
   );
 
   public function __construct($need_write = false) {
-    parent::__construct($need_write);
+    parent::__construct($need_write, false);
   }
 
   protected function getTable($fields) {
     return self::TABLE;
   }
 
-  private function encrypt($username, $password) {
-    return md5($password.$username);
+  public function where($args, $is_in = false, $table = '') {
+    if (isset($args['password'])) {
+      $args['password'] = $this->encrypt($args['user'], $args['password']);
+    }
+    return parent::where($args, $is_in, $table);
   }
 
   public function add($username, $fullname, $password, $role, $qq) {
+    $this->init_write();
     $password = $this->encrypt($username, $password);
     $sql = "INSERT INTO " . self::TABLE . "
             (`user`, `fullname`, `password`, `role`, `qq`)
             VALUES ('$username', '$fullname', '$password', $role, '$qq')";
-    return self::$READ->exec($sql);
-  }
-
-  public function get_admin($username, $password) {
-    $password = $this->encrypt($username, $password);
-    $sql = "SELECT `id`, `fullname`, `role`
-            FROM ". self::TABLE . "
-            WHERE `user`='$username' AND `password`='$password'";
-    return self::$READ->query($sql)->fetch(PDO::FETCH_ASSOC);
+    return self::$WRITE->exec($sql);
   }
 
   public function delete($id) {
@@ -102,10 +106,7 @@ class Admin extends \gamepop\Base {
     return self::$WRITE->exec($sql);
   }
 
-  public function is_exist($username) {
-    $sql = "SELECT 'X'
-            FROM " . self::TABLE . "
-            WHERE `user`='$username'";
-    return self::$READ->query($sql)->fetchColumn();
+  private function encrypt($username, $password) {
+    return md5($password.$username);
   }
 }

@@ -8,7 +8,7 @@
  */
 session_start();
 
-if( !isset($_SESSION['permission']) ){
+if(!isset($_SESSION['permission']) ){
   header("location:login.php");
   exit();
 }
