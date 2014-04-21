@@ -83,7 +83,7 @@ function fetch($article, $args) {
 function update($article, $args, $success = '修改成功', $error = '修改失败') {
   $conditions = Spokesman::extract();
 
-  $result = $article->update($args)
+  $result = $article->update($args, Article::CATEGORY)
     ->where($conditions)
     ->execute();
 
