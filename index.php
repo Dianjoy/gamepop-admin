@@ -14,9 +14,13 @@ if(!isset($_SESSION['permission']) ){
 }
 
 include "inc/Template.class.php";
+include_once "inc/Admin.class.php";
 $template = new Template('web/index.html');
 
 $config = json_decode(file_get_contents('config/config.json'), true);
+if (Admin::is_outsider()) {
+  $config['custom']['router'] = 'js/router/Outsider.js';
+}
 
 foreach ($_SESSION['permission'] as $auth) {
   $filename = "config/$auth.json";

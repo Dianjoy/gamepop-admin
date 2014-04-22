@@ -1,5 +1,5 @@
 <?php
-define('OPTIONS', 'article');
+define('OPTIONS', 'article|article_wb');
 include_once '../../inc/session.php';
 ?>
 <?php

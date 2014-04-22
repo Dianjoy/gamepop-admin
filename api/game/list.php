@@ -12,6 +12,7 @@ include_once '../../inc/session.php';
 
 include_once "../../inc/Spokesman.class.php";
 include_once "../../inc/Game.class.php";
+include_once "../../inc/Admin.class.php";
 $game = new Game();
 
 $args = $_REQUEST;
@@ -39,8 +40,6 @@ switch ($_SERVER['REQUEST_METHOD']) {
 }
 
 function fetch($game, $args) {
-  require_once "../../inc/Admin.class.php";
-
   $pagesize = isset($args['pagesize']) ? (int)$args['pagesize'] : 20;
   $page = isset($args['page']) ? (int)$args['page'] : 0;
   $keyword = empty($args['keyword']) ? '' : trim(addslashes(strip_tags($args['keyword'])));
@@ -49,7 +48,7 @@ function fetch($game, $args) {
   );
 
   // 外包人员只能看到自己的游戏
-  if ($_SESSION['role'] == Admin::OUTSIDER) {
+  if (Admin::is_outsider()) {
     $my_games = $game->select(Game::$OUTSIDE)
       ->where(array('user_id' => $_SESSION['id']))
       ->fetchAll(PDO::FETCH_ASSOC);
@@ -103,6 +102,10 @@ function delete($game) {
 }
 
 function update($game, $args, $success = '更新成功', $error = '更新失败') {
+  if (isset($args['status']) && Admin::is_outsider()) {
+    Spokesman::judge(false, $success, $error);
+    exit();
+  }
   $game->init_write();
   $url = $_SERVER['PATH_INFO'];
   $id = substr($url, 1);

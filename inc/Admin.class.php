@@ -22,6 +22,10 @@ class Admin extends \gamepop\Base {
   static $ALL = "`id`, `fullname`, `role`";
   static $BASE = "`id`, `fullname`";
 
+  static function is_outsider() {
+    return (int)$_SESSION['role'] === self::OUTSIDER;
+  }
+
   public static $ROLES = array(
     0 => '管理员',
     1 => '开发',

@@ -1,0 +1,64 @@
+<div class="navbar navbar-default navbar-static-top smart-navbar" role="navigation">
+  <ul class="nav navbar-nav">
+    <li class="disabled"><a href="#"><i class="fa fa-filter"></i> 筛选</a></li>
+    <li class="disabled"><a href="#"><i class="fa fa-sort-amount-desc"></i> 排序</a></li>
+  </ul>
+  <form class="navbar-form navbar-right keyword-form">
+    <div class="form-group">
+      <input type="search" class="form-control" placeholder="关键词" name="query" autofocus >
+    </div>
+    <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+  </form>
+</div>
+
+<ul class="pagination pull-right hidden-md hidden-lg">
+  <script type="text/x-handlebars-template">
+    <li><a href="#/to/{{prev}}"><i class="fa fa-chevron-left"></i></a></li>
+    {{#each pages}}
+    <li class="hidden-xs"><a href="#/to/{{index}}">{{label}}</a></li>
+    {{/each}}
+    <li><a href="#/to/{{next}}"><i class="fa fa-chevron-right"></i></a></li>
+  </script>
+</ul>
+
+<table class="table table-bordered smart-table responsive-table" data-pagination=".pagination" data-pagesize="20" data-url="api/game/list.php" data-id="guide_name">
+  <thead>
+  <tr>
+    <th>游戏图标</th>
+    <th>游戏名称</th>
+    <th>游戏别名</th>
+    <th>游戏描述</th>
+    <th>攻略数量</th>
+  </tr>
+  </thead>
+  <tbody>
+  <script type="text/x-handlebars-template">
+    {{#each list}}
+    <tr id="{{guide_name}}">
+      <td><img src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="icon-100"></td>
+      <td data-title="游戏名称">{{game_name}}</td>
+      <td data-title="游戏别名">{{guide_name}}</td>
+      <td data-title="游戏描述">{{game_desc}}</td>
+      <td>
+        <a href="#/outsider/articles/{{guide_name}}" class="btn btn-info"><i class="fa fa-list"></i> {{article_number}}</a>
+      </td>
+    </tr>
+    {{/each}}
+  </script>
+  </tbody>
+  <tfoot>
+  <tr class="waiting">
+    <td colspan="5" align="center"><i class="fa fa-spin fa-spinner fa-4x"></i><br>加载数据，请稍后</td>
+  </tr>
+  </tfoot>
+</table>
+
+<ul class="pagination pull-right mg0">
+  <script type="text/x-handlebars-template">
+    <li><a href="#/to/{{prev}}"><i class="fa fa-chevron-left"></i></a></li>
+    {{#each pages}}
+    <li class="hidden-xs"><a href="#/to/{{index}}">{{label}}</a></li>
+    {{/each}}
+    <li><a href="#/to/{{next}}"><i class="fa fa-chevron-right"></i></a></li>
+  </script>
+</ul>
