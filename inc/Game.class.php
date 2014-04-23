@@ -20,7 +20,7 @@ class Game extends \gamepop\Base {
 
   const ID = 'guide_name';
 
-  static $ALL = "`guide_name`, `game_name`, `game_desc`, `update_time`, `icon_path`";
+  static $ALL = "`guide_name`, `game_name`, `game_desc`, `update_time`, `icon_path`, `update_time`";
   static $SLIDE = "`id`, `image`, `link`, `seq`";
   static $HOMEPAGE_NAV = "`category`, `id`, `guide_name`, `image`, `seq`, `status`";
   static $OUTSIDE = "`guide_name`, `user_id`, `score`";

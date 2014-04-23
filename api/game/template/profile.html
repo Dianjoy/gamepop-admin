@@ -34,7 +34,7 @@
           </div>
         </div>
         <div class="col-md-8 col-sm-7 col-xs-12">
-          <h2>{{game_name}}</h2>
+          <h2>{{game_name}} <small>（最近更新：<time datetime="{{update_time}}">{{update_time}}</time>）</small></h2>
           <h4>{{guide_name}}</h4>
           <p>{{game_desc}}</p>
           <hr/>
@@ -54,12 +54,11 @@
             &nbsp;&nbsp;
             <button type="button" class="btn btn-secondary" disabled><i class="fa fa-archive"></i> 发布攻略包</button>
             &nbsp;&nbsp;
+            <a href="http://49.212.132.111:8889/reget.do?action=add_game&param=:json" class="btn btn-warning process-button" data-content="抓取需要一段时间才能完成，请耐心等候。您可以离开本页面继续其它工作。" data-title="抓取已经开始"><i class="fa fa-cloud-download"></i> 重新抓取</a>
+            &nbsp;&nbsp;
             <button type="button" class="btn btn-danger delete-button"><i class="fa fa-trash-o"></i> 删除</button>
           </div>
           <hr/>
-          <div>
-
-          </div>
         </div>
       </script>
     </div>
@@ -103,7 +102,7 @@
     </div>
   </div>
 
-  <div class="col-md-6 col-sm-12 smart-info" data-url="api/outside/info.php" data-info-id="guide_name">
+  <div class="col-md-6 col-sm-12 smart-info" data-url="api/outsider/info.php" data-info-id="guide_name">
     <script type="text/x-handlebars-template">
       外包：<a href="#user_id" class="edit" data-type="select" data-url="api/outside/outsider.php" data-display="fullname" data-add-new="false">{{fullname}}</a>
     </script>
