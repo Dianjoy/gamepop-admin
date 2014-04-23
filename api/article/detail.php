@@ -39,10 +39,11 @@ if ($method) {
 
 function fetch($article, $args) {
   require_once(dirname(__FILE__) . '/../../inc/HTML_To_Markdown.php');
+  require_once(dirname(__FILE__) . '/../../inc/Game.class.php');
+
   $conditions = Spokesman::extract();
   $result = $article->select(Article::$DETAIL)
     ->where($conditions, false, Article::TABLE)
-    ->execute()
     ->fetch(PDO::FETCH_ASSOC);
   if (get_magic_quotes_gpc()) {
     $result['content'] = stripslashes($result['content']);
@@ -50,7 +51,12 @@ function fetch($article, $args) {
   $markdown = new HTML_To_Markdown($result['content']);
   $result['content'] = preg_replace('/]\(\/?([a-z|^(http)]+)/', '](http://r.yxpopo.com/$1', $markdown);
 
-  Spokesman::say($result);
+  $game = new Game();
+  $game = $game->select(Game::$ALL)
+    ->where(array(Game::ID => $result[Game::ID]))
+    ->fetch(PDO::FETCH_ASSOC);
+
+  Spokesman::say(array_merge($game, $result));
 }
 
 function update($article, $args) {
