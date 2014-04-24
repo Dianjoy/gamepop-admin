@@ -13,6 +13,7 @@ include_once '../../inc/session.php';
 
 include_once "../../inc/Spokesman.class.php";
 include_once "../../inc/Article.class.php";
+require_once "../../inc/Admin.class.php";
 $article = new Article();
 
 $args = $_REQUEST;
@@ -20,7 +21,13 @@ $request = file_get_contents('php://input');
 if ($request) {
   $args = array_merge($_POST, json_decode($request, true));
 }
-header("Content-Type:application/json;charset=utf-8");
+
+// 只允许外包用户看分类
+if (Admin::is_outsider()) {
+  fetch($article, $args);
+  exit();
+}
+
 switch ($_SERVER['REQUEST_METHOD']) {
   case 'GET':
     fetch($article, $args);

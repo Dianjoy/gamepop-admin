@@ -20,7 +20,6 @@ if ($request) {
   $args = array_merge($_POST, $args);
 }
 
-header("Content-Type:application/json;charset=utf-8");
 switch ($_SERVER['REQUEST_METHOD']) {
   case 'PATCH':
     update($admin, $args);

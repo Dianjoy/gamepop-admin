@@ -10,6 +10,7 @@ include_once 'Base.class.php';
 class Admin extends \gamepop\Base {
   const TABLE = '`t_admin`';
   const LOG = '`t_admin_log`';
+  const OUTSIDER_LOG = '`t_outsider_op_log`';
 
   const NORMAL = 0;
   const DELETE = 1;
@@ -24,6 +25,15 @@ class Admin extends \gamepop\Base {
 
   static function is_outsider() {
     return (int)$_SESSION['role'] === self::OUTSIDER;
+  }
+  static function log_outsider_action($article_id, $operation, $label = '') {
+    self::init_write();
+    $user_id = $_SESSION['id'];
+    $now = date('Y-m-d H:i:s');
+    $sql = "INSERT INTO " . self::OUTSIDER_LOG . "
+            (`user_id`, `time`, `operation`, `label`, `article_id`)
+            VALUES ($user_id, '$now', '$operation', '$label', $article_id)";
+    self::$WRITE->exec($sql);
   }
 
   public static $ROLES = array(
@@ -54,6 +64,7 @@ class Admin extends \gamepop\Base {
     ),
     100 => array(
       'article_wb',
+      'upload',
     ),
   );
 

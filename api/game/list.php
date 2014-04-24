@@ -20,7 +20,13 @@ $request = file_get_contents('php://input');
 if ($request) {
   $args = array_merge($_POST, json_decode($request, true));
 }
-header("Content-Type:application/json;charset=utf-8");
+
+// 只允许外包用户看列表
+if (Admin::is_outsider()) {
+  fetch($game, $args);
+  exit();
+}
+
 switch ($_SERVER['REQUEST_METHOD']) {
   case 'GET':
     fetch($game, $args);

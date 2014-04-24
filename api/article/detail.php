@@ -24,7 +24,6 @@ if ($request) {
   $args = array_merge($_POST, json_decode($request, true));
 }
 
-header("Content-Type:application/json;charset=utf-8");
 if (!isset($_SERVER['REQUEST_METHOD'], $methods)) {
   header("HTTP/1.1 406 Not Acceptable");
   exit(json_encode(array(
@@ -60,11 +59,21 @@ function fetch($article, $args) {
 }
 
 function update($article, $args) {
+  require_once "../../inc/Admin.class.php";
+  if (Admin::is_outsider() && isset($args['status'])) {
+    header('HTTP/1.1 401 Unauthorized');
+    Spokesman::say(array(
+      'code' => 1,
+      'msg' => '请勿越权操作',
+    ));
+    exit();
+  }
   $args['update_time'] = date('Y-m-d H:i:s');
   $args['update_editor'] = (int)$_SESSION['id'];
   if (isset($args['content'])) {
     require_once(dirname(__FILE__) . '/../../inc/Markdown.inc.php');
-    $args['content'] = str_replace('http://r.yxpopo.com/', '', $args['content']);
+    $args['content'] = str_replace('http://r.yxpopo.com/', '', $args['content']); // 把资源替换成相对路径
+    $args['content'] = strip_tags($args['content'], '<table><tr><td><span><video><audio>'); // 过滤掉所有script标签
     $args['content'] = \Michelf\Markdown::defaultTransform($args['content']);
   }
   $conditions = Spokesman::extract();
@@ -72,4 +81,8 @@ function update($article, $args) {
     ->where($conditions)
     ->execute();
   Spokesman::judge($result, '修改成功', '修改失败');
+
+  if (Admin::is_outsider()) {
+    Admin::log_outsider_action($conditions['id'], 'edit');
+  }
 }

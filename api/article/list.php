@@ -84,6 +84,16 @@ function fetch($article, $args) {
 }
 
 function update($article, $args, $success = '更新成功', $error = '更新失败') {
+  require_once "../../inc/Admin.class.php";
+  if (Admin::is_outsider() && isset($args['status'])) {
+    header('HTTP/1.1 401 Unauthorized');
+    Spokesman::say(array(
+      'code' => 1,
+      'msg' => '请勿越权操作',
+    ));
+    exit();
+  }
+
   $conditions = Spokesman::extract();
   // label 不能在文章列表修改
   unset($args['label']);
@@ -94,6 +104,10 @@ function update($article, $args, $success = '更新成功', $error = '更新失�
     ->where($conditions)
     ->execute();
   Spokesman::judge($result, $success, $error, $args);
+
+  if (Admin::is_outsider()) {
+    Admin::log_outsider_action($conditions['id'], 'update', implode(',', array_keys($args)));
+  }
 }
 
 function delete($article) {

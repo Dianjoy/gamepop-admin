@@ -19,8 +19,16 @@ $upload_user = $_SESSION['id'];
 
 $file = $_FILES['file'];
 $id = isset($_REQUEST['id']) && $_REQUEST['id'] != '' && $_REQUEST['id'] != 'undefined' ? $_REQUEST['id'] : md5(uniqid());
-$type = isset($_REQUEST['type']) ? $_REQUEST['type'] : 'ad_url';
-$isPic = $type == 'pic_path' || $type == 'icon_path' || $type == 'banner_url';
+$type = isset($_REQUEST['type']) ? $_REQUEST['type'] : 'image';
+
+// 暂时只允许上传图片
+$ext = substr($file['name'], strrpos($file['name'], '.'));
+if ($ext != '.jpg' && $ext != '.gif' && $ext != '.png') {
+  exit(json_encode(array(
+    'code' => 1,
+    'msg' => '只支持上传图片',
+  )));
+}
 
 //检查上传的图片是否符合要求
 $image_arr = getimagesize($file['tmp_name']);
@@ -47,7 +55,6 @@ $dir = $up_path . date("Ym") . '/';
 if (!is_dir($dir)) {
   mkdir($dir, 0777, TRUE);
 }
-$ext = substr($file['name'], strrpos($file['name'], '.'));
 
 $index = 0;
 $new_path = $dir . $index . '_' . $id . $ext;
