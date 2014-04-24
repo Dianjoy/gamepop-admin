@@ -1,4 +1,8 @@
 <?php
+define('OPTIONS', 'game|article_wb');
+include_once '../../inc/session.php';
+?>
+<?php
 /**
  * Created by PhpStorm.
  * User: meathill
@@ -14,7 +18,6 @@ $request = file_get_contents('php://input');
 if ($request) {
   $args = array_merge($_POST, json_decode($request, true));
 }
-header("Content-Type:application/json;charset=utf-8");
 switch ($_SERVER['REQUEST_METHOD']) {
   case 'GET':
     fetch($game, $args);

@@ -11,7 +11,7 @@
     {
       "icon": "check",
       "title": "绩效统计",
-      "url": "#/outside/result"
+      "url": "#/outsider/result"
     }
   ]
 }

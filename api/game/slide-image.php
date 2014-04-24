@@ -1,5 +1,5 @@
 <?php
-define('OPTIONS', 'game');
+define('OPTIONS', 'game|article_wb');
 include_once '../../inc/session.php';
 ?>
 <?php
@@ -18,14 +18,13 @@ $request = file_get_contents('php://input');
 if ($request) {
   $args = array_merge($_POST, json_decode($request, true));
 }
-header("Content-Type:application/json;charset=utf-8");
 switch ($_SERVER['REQUEST_METHOD']) {
   case 'GET':
     fetch($game, $args);
     break;
 
   case 'PATCH':
-    update($game, $args, Game::SLIDE);
+    update($game, $args);
     break;
 
   case 'DELETE':
@@ -64,12 +63,12 @@ function delete($game) {
   $args = array(
     'status' => 1,
   );
-  update($game, $args, Game::SLIDE, '删除成功', '删除失败');
+  update($game, $args, '删除成功', '删除失败');
 }
 
-function update($game, $args, $table = '', $success = '更新成功', $error = '更新失败') {
+function update($game, $args, $success = '更新成功', $error = '更新失败') {
   $conditions = Spokesman::extract(true);
-  $result = $game->update($args, $table)
+  $result = $game->update($args, Game::SLIDE)
     ->where($conditions)
     ->execute();
   Spokesman::judge($result, $success, $error, $args);
