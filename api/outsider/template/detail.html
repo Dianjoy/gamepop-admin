@@ -1,24 +1,60 @@
-<div class="game-info well well-sm smart-info" data-info-id="guide_name" data-url="api/game/info.php">
-  <div class="media">
-    <div class="pull-left">
-      <img src="img/image.png" class="img-thumbnail icon-100">
-    </div>
-    <div class="media-body">
-      <h4><i class="fa fa-spin fa-spinner"></i></h4>
-      <p>加载中，请稍后</p>
+<div class="row">
+  <div class="col-md-6 col-sm-12">
+    <div class="article-info well well-sm smart-info" data-wait="true">
+      <div class="media">
+        <div class="pull-left">
+          <img src="img/image.png" class="img-thumbnail icon-100">
+        </div>
+        <div class="media-body">
+          <h4><i class="fa fa-spin fa-spinner"></i></h4>
+          <p>加载中，请稍候</p>
+        </div>
+      </div>
+      <script type="text/x-handlebars-template">
+        <div class="media">
+          <a href="#/game/profile/{{guide_name}}" class="pull-left">
+            <img src="{{#if icon_path}}{{icon_path}}{{else}}img/image.png{{/if}}" class="img-thumbnail icon-100">
+          </a>
+          <div class="media-body">
+            <h4>作者：{{author}} <small>{{#if source}}来源：<a href="{{src_url}}" target="_blank">{{source}} <i class="fa fa-external-link"></i></a>{{else}}[原创]{{/if}}</small></h4>
+            <p>
+              游戏：{{game_name}}
+              分类：{{label}}
+            </p>
+            <p class="text-muted">
+              更新时间：<time datetime="{{update_time}}">{{update_time}}</time>
+              <a href="http://49.212.132.111:8889/reget.do?action=add_article&param=:json" class="btn btn-warning btn-sm process-button"><i class="fa fa-cloud-download"></i> 重新抓取</a>
+            </p>
+          </div>
+        </div>
+      </script>
     </div>
   </div>
-  <script type="text/x-handlebars-template">
-    <div class="media">
-      <a href="#/game/profile/{{guide_name}}" class="pull-left">
-        <img src="{{#if icon_path}}{{icon_path}}{{else}}img/image.png{{/if}}" class="img-thumbnail icon-100">
-      </a>
-      <div class="media-body">
-        <h4>{{{game_name}}} <small>{{guide_name}}</small></h4>
-        <p>{{game_desc}}</p>
+  <div class="col-md-6 col-sm-12">
+    <div class="game-info well well-sm smart-info" data-info-id="guide_name" data-url="api/game/info.php">
+      <div class="media">
+        <div class="pull-left">
+          <img src="img/image.png" class="img-thumbnail icon-100">
+        </div>
+        <div class="media-body">
+          <h4><i class="fa fa-spin fa-spinner"></i></h4>
+          <p>加载中，请稍候</p>
+        </div>
       </div>
+      <script type="text/x-handlebars-template">
+        <div class="media">
+          <a href="#/game/profile/{{guide_name}}" class="pull-left">
+            <img src="{{#if icon_path}}{{icon_path}}{{else}}img/image.png{{/if}}" class="img-thumbnail icon-100">
+          </a>
+          <div class="media-body">
+            <h4>{{{game_name}}} <small>{{guide_name}}</small></h4>
+            <p>{{game_desc}}</p>
+            <p class="text-muted">更新时间：<time datetime="{{update_time}}">{{update_time}}</time></p>
+          </div>
+        </div>
+      </script>
     </div>
-  </script>
+  </div>
 </div>
 
 <div class="row">

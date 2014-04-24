@@ -65,6 +65,13 @@ class Admin extends \gamepop\Base {
     return self::TABLE;
   }
 
+  public function update($args, $table = '') {
+    if (isset($args['password'])) {
+      $args['password'] = $this->encrypt($_SESSION['user'], $args['password']);
+    }
+    return parent::update($args, $table);
+  }
+
   public function where($args, $is_in = false, $table = '') {
     if (isset($args['password'])) {
       $args['password'] = $this->encrypt($args['user'], $args['password']);
