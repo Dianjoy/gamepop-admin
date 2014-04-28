@@ -47,12 +47,14 @@ function fetch($game, $args) {
     'guide_name' => $args['id'],
   );
   $status = array(
-    'status' => Article::NORMAL,
+    '`' . Article::CATEGORY . '`.`status`' => Article::NORMAL,
+    '`category`' => 0,
   );
 
   $categories = $article->select(Article::$ALL_CATEGORY, $article->count())
     ->where($conditions)
-    ->where($status, false, Article::TABLE)
+    ->where(array('status' => Article::NORMAL), Article::TABLE)
+    ->where($status, '', false, true)
     ->group('id', Article::CATEGORY)
     ->fetchAll(PDO::FETCH_ASSOC);
 

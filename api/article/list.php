@@ -47,7 +47,7 @@ function fetch($article, $args) {
   );
   $conditions = Spokesman::extract(true);
   $articles = $article->select(Article::$ALL)
-    ->where($status, false, Article::TABLE)
+    ->where($status, Article::TABLE)
     ->where($conditions)
     ->search($args['keyword'])
     ->fetchAll(PDO::FETCH_ASSOC);

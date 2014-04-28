@@ -42,7 +42,7 @@ function fetch($article, $args) {
 
   $conditions = Spokesman::extract();
   $result = $article->select(Article::$DETAIL)
-    ->where($conditions, false, Article::TABLE)
+    ->where($conditions, Article::TABLE)
     ->fetch(PDO::FETCH_ASSOC);
   if (get_magic_quotes_gpc()) {
     $result['content'] = stripslashes($result['content']);

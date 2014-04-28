@@ -83,7 +83,7 @@ class Admin extends \gamepop\Base {
     return parent::update($args, $table);
   }
 
-  public function where($args, $is_in = false, $table = '') {
+  public function where($args, $table = '', $is_in = false, $is_or = false) {
     if (isset($args['password'])) {
       $args['password'] = $this->encrypt($args['user'], $args['password']);
     }

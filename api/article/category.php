@@ -67,7 +67,8 @@ function delete($article) {
 }
 function fetch($article, $args) {
   $status = array(
-    'status' => Article::NORMAL,
+    "`" . Article::CATEGORY. "`.`status`" => Article::NORMAL,
+    'category' => 0,
   );
   $conditions = array();
   foreach (array('game', 'category', 'author', 'id') as $row) {
@@ -75,11 +76,18 @@ function fetch($article, $args) {
       $conditions[$row === 'game' || $row === 'id' ? 'guide_name' : $row] = $args[$row];
     }
   }
-  $result = $article->select(Article::$ALL_CATEGORY, $article->count('topic'))
+  $result = $article->select(Article::$ALL_CATEGORY, $article->count())
     ->where($conditions)
-    ->where($status, false, Article::CATEGORY)
+    ->where(array('status' => Article::NORMAL), Article::TABLE)
+    ->where($status, '', false, true)
     ->group('id', Article::CATEGORY)
     ->fetchAll(PDO::FETCH_ASSOC);
+
+  if ($conditions) {
+    foreach ($result as &$category) {
+      $category = array_merge($category, $conditions);
+    }
+  }
 
   // 倒序输出，一般新建的分类更有效些
   Spokesman::say(array(

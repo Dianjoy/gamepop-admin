@@ -39,7 +39,7 @@ class Article extends \gamepop\Base {
         return self::TABLE . " LEFT JOIN " . self::CATEGORY . " ON " . self::TABLE . ".`category`=" . self::CATEGORY . ".`id`";
       }
       if (strpos($fields, self::$ALL_CATEGORY) !== false) {
-        return self::CATEGORY . " LEFT JOIN " . self::TABLE . " ON " . self::TABLE . ".`category`=" . self::CATEGORY . ".`id`";
+        return self::CATEGORY . " RIGHT JOIN " . self::TABLE . " ON " . self::TABLE . ".`category`=" . self::CATEGORY . ".`id`";
       }
     }
     if (is_array($fields)) {

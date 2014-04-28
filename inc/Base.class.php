@@ -39,6 +39,8 @@ class SQLBuilder {
     $this->is_select = true;
     $this->template = self::SELECT;
     $this->fields = $fields;
+    $this->conditions = array();
+    $this->args = array();
     return $this;
   }
   public function from($table) {
@@ -85,54 +87,48 @@ class SQLBuilder {
     $this->tables = $table;
     return $this;
   }
-  public function begin($begin) {
-    return $this;
-  }
-  public function end($end) {
-    return $this;
-  }
   /**
    * 用来生成sql中的条件，可以使用多次，后面的条件会覆盖前面的同名条件
    * `key` in (value1, value2 ...) 类型的sql，在prepare的时候，必须对每个值创建单独的占位符
-   * @param $args
-   * @param bool $is_in 是in还是=
+   * @param array $args
    * @param string $table 条件属于哪个表
+   * @param bool $is_in 是in还是=
+   * @param bool $is_or 是or还是and
    */
-  public function where($args, $is_in = false, $table = '') {
+  public function where($args, $table = '', $is_in = false, $is_or = false) {
     $conditions = array();
     $values = array();
     foreach ($args as $key => $value) {
       if ($value === null) {
         continue;
       }
+      $value_key = $this->strip($key);
       if ($is_in) {
         $keys = array();
         $count = 0;
         foreach ($value as $single) {
-          $keys[] = ":{$key}_{$count}";
-          $values[":{$key}_{$count}"] = $single;
+          $keys[] = ":{$value_key}_{$count}";
+          $values[":{$value_key}_{$count}"] = $single;
           $count++;
         }
         $keys = implode(",", $keys);
-        $conditions[] = "`$key` IN ($keys)";
+        $conditions[] = $this->strip_multi_accent("`$key` IN ($keys)");
       } else {
-        $conditions[] = ($table ? "$table." : "") ."`$key`=:$key";
-        $values[':' . $key] = $value;
+        $conditions[] = $this->strip_multi_accent(($table ? "`$table`." : "") . "`$key`=:$value_key");
+        $values[':' . $value_key] = $value;
       }
     }
     if (count($conditions) === 0) {
       return;
     }
-    $this->sql = null;
     $this->args = array_merge($this->args, $values);
-    $this->conditions = array_merge($this->conditions, $conditions);
+    $this->conditions[] = array($is_or, $conditions);
   }
-  public function search($key, $query) {
+  public function search($key, $query, $is_or = false) {
     if (!$query) {
       return $this;
     }
-    $this->sql = null;
-    $this->conditions[] = "`$key` LIKE :$key";
+    $this->conditions[] = array($is_or, "`$key` LIKE :$key");
     $this->args[$key] = "%$query%";
     return $this;
   }
@@ -154,7 +150,18 @@ class SQLBuilder {
     $sql = preg_replace_callback($this->reg, function ($matches) {
       switch ($matches[1]) {
         case 'conditions':
-          return $this->conditions ? implode(" AND ", $this->conditions) : '1';
+          if (!$this->conditions) {
+            return 1;
+          }
+          foreach ($this->conditions as $key => $conditions) {
+            $is_or = $conditions[0];
+            $connect = $is_or ? ' OR ' : ' AND ';
+            $conditions = $conditions[1];
+            $conditions = is_array($conditions) ? implode(" $connect ", $conditions) : $conditions;
+            $conditions = $is_or ? "($conditions)" : $conditions;
+            $this->conditions[$key] = $conditions;
+          }
+          return implode(' AND ', $this->conditions);
           break;
 
         case 'fields':
@@ -176,6 +183,13 @@ class SQLBuilder {
     }, $this->template);
     $this->sql = $sql . $this->order_sql . $this->group_by;
     return $this->sql;
+  }
+
+  private function strip_multi_accent($string) {
+    return preg_replace('/`{2,}/', '`', $string);
+  }
+  private function strip($string) {
+    return preg_replace('/[`\.]/', '', $string);
   }
 }
 
@@ -239,8 +253,8 @@ class Base {
     $this->sth = null;
     return $this;
   }
-  public function where($args, $is_in = false, $table = '') {
-    $this->builder->where($args, $is_in, $table);
+  public function where($args, $table = '', $is_in = false, $is_or = false) {
+    $this->builder->where($args, $table, $is_in, $is_or);
     return $this;
   }
   public function search($keyword) {

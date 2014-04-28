@@ -67,7 +67,7 @@ function fetch($game, $args) {
 
   $games = $game->select(Game::$ALL)
     ->where($conditions)
-    ->where(array(Game::ID => $guide_names), true)
+    ->where(array(Game::ID => $guide_names), '', true)
     ->search($keyword)
     ->order(Game::$ORDER_HOT, 'DESC')
     ->execute()
@@ -84,7 +84,7 @@ function fetch($game, $args) {
   $article = new Article();
 
   $article_number = $article->select(Game::ID, $article->count())
-    ->where(array(Game::ID => $guide_names), true)
+    ->where(array(Game::ID => $guide_names), '', true)
     ->where($conditions)
     ->group(Game::ID)
     ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);

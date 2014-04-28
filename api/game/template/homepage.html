@@ -101,6 +101,7 @@
       <tbody>
       <script type="text/x-handlebars-template">
         {{#each list}}
+        {{#if id}}
         <tr id="{{id}}">
           <td><a href="#image" class="edit" data-type="img"><img src="{{#if image}}{{image}}{{else}}./img/image.png{{/if}}" class="img-thumbnail icon-mh-100"></a></td>
           <td><a href="#label" class="edit">{{label}}</a></td>
@@ -115,6 +116,7 @@
             {{/if}}
           </td>
         </tr>
+        {{/if}}
         {{/each}}
       </script>
       </tbody>
