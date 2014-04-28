@@ -63,6 +63,16 @@
         </script>
       </div>
     </nav>
+    <nav class="top-articles">
+      <ul data-url="api/game/top-article.php" data-mediator-class="gamepop.game.TopArticles">
+        <script type="text/x-handlebars-template">
+          <li>
+            <img src="{{icon_path}}" class="img-thumbnail icon-mh-100">
+            <h2>{{topic}}</h2>
+          </li>
+        </script>
+      </ul>
+    </nav>
   </div>
   <div class="tables flex-auto">
     <table class="table table-bordered table-hover smart-table sortable" data-url="api/game/slide-image.php" data-map="guide_name:id">
@@ -101,7 +111,7 @@
       <tbody>
       <script type="text/x-handlebars-template">
         {{#each list}}
-        {{#if id}}
+        {{#if label}}
         <tr id="{{id}}">
           <td><a href="#image" class="edit" data-type="img"><img src="{{#if image}}{{image}}{{else}}./img/image.png{{/if}}" class="img-thumbnail icon-mh-100"></a></td>
           <td><a href="#label" class="edit">{{label}}</a></td>
@@ -123,6 +133,26 @@
       <tfoot class="recycle">
 
       </tfoot>
+    </table>
+    <table class="table table-bordered table-hover smart-table" data-url="api/game/top-article.php">
+      <thead>
+      <tr>
+        <th>置顶文章</th>
+        <th>更新时间</th>
+        <th>操作</th>
+      </tr>
+      </thead>
+      <tbody>
+      <script type="text/x-handlebars-template">
+        {{#each list}}
+      <tr>
+        <td><a href="#/article/detail/{{id}}">{{topic}}</a></td>
+        <td>{{update_time}} / {{update_editor}}</td>
+        <td><a href="#is_top" class="btn btn-info status-button {{#if is_top}}active{{/if}}"><i class="fa fa-arrow-up"></i></a></td>
+      </tr>
+        {{/each}}
+      </script>
+      </tbody>
     </table>
   </div>
 </div>

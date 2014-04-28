@@ -62,6 +62,7 @@ function fetch($article, $args) {
     ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
   foreach ($articles as &$article) {
     $article['update_editor_label'] = $editors[$article['update_editor']];
+    $article['is_top'] = (int)$article['is_top'];
   }
 
   require_once "../../inc/Game.class.php";
