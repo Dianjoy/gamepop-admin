@@ -51,6 +51,7 @@ function fetch($article, $args) {
     ->where($conditions)
     ->search($args['keyword'])
     ->fetchAll(PDO::FETCH_ASSOC);
+  usort($articles, compare);
   $total = count($articles);
   $articles = array_slice($articles, $page * $pagesize, $pagesize);
 
@@ -117,4 +118,8 @@ function delete($article) {
     'update_editor' => (int)$_SESSION['id'],
   );
   update($article, $args, '删除成功', '删除失败');
+}
+
+function compare($a, $b) {
+  return strtotime($b['update_time']) - strtotime($a['update_time']);
 }
