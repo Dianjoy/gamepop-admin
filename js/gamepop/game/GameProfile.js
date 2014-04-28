@@ -10,9 +10,6 @@
   });
 
   ns.GameProfile = Backbone.View.extend({
-    events: {
-
-    },
     initialize: function () {
       this.template = Handlebars.compile(this.$('script').remove().html());
 

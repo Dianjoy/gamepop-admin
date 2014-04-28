@@ -1,8 +1,8 @@
 /**
- * Created by meathill on 14-3-28.
+ * Created by 路佳 on 14-4-28.
  */
 ;(function (ns) {
-  ns.HomepageNav = Backbone.View.extend({
+  ns.TopArticles = Backbone.View.extend({
     initialize: function () {
       this.template = Handlebars.compile(this.$('script').remove().html());
 
@@ -11,8 +11,6 @@
         url: spec.url + '/' + this.model.get('path')
       });
       this.collection.on('reset', this.render, this);
-      this.collection.on('add', this.collection_addHandler, this);
-      this.collection.on('remove', this.collection_removeHandler, this);
       this.collection.on('change', this.collection_changeHandler, this);
       this.collection.on('sort', this.collection_sortHandler, this);
       this.collection.fetch(this.model.toJSON());
@@ -28,25 +26,13 @@
     createItem: function (model) {
       return this.template({list: [model.toJSON()]});
     },
-    collection_addHandler: function (model) {
-      this.$el.append(this.createItem(model));
-    },
     collection_changeHandler: function (model) {
-      var item = this.$('#nav-' + ('id' in model.changed ? model.cid : model.id));
-      if ('status' in model.changed) {
-        item.toggleClass('hide', model.get('status'));
+      var item = this.$('#top-' + model.id);
+      if ('is_top' in model.changed) {
+        item.toggleClass('hide', !model.get('is_top'));
         return;
       }
-      if (item.length) {
-        item.replaceWith(this.createItem(model));
-      } else {
-        this.$el.append(this.createItem(model));
-      }
-    },
-    collection_removeHandler: function (model) {
-      this.$('#nav-' + model.id).fadeOut(function () {
-        $(this).remove();
-      });
+      item.replaceWith(this.createItem(model));
     },
     collection_sortHandler: function (model, index) {
       var item = this.$('#nav-' + model.id);

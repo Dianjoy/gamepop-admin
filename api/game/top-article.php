@@ -54,15 +54,27 @@ function fetch($article, $args) {
   Spokesman::say($result);
 }
 
-function update($game, $args, $success = '更新成功', $error = '更新失败') {
-  $game->init_write();
+function update($article, $args, $success = '更新成功', $error = '更新失败') {
+  require_once "../../inc/Admin.class.php";
+  if (Admin::is_outsider() && isset($args['status'])) {
+    header('HTTP/1.1 401 Unauthorized');
+    Spokesman::say(array(
+      'code' => 1,
+      'msg' => '请勿越权操作',
+    ));
+    exit();
+  }
   $conditions = Spokesman::extract(true);
-  $result = $game->update($args, Game::HOMEPAGE_NAV)
+  $result = $article->update($args)
     ->where($conditions)
     ->execute();
   Spokesman::judge($result, $success, $error, $args);
+
+  if (Admin::is_outsider()) {
+    Admin::log_outsider_action($conditions['id'], 'update', implode(',', array_keys($args)));
+  }
 }
 
 function compare($a, $b) {
-  return strtotime($b['update_time']) - strtotime($a['update_time']);
+  return (int)$a['seq'] - (int)$b['seq'];
 }
