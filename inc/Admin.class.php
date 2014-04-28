@@ -90,7 +90,7 @@ class Admin extends \gamepop\Base {
     return parent::where($args, $is_in, $table);
   }
 
-  public function add($username, $fullname, $password, $role, $qq) {
+  public function add($username, $fullname, $password, $role, $qq = '') {
     $this->init_write();
     $password = $this->encrypt($username, $password);
     $sql = "INSERT INTO " . self::TABLE . "
