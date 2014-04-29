@@ -13,7 +13,6 @@
       this.collection.on('reset', this.render, this);
       this.collection.on('change', this.collection_changeHandler, this);
       this.collection.on('sort', this.collection_sortHandler, this);
-      this.collection.fetch(this.model.toJSON());
     },
     remove: function () {
       this.collection.off();

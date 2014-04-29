@@ -15,7 +15,6 @@
       this.collection.on('remove', this.collection_removeHandler, this);
       this.collection.on('change', this.collection_changeHandler, this);
       this.collection.on('sort', this.collection_sortHandler, this);
-      this.collection.fetch(this.model.toJSON());
     },
     remove: function () {
       this.collection.off();

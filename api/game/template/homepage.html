@@ -64,7 +64,7 @@
       </div>
     </nav>
     <nav class="top-articles">
-      <ul data-url="api/game/top-article.php" data-mediator-class="gamepop.game.TopArticles">
+      <ul data-url="api/article/list.php" data-mediator-class="gamepop.game.TopArticles">
         <script type="text/x-handlebars-template">
           {{#each list}}
           <li id="top-{{id}}">
@@ -134,7 +134,7 @@
       </script>
       </tbody>
     </table>
-    <table class="table table-bordered table-hover sortable smart-table" data-url="api/game/top-article.php">
+    <table class="table table-bordered table-hover sortable smart-table" data-url="api/article/list.php" data-filter="is_top=1">
       <thead>
       <tr>
         <th>图标</th>

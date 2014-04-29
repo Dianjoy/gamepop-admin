@@ -10,6 +10,7 @@ include_once '../../inc/session.php';
  * Time: 上午10:11
  */
 
+include_once "../../inc/utils.php";
 include_once "../../inc/Spokesman.class.php";
 include_once "../../inc/Article.class.php";
 $article = new Article();
@@ -42,14 +43,16 @@ switch ($_SERVER['REQUEST_METHOD']) {
 function fetch($article, $args) {
   $pagesize = isset($args['pagesize']) ? (int)$args['pagesize'] : 20;
   $page = isset($args['page']) ? (int)$args['page'] : 0;
+  $keyword = $args['keyword'];
   $status = array(
     'status' => 0,
   );
+  $args = array_omit($args, 'page', 'pagesize', 'keyword', 'id', 'path');
   $conditions = Spokesman::extract(true);
   $articles = $article->select(Article::$ALL)
     ->where($status, Article::TABLE)
-    ->where($conditions)
-    ->search($args['keyword'])
+    ->where(array_merge($conditions, $args))
+    ->search($keyword)
     ->fetchAll(PDO::FETCH_ASSOC);
   usort($articles, compare);
   $total = count($articles);
