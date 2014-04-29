@@ -41,14 +41,14 @@ switch ($_SERVER['REQUEST_METHOD']) {
 }
 
 function fetch($game, $args) {
-  $conditions = array(
-    'status' => Game::NORMAL,
-    'guide_name' => $args['id'],
-  );
+  $conditions = Spokesman::extract(true);
+  $conditions['status'] = Game::NORMAL;
+
   $games = $game->select(Game::$SLIDE)
     ->where($conditions)
     ->fetchAll(PDO::FETCH_ASSOC);
   $total = count($games);
+  $games = array_slice($games, 0, 10);
   usort($games, compare);
 
   $result = array(
