@@ -69,10 +69,9 @@ function fetch($game, $args) {
     ->where($conditions)
     ->where(array(Game::ID => $guide_names), '', true)
     ->search($keyword)
-    ->order(Game::$ORDER_HOT, 'DESC')
-    ->execute()
     ->fetchAll(PDO::FETCH_ASSOC);
   $total = count($games);
+  usort($games, compare_hot);
   $games = array_slice($games, $page * $pagesize, $pagesize);
 
   // 取每个游戏的文章数量
@@ -119,4 +118,8 @@ function update($game, $args, $success = '更新成功', $error = '更新失败'
     ->where(array('guide_name' => $id))
     ->execute();
   Spokesman::judge($result, $success, $error, $args);
+}
+
+function compare_hot($a, $b) {
+  return (int)$b['hot'] - (int)$a['hot'];
 }

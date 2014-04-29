@@ -43,9 +43,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 function fetch($game, $args) {
   require_once "../../inc/Article.class.php";
   $article = new Article();
-  $conditions = array(
-    'guide_name' => $args['id'],
-  );
+  $conditions = Spokesman::extract(true);
   $status = array(
     '`' . Article::CATEGORY . '`.`status`' => Article::NORMAL,
     '`category`' => 0,

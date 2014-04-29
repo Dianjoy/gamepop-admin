@@ -66,10 +66,15 @@ function delete($article) {
   update($article, $args, '删除成功', '删除失败');
 }
 function fetch($article, $args) {
-  $status = array(
-    "`" . Article::CATEGORY. "`.`status`" => Article::NORMAL,
-    'category' => 0,
-  );
+  if (isset($args['pagesize'])) {
+    $status = array('`' . Article::CATEGORY . '`.`status`' => Article::NORMAL);
+  } else {
+    $status = array(
+      "`" . Article::CATEGORY. "`.`status`" => Article::NORMAL,
+      'category' => 0,
+    );
+  }
+
   $conditions = array();
   foreach (array('game', 'category', 'author', 'id') as $row) {
     if (isset($args[$row])) {
