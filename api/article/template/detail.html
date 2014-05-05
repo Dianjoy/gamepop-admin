@@ -16,10 +16,10 @@
             <img src="{{#if icon_path}}{{icon_path}}{{else}}img/image.png{{/if}}" class="img-thumbnail icon-100">
           </a>
           <div class="media-body">
-            <h4>作者：{{author}} <small>{{#if source}}来源：<a href="{{src_url}}" target="_blank">{{source}} <i class="fa fa-external-link"></i></a>{{else}}[原创]{{/if}}</small></h4>
+            <h4>作者：{{author}} {{#if source}}<small>来源：<a href="{{src_url}}" target="_blank">{{source}} <i class="fa fa-external-link"></i></a></small>{{else}}<span class="label label-success"><i class="fa fa-thumbs-up"></i> 原创</span>{{/if}}</h4>
             <p>
-              游戏：{{#if game_name}}<a href="#/game/profile/{{guide_name}}">{{game_name}}</a>{{else}}<a href="#guide_name" data-type="search" class="edit" data-search-url="api/game/list.php" data-display="game-name">（请选择）</a>{{/if}}
-              分类：<a href="#/article/list/category{{category}}/game{{guide_name}}">{{label}}</a>
+              游戏：{{#if game_name}}<a href="#/game/profile/{{guide_name}}">{{game_name}}</a>{{else}}<a href="#guide_name" data-type="search" class="edit" data-search-url="api/game/list.php" data-display="game_name">（请选择）</a>{{/if}}
+              分类：{{#if label}}<a href="#/article/list/category{{category}}/game{{guide_name}}">{{label}}</a>{{else}}<a href="#category" data-type="select" class="edit" data-url="api/article/category.php" data-display="label" data-add-new="true">（请选择）</a>{{/if}}
             </p>
             <p class="text-muted">
               更新时间：<time datetime="{{update_time}}">{{update_time}}</time>

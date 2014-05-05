@@ -51,10 +51,21 @@ function fetch($article, $args) {
   $markdown = new HTML_To_Markdown($result['content']);
   $result['content'] = preg_replace('/]\(\/?([a-z|^(http)]+)/', '](http://r.yxpopo.com/$1', $markdown);
 
+  // 取相关游戏
   $game = new Game();
   $game = $game->select(Game::$ALL)
     ->where(array(Game::ID => $result[Game::ID]))
     ->fetch(PDO::FETCH_ASSOC);
+
+  // 如果不是抓取的话，还要取作者
+  if (!$result['source']) {
+    require_once "../../inc/Admin.class.php";
+    $admin = new Admin();
+    $author = $admin->select(Admin::$BASE)
+      ->where(array('id' => $result['author']))
+      ->fetch(PDO::FETCH_ASSOC);
+    $result['author'] = $author['fullname'];
+  }
 
   Spokesman::say(array_merge($game, $result));
 }
@@ -71,6 +82,8 @@ function update($article, $args) {
   }
   $args['update_time'] = date('Y-m-d H:i:s');
   $args['update_editor'] = (int)$_SESSION['id'];
+  unset($args['msg']);
+  unset($args['label']);
   if (isset($args['content'])) {
     require_once(dirname(__FILE__) . '/../../inc/Markdown.inc.php');
     $args['content'] = str_replace('http://r.yxpopo.com/', '', $args['content']); // 把资源替换成相对路径
@@ -89,5 +102,19 @@ function update($article, $args) {
 }
 
 function create($article, $args) {
-  
+  unset($args['game_name']);
+  unset($args['label']);
+  unset($args['path']);
+  $args['pub_date'] = date('Y-m-d');
+  $args['author'] = $_SESSION['id'];
+  $id = (int)$article->insert($args)
+    ->execute()
+    ->lastInsertId();
+  if ($id) {
+    $args['id'] = $id;
+  }
+  $args['author'] = $_SESSION['fullname'];
+
+  Spokesman::judge($id, '创建成功', '创建失败', $args);
+
 }

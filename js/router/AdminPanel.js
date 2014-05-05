@@ -4,7 +4,7 @@
     , mediatorInit = {};
   mediatorInit.article = {
     guide_name: '',
-    category: '',
+    category: 0,
     label: '',
     source: '',
     topic: '',
@@ -38,10 +38,7 @@
       this.$subPage.load(url);
     },
     showNormalPage: function (cate, sub, path) {
-      var data = {};
-      if (cate in mediatorInit) {
-        data = _.extend(mediatorInit[cate]);
-      }
+      var data = cate in mediatorInit ? _.extend({}, mediatorInit[cate]) : {};
       if (path) {
         var params = path.split('/');
         for (var i = 0, len = params.length; i < len; i++) {

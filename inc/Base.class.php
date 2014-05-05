@@ -284,7 +284,13 @@ class Base {
     }
 
     $this->sth = $this->builder->is_select ? self::$READ->prepare($sql) : self::$WRITE->prepare($sql);
-    $this->result = $this->sth->execute($this->builder->args);
+    try {
+      $this->result = $this->sth->execute($this->builder->args);
+    } catch (\Exception $e) {
+      var_dump($this->sth->errorInfo);
+      var_dump($e->getMessage());
+    }
+
     if ($this->is_debug || $debug) {
       var_dump($this->builder->args);
     }
