@@ -46,7 +46,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 }
 
 function fetch($game, $args) {
-  $pagesize = isset($args['pagesize']) ? (int)$args['pagesize'] : 20;
+  $pagesize = empty($args['pagesize']) ? 20 : (int)$args['pagesize'];
   $page = isset($args['page']) ? (int)$args['page'] : 0;
   $keyword = empty($args['keyword']) ? '' : trim(addslashes(strip_tags($args['keyword'])));
   $conditions = array(
@@ -73,6 +73,18 @@ function fetch($game, $args) {
   $total = count($games);
   usort($games, compare_hot);
   $games = array_slice($games, $page * $pagesize, $pagesize);
+
+  // 某些地方检索到这里就OK了，比如文章关联游戏的页面
+  if (isset($args['from'])) {
+    foreach ($games as $key => $single) {
+      $games[$key]['id'] = $single['guide_name'];
+      $games[$key]['label'] = $single['game_name'];
+    }
+    return Spokesman::say(array(
+      'total' => $total,
+      'list' => $games,
+    ));
+  }
 
   // 取每个游戏的文章数量
   $guide_names = array();

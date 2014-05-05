@@ -16,6 +16,7 @@ $article = new Article();
 $methods = array(
   'GET' => 'fetch',
   'PATCH' => 'update',
+  'POST' => 'create',
 );
 
 $args = $_REQUEST;
@@ -85,4 +86,8 @@ function update($article, $args) {
   if (Admin::is_outsider()) {
     Admin::log_outsider_action($conditions['id'], 'edit');
   }
+}
+
+function create($article, $args) {
+  
 }

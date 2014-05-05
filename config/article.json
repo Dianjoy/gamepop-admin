@@ -6,8 +6,7 @@
     {
       "icon": "plus",
       "title": "添加新文章",
-      "url": "#/article/detail",
-      "disabled": true
+      "url": "#/article/detail"
     },
     {
       "icon": "sitemap",

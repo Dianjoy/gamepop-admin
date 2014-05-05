@@ -1,6 +1,18 @@
 ;(function (ns) {
   'use strict';
-  var reg = /\/?(game|category|artcile|author)(\w+)/;
+  var reg = /\/?(game|category|artcile|author)(\w+)/
+    , mediatorInit = {};
+  mediatorInit.article = {
+    guide_name: '',
+    category: '',
+    label: '',
+    source: '',
+    topic: '',
+    author: '您',
+    icon_path: './img/image.png',
+    pub_date: '',
+    src_url: ''
+  };
   ns.AdminPanel = Backbone.Router.extend({
     $mainPage: null,
     $subPage: null,
@@ -26,9 +38,12 @@
       this.$subPage.load(url);
     },
     showNormalPage: function (cate, sub, path) {
+      var data = {};
+      if (cate in mediatorInit) {
+        data = _.extend(mediatorInit[cate]);
+      }
       if (path) {
-        var params = path.split('/')
-          , data = {};
+        var params = path.split('/');
         for (var i = 0, len = params.length; i < len; i++) {
           var arr = reg.exec(params[i]);
           if (arr) {
