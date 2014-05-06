@@ -9,6 +9,11 @@
       "url": "#/article/detail"
     },
     {
+      "icon": "list",
+      "title": "我的文章",
+      "url": "#/my/article"
+    },
+    {
       "icon": "sitemap",
       "title": "分类",
       "url": "#/article/category"

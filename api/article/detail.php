@@ -107,6 +107,7 @@ function create($article, $args) {
   unset($args['path']);
   $args['pub_date'] = date('Y-m-d');
   $args['author'] = $_SESSION['id'];
+  $args['status'] = Article::DRAFT;
   $id = (int)$article->insert($args)
     ->execute()
     ->lastInsertId();

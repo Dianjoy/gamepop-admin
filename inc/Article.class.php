@@ -13,7 +13,9 @@ class Article extends \gamepop\Base {
   const CATEGORY_IMAGE = '`t_article_category_image`';
 
   const NORMAL = 0;
-  const DELETED = 0;
+  const DELETED = 1;
+  const DRAFT = 2;
+  const WITHDRAW = 3;
 
   static $ALL = "`t_article`.`id`, `guide_name`, `category`, `label`, `source`,
     `topic`, `author`, `t_article`.`icon_path`,

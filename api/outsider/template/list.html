@@ -39,7 +39,7 @@
       <td><a href="#icon_path" class="edit" data-type="img" data-refresh="true"><img src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="icon-100"></a></td>
       <td data-title="游戏名称">{{game_name}}</td>
       <td data-title="游戏别名">{{guide_name}}</td>
-      <td data-title="游戏描述"><a href="#game_desc" class="edit" data-type="long-text">{{game_desc}}</a></td>
+      <td data-title="游戏描述"><a href="#game_desc" class="edit" data-type="long-text">{{#if game_desc}}{{game_desc}}{{else}}（请添加）{{/if}}</a></td>
       <td>
         <a href="#/outsider/articles/{{guide_name}}" class="btn btn-info"><i class="fa fa-list"></i> {{article_number}}</a>
       </td>
