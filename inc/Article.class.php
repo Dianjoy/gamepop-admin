@@ -32,7 +32,6 @@ class Article extends \gamepop\Base {
   // overrides parent's method
   public function search($keyword) {
     $this->builder->search('topic', $keyword);
-    $this->builder->search('content', $keyword);
     return $this;
   }
 

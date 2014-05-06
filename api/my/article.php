@@ -1,8 +1,4 @@
 <?php
-define('OPTIONS', 'article|article_wb');
-include_once '../../inc/session.php';
-?>
-<?php
 /**
  * Created by PhpStorm.
  * User: meathill
@@ -11,47 +7,28 @@ include_once '../../inc/session.php';
  */
 
 include_once "../../inc/utils.php";
+include_once "../../inc/API.class.php";
 include_once "../../inc/Spokesman.class.php";
 include_once "../../inc/Article.class.php";
-$article = new Article();
 
-$args = $_REQUEST;
-$request = file_get_contents('php://input');
-if ($request) {
-  $args = array_merge($_POST, json_decode($request, true));
-}
 
-header("Content-Type:application/json;charset=utf-8");
-switch ($_SERVER['REQUEST_METHOD']) {
-  case 'GET':
-    fetch($article, $args);
-    break;
+$api = new API('article', array(
+  'fetch' => fetch,
+  'update' => update,
+  'delete' => delete,
+));
 
-  case 'PATCH':
-    update($article, $args);
-    break;
-
-  case 'DELETE':
-    delete($article);
-    break;
-
-  default:
-    header("HTTP/1.1 406 Not Acceptable");
-    break;
-}
-
-function fetch($article, $args) {
+function fetch($args) {
+  $article = new Article();
   $pagesize = isset($args['pagesize']) ? (int)$args['pagesize'] : 20;
   $page = isset($args['page']) ? (int)$args['page'] : 0;
   $keyword = $args['keyword'];
   $status = array(
     'status' => 0,
+    'author' => $_SESSION['id'],
   );
-  $args = array_omit($args, 'page', 'pagesize', 'keyword', 'id', 'path');
-  $conditions = Spokesman::extract(true);
   $articles = $article->select(Article::$ALL)
     ->where($status, Article::TABLE)
-    ->where(array_merge($conditions, $args))
     ->search($keyword)
     ->fetchAll(PDO::FETCH_ASSOC);
   usort($articles, compare);
@@ -61,9 +38,6 @@ function fetch($article, $args) {
   // 读取作者，用作者名取代标记
   $editors = array();
   foreach ($articles as $item) {
-    if (!$item['source']) {
-      $editors[] = $item['author'];
-    }
     if ($item['update_editor']) {
       $editors[] = $item['update_editor'];
     }
@@ -77,9 +51,6 @@ function fetch($article, $args) {
       ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
     foreach ($articles as $key => $article) {
       $articles[$key]['update_editor'] = $editors[$article['update_editor']];
-      if (!$article['source']) {
-        $articles[$key]['author'] = $editors[$article['source']];
-      }
     }
   }
 
@@ -90,6 +61,7 @@ function fetch($article, $args) {
     $guide_names[] = $item['guide_name'];
   }
   $games = $game->select(Game::$ALL)
+    ->where(array('guide_name' => $guide_names), true)
     ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
   foreach ($articles as $key => $item) {
     $item['game_name'] = $games[$item['guide_name']]['game_name'];

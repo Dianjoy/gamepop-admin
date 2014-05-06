@@ -67,14 +67,14 @@
         {{#if source}}
         <a href="{{src_url}}" target="_blank">{{source}} <i class="fa fa-external-link"></i></a>
         {{else}}
-        {{author}}
+        {{author}}<span class="label label-success"><i class="fa fa-thumbs-up"></i> 原创</span>
         {{/if}}
       </td>
       <td><a href="#/game/profile/{{guide_name}}">{{game_name}}</a></td>
       <td><a href="#icon_path" class="edit" data-type="img"><img src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="img-thumbnail icon-mh-50"></a></td>
       <td><a href="#/article/detail/{{id}}">{{topic}} <i class="fa fa-edit"></i></a></td>
       <td>{{pub_date}}</td>
-      <td>{{update_time}} / {{update_editor_label}}</td>
+      <td>{{update_time}} / {{update_editor}}</td>
       <td>
         <div class="btn-group">
           <a href="#is_top" type="button" class="btn btn-info status-button {{#if is_top}}active{{/if}}"><i class="fa fa-arrow-up"></i></a>
