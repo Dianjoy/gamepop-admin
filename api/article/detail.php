@@ -50,6 +50,7 @@ function fetch($article, $args) {
   }
   $markdown = new HTML_To_Markdown($result['content']);
   $result['content'] = preg_replace('/]\(\/?([a-z|^(http)]+)/', '](http://r.yxpopo.com/$1', $markdown);
+  $result['status'] = (int)$result['status'];
 
   // 取相关游戏
   $game = new Game();

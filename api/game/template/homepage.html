@@ -52,12 +52,14 @@
       <div class="row" data-url="api/game/homepage-nav.php" data-mediator-class="gamepop.game.HomepageNav">
         <script type="text/x-handlebars-template" id="nav-template">
         {{#each list}}
+        {{#if label}}
         {{#if image}}
         <div class="col-md-6 {{#if status}}hide{{/if}}" id="nav-{{id}}">
           <a class="item" style="background-image: url({{image}});" href="#/artilce/list/category{{category}}/game{{guide_name}}">
             <span>{{label}}</span>
           </a>
         </div>
+        {{/if}}
         {{/if}}
         {{/each}}
         </script>

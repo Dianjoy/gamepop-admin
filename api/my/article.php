@@ -24,7 +24,6 @@ function fetch($args) {
   $page = isset($args['page']) ? (int)$args['page'] : 0;
   $keyword = $args['keyword'];
   $status = array(
-    'status' => 0,
     'author' => $_SESSION['id'],
   );
   $articles = $article->select(Article::$ALL)
@@ -61,11 +60,12 @@ function fetch($args) {
     $guide_names[] = $item['guide_name'];
   }
   $games = $game->select(Game::$ALL)
-    ->where(array('guide_name' => $guide_names), true)
+    ->where(array('guide_name' => $guide_names), '', true)
     ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
   foreach ($articles as $key => $item) {
     $item['game_name'] = $games[$item['guide_name']]['game_name'];
     $item['is_top'] = (int)$item['is_top'];
+    $item['status'] = (int)$item['status'];
     $articles[$key] = $item;
   }
 

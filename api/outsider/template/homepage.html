@@ -52,12 +52,14 @@
       <div class="row" data-url="api/game/homepage-nav.php" data-mediator-class="gamepop.game.HomepageNav">
         <script type="text/x-handlebars-template" id="nav-template">
         {{#each list}}
+        {{#if label}}
         {{#if image}}
         <div class="col-md-6 {{#if status}}hide{{/if}}" id="nav-{{id}}">
           <a class="item" style="background-image: url({{image}});" href="#/artilce/list/category{{category}}/game{{guide_name}}">
             <span>{{label}}</span>
           </a>
         </div>
+        {{/if}}
         {{/if}}
         {{/each}}
         </script>
@@ -118,7 +120,7 @@
           <td><a href="#image" class="edit" data-type="img"><img src="{{#if image}}{{image}}{{else}}./img/image.png{{/if}}" class="img-thumbnail icon-mh-100"></a></td>
           <td><a href="#label" class="edit">{{label}}</a></td>
           <td class="btn-group">
-            <a href="#/article/list/category{{category}}/game{{guide_name}}" class="btn btn-info"><i class="fa fa-list"></i> {{NUM}}</a>
+            <a href="#/outsider/articles/category{{category}}/game{{guide_name}}" class="btn btn-info"><i class="fa fa-list"></i> {{NUM}}</a>
             {{#if image}}
             {{#if status}}
             <button type="button" class="btn btn-success show-button" title="恢复"><i class="fa fa-eye"></i></button>
