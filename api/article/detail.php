@@ -91,6 +91,9 @@ function update($article, $args) {
     $args['content'] = strip_tags($args['content'], '<table><tr><td><span><video><audio>'); // 过滤掉所有script标签
     $args['content'] = \Michelf\Markdown::defaultTransform($args['content']);
   }
+  if (isset($args['icon_path'])) {
+    $args['icon_path'] = str_replace('http://r.yxpopo.com/', '', $args['icon_path']);
+  }
   $conditions = Spokesman::extract();
   $result = $article->update($args)
     ->where($conditions)
@@ -109,6 +112,9 @@ function create($article, $args) {
   $args['pub_date'] = date('Y-m-d');
   $args['author'] = $_SESSION['id'];
   $args['status'] = Article::DRAFT;
+  if (isset($args['icon_path'])) {
+    $args['icon_path'] = str_replace('http://r.yxpopo.com/', '', $args['icon_path']);
+  }
   $id = (int)$article->insert($args)
     ->execute()
     ->lastInsertId();

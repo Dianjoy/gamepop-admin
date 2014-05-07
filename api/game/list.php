@@ -117,11 +117,12 @@ function update($game, $args, $success = '更新成功', $error = '更新失败'
     Spokesman::judge(false, $success, $error);
     exit();
   }
-  $game->init_write();
-  $url = $_SERVER['PATH_INFO'];
-  $id = substr($url, 1);
+  $conditions = Spokesman::extract(true);
+  if (isset($args['icon_path'])) {
+    $args['icon_path'] = str_replace('http://r.yxpopo.com/', '', $args['icon_path']);
+  }
   $result = $game->update($args)
-    ->where(array('guide_name' => $id))
+    ->where($conditions)
     ->execute();
   Spokesman::judge($result, $success, $error, $args);
 }

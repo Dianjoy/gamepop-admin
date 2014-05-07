@@ -82,6 +82,9 @@ function create($game, $args) {
   unset($args['cate']);
   unset($args['label']);
   $args = array_merge($args, Spokesman::extract(true));
+  if (isset($args['image'])) {
+    $args['image'] = str_replace('http://r.yxpopo.com/', '', $args['image']);
+  }
   $result = $game->insert($args, Game::HOMEPAGE_NAV)
     ->execute()
     ->lastInsertId();
@@ -97,8 +100,10 @@ function delete($game) {
 }
 
 function update($game, $args, $success = '更新成功', $error = '更新失败') {
-  $game->init_write();
   $conditions = Spokesman::extract(true);
+  if (isset($args['image'])) {
+    $args['image'] = str_replace('http://r.yxpopo.com/', '', $args['image']);
+  }
   $result = $game->update($args, Game::HOMEPAGE_NAV)
     ->where($conditions)
     ->execute();

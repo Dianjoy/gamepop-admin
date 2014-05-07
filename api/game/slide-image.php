@@ -68,6 +68,9 @@ function delete($game) {
 
 function update($game, $args, $success = '更新成功', $error = '更新失败') {
   $conditions = Spokesman::extract(true);
+  if (isset($args['image'])) {
+    $args['image'] = str_replace('http://r.yxpopo.com/', '', $args['image']);
+  }
   $result = $game->update($args, Game::SLIDE)
     ->where($conditions)
     ->execute();
@@ -76,6 +79,9 @@ function update($game, $args, $success = '更新成功', $error = '更新失败'
 
 function create($game, $args) {
   $args = array_merge($args, Spokesman::extract(true));
+  if (isset($args['image'])) {
+    $args['image'] = str_replace('http://r.yxpopo.com/', '', $args['image']);
+  }
   $result = $game->insert($args)
     ->execute()
     ->lastInsertId();

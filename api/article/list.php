@@ -119,7 +119,9 @@ function update($article, $args, $success = '更新成功', $error = '更新失�
   unset($args['label']);
   // 去掉条件中和更新中重复的键
   $conditions = array_diff_key($conditions, $args);
-
+  if (isset($args['icon_path'])) {
+    $args['icon_path'] = str_replace('http://r.yxpopo.com/', '', $args['icon_path']);
+  }
   $result = $article->update($args)
     ->where($conditions)
     ->execute();

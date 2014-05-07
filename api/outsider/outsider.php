@@ -54,11 +54,9 @@ function delete($admin) {
 }
 
 function update($admin, $args, $success = '更新成功', $error = '更新失败') {
-  $admin->init_write();
-  $url = $_SERVER['PATH_INFO'];
-  $id = substr($url, 1);
+  $conditions = Spokesman::extract();
   $result = $admin->update($args)
-    ->where(array('guide_name' => $id))
+    ->where($conditions)
     ->execute();
   Spokesman::judge($result, $success, $error, $args);
 }
