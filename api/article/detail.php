@@ -39,7 +39,6 @@ if ($method) {
 
 function fetch($article, $args) {
   require_once(dirname(__FILE__) . '/../../inc/HTML_To_Markdown.php');
-  require_once(dirname(__FILE__) . '/../../inc/Game.class.php');
 
   $conditions = Spokesman::extract();
   $result = $article->select(Article::$DETAIL)
@@ -53,10 +52,13 @@ function fetch($article, $args) {
   $result['status'] = (int)$result['status'];
 
   // 取相关游戏
-  $game = new Game();
-  $game = $game->select(Game::$ALL)
-    ->where(array(Game::ID => $result[Game::ID]))
-    ->fetch(PDO::FETCH_ASSOC);
+  if ($result['guide_name']) {
+    require_once(dirname(__FILE__) . '/../../inc/Game.class.php');
+    $game = new Game();
+    $game = $game->select(Game::$ALL)
+      ->where(array(Game::ID => $result[Game::ID]))
+      ->fetch(PDO::FETCH_ASSOC);
+  }
 
   // 如果不是抓取的话，还要取作者
   if (!$result['source']) {
@@ -68,7 +70,7 @@ function fetch($article, $args) {
     $result['author'] = $author['fullname'];
   }
 
-  Spokesman::say(array_merge($game, $result));
+  Spokesman::say($game ? array_merge($game, $result) : $result);
 }
 
 function update($article, $args) {

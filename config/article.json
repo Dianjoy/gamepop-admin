@@ -17,6 +17,11 @@
       "icon": "sitemap",
       "title": "分类",
       "url": "#/article/category"
+    },
+    {
+      "icon": "group",
+      "title": "人工文章",
+      "url": "#/article/manual"
     }
   ]
 }
