@@ -108,6 +108,15 @@ function update($article, $args) {
 }
 
 function create($article, $args) {
+  require_once "../../inc/Admin.class.php";
+  if (Admin::is_outsider()) {
+    header('HTTP/1.1 401 Unauthorized');
+    Spokesman::say(array(
+      'code' => 1,
+      'msg' => '请勿越权操作',
+    ));
+    exit();
+  }
   unset($args['game_name']);
   unset($args['label']);
   unset($args['path']);
