@@ -18,8 +18,8 @@ class Article extends \gamepop\Base {
   const WITHDRAW = 3;
 
   static $ALL = "`t_article`.`id`, `guide_name`, `category`, `label`, `source`,
-    `topic`, `author`, `t_article`.`icon_path`,
-    `pub_date`, `src_url`, `seq`, `update_time`, `update_editor`, `is_top`, `t_article`.`status`";
+    `topic`, `author`, `t_article`.`icon_path`, `pub_date`, `src_url`, `seq`,
+    `update_time`, `update_editor`, `is_top`, `is_index`, `t_article`.`status`";
   static $TOP = "`id`, `topic`, `update_time`, `seq`, `is_top`, `icon_path`, `source`, `author`";
   static $DETAIL = "`guide_name`, `category`, `label`, `source`,
     `topic`, `author`, `icon_path`, `content`,
