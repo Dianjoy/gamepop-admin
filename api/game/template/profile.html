@@ -54,7 +54,11 @@
             &nbsp;&nbsp;
             <button type="button" class="btn btn-secondary" disabled><i class="fa fa-archive"></i> 发布攻略包</button>
             &nbsp;&nbsp;
-            <a href="http://49.212.132.111:8889/reget.do?action=add_game&param=:json" class="btn btn-warning process-button" data-content="抓取需要一段时间才能完成，请耐心等候。您可以离开本页面继续其它工作。" data-title="抓取已经开始"><i class="fa fa-cloud-download"></i> 重新抓取</a>
+            <div class="btn-group">
+              <a href="http://49.212.132.111:8889/reget.do?action=add_game&param=:json" class="btn btn-warning process-button" data-content="抓取需要一段时间才能完成，请耐心等候。您可以离开本页面继续其它工作。" data-title="抓取已经开始"><i class="fa fa-cloud-download"></i> 重新抓取</a>
+              <a href="api/game/source.html" class="btn btn-warning popup" title="设置数据源"><i class="fa fa-gear"></i></a>
+            </div>
+
             &nbsp;&nbsp;
             <button type="button" class="btn btn-danger delete-button"><i class="fa fa-trash-o"></i> 删除</button>
           </div>

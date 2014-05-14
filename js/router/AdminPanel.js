@@ -13,29 +13,11 @@
     pub_date: '',
     src_url: ''
   };
-  ns.AdminPanel = Backbone.Router.extend({
-    $mainPage: null,
-    $subPage: null,
-    lastPage: null,
+  ns.AdminPanel = dianjoy.router.BaseRouter.extend({
     routes: {
       '': 'showHomepage',
       'admin/:sub': 'showAdminPage',
       ':cate/:sub(/*path)': 'showNormalPage'
-    },
-    execute: function (callback, args) {
-      if (location.hash === this.lastPage) {
-        return;
-      }
-      if (this.$subPage.preCheck()) {
-        this.lastPage = location.hash;
-        callback.apply(this, args);
-      } else {
-        this.navigate(this.lastPage, {trigger: false, replace: true});
-      }
-    },
-    showHomepage: function () {
-      var url = baseURL + 'dashboard/';
-      this.$subPage.load(url);
     },
     showNormalPage: function (cate, sub, path) {
       var data = cate in mediatorInit ? _.extend({}, mediatorInit[cate]) : {};
