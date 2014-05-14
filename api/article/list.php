@@ -142,5 +142,12 @@ function delete($article) {
 }
 
 function compare($a, $b) {
-  return strtotime($b['update_time']) - strtotime($a['update_time']);
+  if ($a['category'] == 0 && $b['category'] == 0 || $a['category'] != 0 && $b['category'] != 0) {
+    return strtotime($b['update_time']) - strtotime($a['update_time']);
+  } else if ($a['category'] == 0) {
+    return -1;
+  } else {
+    return 1;
+  }
+
 }
