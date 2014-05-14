@@ -41,20 +41,21 @@ switch ($_SERVER['REQUEST_METHOD']) {
 }
 
 function fetch($article, $args) {
-  $pagesize = isset($args['pagesize']) ? (int)$args['pagesize'] : 20;
+  $pagesize = empty($args['pagesize']) ? 20 : (int)$args['pagesize'];
   $page = isset($args['page']) ? (int)$args['page'] : 0;
   $keyword = $args['keyword'];
+  $compare = 'compare' . (isset($args['seq']) ? '_' . $args['seq'] : '');
   $status = array(
     'status' => 0,
   );
-  $args = array_omit($args, 'page', 'pagesize', 'keyword', 'id', 'path');
+  $args = array_omit($args, 'page', 'pagesize', 'keyword', 'id', 'path', 'seq');
   $conditions = Spokesman::extract(true);
   $articles = $article->select(Article::$ALL)
     ->where($status, Article::TABLE)
     ->where(array_merge($conditions, $args))
     ->search($keyword)
     ->fetchAll(PDO::FETCH_ASSOC);
-  usort($articles, compare);
+  usort($articles, $compare);
   $total = count($articles);
   $articles = array_slice($articles, $page * $pagesize, $pagesize);
 
@@ -149,5 +150,7 @@ function compare($a, $b) {
   } else {
     return 1;
   }
-
+}
+function compare_seq($a, $b) {
+  return (int)$a['seq'] - (int)$b['seq'];
 }

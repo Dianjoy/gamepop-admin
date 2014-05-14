@@ -34,8 +34,8 @@
       item.replaceWith(this.createItem(model));
     },
     collection_sortHandler: function (model, index) {
-      var item = this.$('#nav-' + model.id);
-      item = item.length > 0 ? item : this.$('#nav-' + model.cid);
+      var item = this.$('#top-' + model.id);
+      item = item.length > 0 ? item : this.$('#top-' + model.cid);
       if (item.index() < index) {
         item.insertAfter(this.$el.children().eq(index));
       } else {
