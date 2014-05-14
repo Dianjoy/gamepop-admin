@@ -4,25 +4,11 @@
 ;(function (ns) {
   'use strict';
   var reg = /\/?(game|category|artcile|author)(\w+)/;
-  ns.AdminPanel = Backbone.Router.extend({
-    $mainPage: null,
-    $subPage: null,
-    lastPage: null,
+  ns.AdminPanel = dianjoy.router.BaseRouter.extend({
     routes: {
       '': 'showHomepage',
       'outsider/:sub(/*path)': 'showNormalPage',
       ':cate(/*path)': 'showErrorPage'
-    },
-    execute: function (callback, args) {
-      if (location.hash === this.lastPage) {
-        return;
-      }
-      if (this.$subPage.preCheck()) {
-        this.lastPage = location.hash;
-        callback.apply(this, args);
-      } else {
-        this.navigate(this.lastPage, {trigger: false, replace: true});
-      }
     },
     showHomepage: function () {
       var url = baseURL + 'outsider/template/list.html';
