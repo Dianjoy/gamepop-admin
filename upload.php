@@ -23,11 +23,11 @@ $type = isset($_REQUEST['type']) ? $_REQUEST['type'] : 'image';
 // 目前icon_path可能作为文章缩略图，也可能作为游戏图标
 // 所以暂时以id来判断用户上传的类型
 // 为空或者为数字的，认为是文章（文章允许新建）；不然则认为是游戏
-if ($type === 'icon_path') {
+if ($type == 'icon_path') {
   if (empty($_REQUEST['id'])) {
     $id = md5(uniqid());
     $type = 'icon_path_article';
-  } else if (is_int($_REQUEST['id'])) {
+  } else if (is_numeric($_REQUEST['id'])) {
     $id = (int)$_REQUEST['id'];
     $type = 'icon_path_article';
   }
@@ -38,6 +38,7 @@ if ($type === 'icon_path') {
 // 暂时只允许上传图片
 $ext = substr($file['name'], strrpos($file['name'], '.'));
 if ($ext != '.jpg' && $ext != '.gif' && $ext != '.png') {
+  header("HTTP/1.1 415 Unsupported Media Type");
   exit(json_encode(array(
     'code' => 1,
     'msg' => '只支持上传图片',
@@ -61,6 +62,7 @@ if ($type == 'icon_path_article' && ($width / $height * 2 != 3)) {
   );
 }
 if (isset($result) && $result['code'] === 1) {
+  header("HTTP/1.1 406 Not Acceptable");
   exit(json_encode($result));
 }
 
@@ -86,6 +88,7 @@ upload::insert($DB, $id, $type, $new_path, $upload_user, $file['name']);
 
 $result = array(
   'code' => 0,
+  'type' => $type,
   'url' => (defined('DEBUG') ? './upload/' : 'http://r.yxpopo.com/') . substr($new_path, 7),
   'filename' => $file['name'],
 );
