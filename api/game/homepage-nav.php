@@ -66,6 +66,13 @@ function fetch($game, $args) {
     $nav[$value['id']]['status'] = (int)$nav[$value['id']]['status'];
     unset($value['id']);
     $categories[$key] = array_merge($value, (array)$nav[$value['category']]);
+    unset($nav[$value['category']]);
+  }
+  foreach ($nav as $category => $item) {
+    $item['NUM'] = 0;
+    $item['status'] = (int)$item['status'];
+    $item['category'] = $category;
+    $categories[] = $item;
   }
   usort($categories, compare);
 
@@ -111,5 +118,10 @@ function update($game, $args, $success = '更新成功', $error = '更新失败'
 }
 
 function compare($a, $b) {
+  if ($a['label'] && !$b['label']) {
+    return -1;
+  } elseif (!$a['label'] && $b['label']) {
+    return 1;
+  }
   return (int)$a['seq'] - (int)$b['seq'];
 }
