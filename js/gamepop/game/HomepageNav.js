@@ -4,8 +4,9 @@
 ;(function (ns) {
   ns.HomepageNav = Backbone.View.extend({
     initialize: function () {
-      this.template = Handlebars.compile(this.$('script').remove().html());
+      this.template = Handlebars.compile(this.$('script').remove().html().replace(/\s{2,}|\r|\n/g, ''));
 
+      this.list = this.$('ul');
       var spec = this.$el.data();
       this.collection = dianjoy.model.ListCollection.createInstance(null, {
         url: spec.url + '/' + this.model.get('path')
@@ -22,13 +23,14 @@
       dianjoy.model.ListCollection.destroyInstance(this.collection.url);
     },
     render: function (collection) {
-      this.$el.html(this.template({list: collection.toJSON()}));
+      this.list.width(collection.length * 115);
+      this.list.html(this.template({list: collection.toJSON()}));
     },
     createItem: function (model) {
       return this.template({list: [model.toJSON()]});
     },
     collection_addHandler: function (model) {
-      this.$el.append(this.createItem(model));
+      this.list.append(this.createItem(model));
     },
     collection_changeHandler: function (model) {
       var item = this.$('#nav-' + ('id' in model.changed ? model.cid : model.id));
@@ -39,7 +41,7 @@
       if (item.length) {
         item.replaceWith(this.createItem(model));
       } else {
-        this.$el.append(this.createItem(model));
+        this.list.append(this.createItem(model));
       }
     },
     collection_removeHandler: function (model) {
@@ -51,9 +53,9 @@
       var item = this.$('#nav-' + model.id);
       item = item.length > 0 ? item : this.$('#nav-' + model.cid);
       if (item.index() < index) {
-        item.insertAfter(this.$el.children().eq(index));
+        item.insertAfter(this.list.children().eq(index));
       } else {
-        item.insertBefore(this.$el.children().eq(index));
+        item.insertBefore(this.list.children().eq(index));
       }
     }
   });

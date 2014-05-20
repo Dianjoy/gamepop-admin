@@ -1,14 +1,81 @@
 @charset "UTF-8"
+@import "../web/css/define"
 /* ====================================
  * emulator
  * ================================== */
+.phone
+  width: 400px
+  height: 750px
+  background: linear-gradient(to bottom, #FFF, #F0F0F0),linear-gradient(to bottom, #111, #000)
+  background-size: 360px 640px,100% 100%
+  background-position: 20px 50px,0 0
+  background-repeat: no-repeat, no-repeat
+  border-radius: 20px
+  padding: 50px 20px 60px
+  position: relative
+
+  &:before,
+  &:after
+    content: ' '
+    position: absolute
+    left: 50%
+    z-index: 5
+
+  &:before
+    top: 16px
+    margin-left: -25px
+    width: 50px
+    height: 10px
+    border-radius: 5px
+    background-color: #333
+
+  &:after
+    bottom: 20px
+    margin-left: -12px
+    width: 24px
+    height: 24px
+    border: 2px solid #7E7E7E
+    border-radius: 12px
+
 .emulator
-  width: 380px
-  height: 660px
-  border: 10px solid #000
-  margin-right: 1em
-  background: #333
+  width: 360px
+  height: 640px
   overflow: auto
+
+  .top-navbar
+    text-indent: 15px
+
+    h2
+      margin: 0
+      font-size: 16px
+      line-height: 45px
+
+  .game-info,
+  .homepage-nav
+    background-color: #ef9393
+
+  .game-info
+    padding: 15px
+    color: #FFF
+
+    img
+      width: 70px
+      height: 70px
+      border-radius: 6px
+
+    h2
+      font-size: 16px
+      margin: 5px 0
+
+    p
+      @extend .transition
+      font-size: 12px
+      height: 3em
+      margin: 0
+      overflow: hidden
+
+    small
+      color: #EEE
 
   .smart-slide
     height: 250px
@@ -17,41 +84,42 @@
     img
       width: 100%
 
-  .game-header
-    background: #555
-    color: #FFF
-
-    h2
-      font-size: 20px
-      line-height: 50px
-      margin: 0
-      text-indent: 10px
+  h2.game-header
+    font-size: 12px
+    line-height: 30px
+    margin: 0
+    text-indent: 15px
 
   .homepage-nav
-    padding: 15px 15px 0
-    overflow: hidden
+    padding: 0
+    overflow: auto
+    color: #FFF
+
+    ul
+      list-style: none
+      padding: 0
+      margin: 0
 
     .item
-      min-height: 80px
-      background-size: auto 80px
-      border-radius: 8px
-      border: 3px solid #333
-      display: flex
-      flex-direction: row
-      margin-bottom: 15px
+      width: 100px
+      margin-left: 15px
+      display: inline-block
 
-      &:hover
-        text-decoration: none
-
-      span
+      img
+        width: 100px
+        height: 100px
+        border-radius: 10px
         display: block
-        background: rgba(33, 33, 33, 0.8)
+
+      h3
+        font-size: 14px
+        line-height: 30px
+        font-weight: normal
+        margin: 0
+        text-align: center
+
+      a
         color: #FFF
-        text-indent: 0.5em
-        line-height: 1.8em
-        padding-top: 0.2em
-        align-self: flex-end
-        flex: auto
 
   .top-articles
     ul, li
@@ -86,3 +154,17 @@
       font-size: 12px
       color: #EEE
       margin-bottom: 0
+
+  section
+    padding: 15px
+
+    h1
+      margin: 0 0 10px
+      font-size: 18px
+
+    .news-info
+      font-size: 12px
+      margin: 0
+
+    img
+      max-width: 100%

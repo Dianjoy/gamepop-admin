@@ -4,6 +4,11 @@
   "has_sub": true,
   "sub": [
     {
+      "icon": "plus",
+      "title": "添加游戏",
+      "url": "#/game/add"
+    },
+    {
       "icon": "list",
       "title": "全部游戏",
       "url": "#/game/list"

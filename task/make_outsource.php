@@ -7,19 +7,19 @@
  * @author Meatill <lujia.zhai@dianjoy.com>
  * @since 
  */
-die('一次性，已完成');
+die('一次性，只能本地跑');
 require_once "../inc/Admin.class.php";
 
-// 生成20个账号
+// 生成10个账号
 $prefix = 'contributor';
 $fullname_prefix = '外包';
-$num = 20;
+$num = 30;
 $role = Admin::OUTSIDER;
 $admin = new Admin(true);
 
 if ($_REQUEST['m'] == 'accounts') {
   echo '<table><tr><th>用户名</th><th>密码</th></tr>';
-  for ($i = 0; $i < $num; $i++) {
+  for ($i = 20; $i < $num; $i++) {
     $account = $prefix . $i;
     $password = create_password();
     $fullname = $fullname_prefix . $i;
@@ -42,7 +42,8 @@ if ($_REQUEST['m'] == 'games') {
           (`guide_name`, `user_id`)
           VALUES ";
   foreach ($names as $name) {
-    $user_id = 10 + ($count % 20);
+    $user_id = 10 + ($count % 30);
+    $user_id = $user_id > 29 ? $user_id + 4 : $user_id;
     $sql .= "('$name', $user_id),";
     $count++;
   }
