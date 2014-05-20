@@ -57,6 +57,7 @@ function fetch($game) {
       'id' => $outsider['user_id']
     ))
     ->fetch(PDO::FETCH_ASSOC);
+  unset($info['id']);
 
   Spokesman::say(array_merge($outsider, $info));
 }
@@ -64,16 +65,16 @@ function fetch($game) {
 function update($game, $args) {
   $fullname = $args['fullname'];
   unset($args['fullname']);
-  $conditions = Spokesman::extract(true);
+  $conditions = Spokesman::extract();
 
   $outsider = $game->select(Game::$OUTSIDE)
     ->where($conditions)
     ->fetch(PDO::FETCH_ASSOC);
 
   if ($outsider) {
-    $result = $game->update($args)
+    $result = $game->update($args, Game::OUTSIDE)
       ->where($conditions)
-      ->excute();
+      ->execute();
   } else {
     $result = $game->insert(array_merge($args, $conditions), Game::OUTSIDE)
       ->execute();
