@@ -11,4 +11,8 @@ class Fetcher extends \gamepop\Base {
   const SOURCE = 't_data_source';
 
   static $ALL = '*';
+
+  public function getTable($fields) {
+    return self::SOURCE;
+  }
 } 
