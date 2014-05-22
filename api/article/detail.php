@@ -120,7 +120,6 @@ function create($article, $args) {
   unset($args['game_name']);
   unset($args['label']);
   unset($args['path']);
-  $args['pub_date'] = date('Y-m-d');
   $args['author'] = $_SESSION['id'];
   $args['status'] = Article::DRAFT;
   if (isset($args['icon_path'])) {
