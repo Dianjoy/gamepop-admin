@@ -65,7 +65,7 @@ function fetch($game) {
 function update($game, $args) {
   $fullname = $args['fullname'];
   unset($args['fullname']);
-  $conditions = Spokesman::extract();
+  $conditions = Spokesman::extract(true);
 
   $outsider = $game->select(Game::$OUTSIDE)
     ->where($conditions)

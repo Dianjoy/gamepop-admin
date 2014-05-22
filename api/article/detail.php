@@ -83,10 +83,10 @@ function update($article, $args) {
     ));
     exit();
   }
-  $args['update_time'] = date('Y-m-d H:i:s');
   $args['update_editor'] = (int)$_SESSION['id'];
   unset($args['msg']);
   unset($args['label']);
+  unset($args['game_name']);
   if (isset($args['content'])) {
     require_once(dirname(__FILE__) . '/../../inc/Markdown.inc.php');
     $args['content'] = str_replace('http://r.yxpopo.com/', '', $args['content']); // 把资源替换成相对路径
@@ -100,7 +100,7 @@ function update($article, $args) {
   $result = $article->update($args)
     ->where($conditions)
     ->execute();
-  Spokesman::judge($result, '修改成功', '修改失败');
+  Spokesman::judge($result, '修改成功', '修改失败', $args);
 
   if (Admin::is_outsider()) {
     Admin::log_outsider_action($conditions['id'], 'edit');
