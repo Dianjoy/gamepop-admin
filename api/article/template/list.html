@@ -75,16 +75,16 @@
       <td><a href="#icon_path" class="edit" data-type="img"><img src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="img-thumbnail icon-mh-50"></a></td>
       <td><a href="#/article/detail/{{id}}">{{topic}} <i class="fa fa-edit"></i></a></td>
       <td class="stars" data-value="{{remark}}">
-        <input type="radio" name="remark-{{id}}" value="5" id="star-{{id}}-5">
-        <label for="star-{{id}}-5" class="fa star"></label>
-        <input type="radio" name="remark-{{id}}" value="4" id="star-{{id}}-4">
-        <label for="star-{{id}}-4" class="fa star"></label>
-        <input type="radio" name="remark-{{id}}" value="3" id="star-{{id}}-3">
-        <label for="star-{{id}}-3" class="fa star"></label>
-        <input type="radio" name="remark-{{id}}" value="2" id="star-{{id}}-2">
-        <label for="star-{{id}}-2" class="fa star"></label>
-        <input type="radio" name="remark-{{id}}" value="1" id="star-{{id}}-1">
-        <label for="star-{{id}}-1" class="fa star"></label>
+        <input type="radio" name="remark-{{id}}" value="5" id="star-{{id}}-5" disabled>
+        <label for="star-{{id}}-5" class="fa star disabled"></label>
+        <input type="radio" name="remark-{{id}}" value="4" id="star-{{id}}-4" disabled>
+        <label for="star-{{id}}-4" class="fa star disabled"></label>
+        <input type="radio" name="remark-{{id}}" value="3" id="star-{{id}}-3" disabled>
+        <label for="star-{{id}}-3" class="fa star disabled"></label>
+        <input type="radio" name="remark-{{id}}" value="2" id="star-{{id}}-2" disabled>
+        <label for="star-{{id}}-2" class="fa star disabled"></label>
+        <input type="radio" name="remark-{{id}}" value="1" id="star-{{id}}-1" disabled>
+        <label for="star-{{id}}-1" class="fa star disabled"></label>
       </td>
       <td><a href="#pub_date" class="edit" data-type="datetime">{{pub_date}}</a></td>
       <td>{{update_time}} / {{update_editor}}</td>

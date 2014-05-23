@@ -80,11 +80,15 @@ function fetch($game, $args) {
     ));
   }
 
+  // 取游戏tag
+  $tags = array();
   // 取每个游戏的文章数量
   $guide_names = array();
   foreach ($games as $row) {
     $guide_names[] = $row[Game::ID];
+    $tags = array_merge($tags, explode('|', $row['tags']));
   }
+  $tags = array_unique($tags);
   include_once "../../inc/Article.class.php";
   $article = new Article();
 
@@ -94,8 +98,23 @@ function fetch($game, $args) {
     ->group(Game::ID)
     ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
   foreach ($games as &$row) {
+    $row['os_android'] = (int)$row['os_android'];
+    $row['os_ios'] = (int)$row['os_ios'];
     $row['article_number'] = $article_number[$row[Game::ID]];
   }
+
+  $tags = $game->select(Game::$TAGS)
+    ->where(array('id' => $tags), '', true)
+    ->where(array('status' => 0))
+    ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
+  foreach ($games as &$row) {
+    $arr = explode('|', $row['tags']);
+    foreach ($arr as $key => $tag) {
+      $arr[$key] = $tags[$tag];
+    }
+    $row['tags'] = $arr;
+  }
+
 
   $result = array(
     'total' => $total,

@@ -144,7 +144,7 @@ function delete($article) {
 
 function compare($a, $b) {
   if ($a['category'] == 0 && $b['category'] == 0 || $a['category'] != 0 && $b['category'] != 0) {
-    return strtotime($b['update_time']) - strtotime($a['update_time']);
+    return strtotime($b['pub_date']) - strtotime($a['pub_date']);
   } else if ($a['category'] == 0) {
     return -1;
   } else {
