@@ -26,7 +26,6 @@
   <tr>
     <th>游戏图标</th>
     <th>游戏名称</th>
-    <th>游戏别名</th>
     <th>游戏标签</th>
     <th>游戏描述</th>
     <th>游戏平台</th>
@@ -40,9 +39,8 @@
     <tr id="{{guide_name}}">
       <td><a href="#icon_path" class="edit" data-type="img" data-refresh="true"><img
         src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="icon-100"></a></td>
-      <td data-title="游戏名称">{{game_name}}</td>
-      <td data-title="游戏别名">{{guide_name}}</td>
-      <td data-title="游戏标签" class="label-list">{{#each tags}}<span class="label label-info">{{.}}</span> {{/each}}</td>
+      <td data-title="游戏名称">{{game_name}} <small>{{guide_name}}</small></td>
+      <td data-title="游戏标签" class="label-list"><a href="#tags" class="edit" data-type="select" data-multiple="true" data-add-new="true" data-display="label">{{#each tags}}<span class="label label-info">{{.}}</span> {{/each}}</a></td>
       <td data-title="游戏描述">
         <a href="#game_desc" class="edit" data-type="long-text">
           {{#if game_desc}}{{game_desc}}{{else}}（添加）{{/if}}
@@ -70,7 +68,7 @@
   </tbody>
   <tfoot>
   <tr class="waiting">
-    <td colspan="8" align="center"><i class="fa fa-spin fa-spinner fa-4x"></i><br>加载数据，请稍后</td>
+    <td colspan="7" align="center"><i class="fa fa-spin fa-spinner fa-4x"></i><br>加载数据，请稍后</td>
   </tr>
   </tfoot>
 </table>
