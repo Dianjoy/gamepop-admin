@@ -40,10 +40,10 @@
       <td><a href="#icon_path" class="edit" data-type="img" data-refresh="true"><img
         src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="icon-100"></a></td>
       <td data-title="游戏名称">{{game_name}} <small>{{guide_name}}</small></td>
-      <td data-title="游戏标签" class="label-list"><a href="#tags" class="edit" data-type="select" data-multiple="true" data-add-new="true" data-display="label">{{#each tags}}<span class="label label-info">{{.}}</span> {{/each}}</a></td>
+      <td data-title="游戏标签" class="label-list"><a href="#tags" class="edit" data-type="tags" data-multiple="true" data-add-new="true" data-display="label" data-refresh="true" data-url="api/game/tags.php">{{#each tags}}<span class="label label-info">{{tag}}</span> {{/each}}</a></td>
       <td data-title="游戏描述">
         <a href="#game_desc" class="edit" data-type="long-text">
-          {{#if game_desc}}{{game_desc}}{{else}}（添加）{{/if}}
+          {{game_desc}}
         </a>
       </td>
       <td data-title="游戏平台">

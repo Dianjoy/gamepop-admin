@@ -106,11 +106,13 @@ function fetch($game, $args) {
   $tags = $game->select(Game::$TAGS)
     ->where(array('id' => $tags), '', true)
     ->where(array('status' => 0))
-    ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
+    ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
   foreach ($games as &$row) {
-    $arr = explode('|', $row['tags']);
+    $arr = array_filter(explode('|', $row['tags']));
     foreach ($arr as $key => $tag) {
-      $arr[$key] = $tags[$tag];
+      $item = $tags[$tag];
+      $item['id'] = $tag;
+      $arr[$key] = $item;
     }
     $row['tags'] = $arr;
   }
@@ -143,6 +145,14 @@ function update($game, $args, $success = '更新成功', $error = '更新失败'
   $result = $game->update($args)
     ->where($conditions)
     ->execute();
+  if (isset($args['tags'])) {
+    $tags = explode('|', $args['tags']);
+    $tags = $game->select(Game::$TAGS)
+      ->where(array('id' => $tags), '', true)
+      ->where(array('status' => 0))
+      ->fetchAll(PDO::FETCH_ASSOC);
+    $args['tags'] = $tags;
+  }
   Spokesman::judge($result, $success, $error, $args);
 }
 

@@ -21,18 +21,30 @@ class API {
     header("Content-Type:application/json;charset=utf-8");
     switch ($_SERVER['REQUEST_METHOD']) {
       case 'GET':
+        if (empty($handlers['fetch'])) {
+          header("HTTP/1.1 406 Not Acceptable");
+        }
         $handlers['fetch']($args, $attr);
         break;
 
       case 'PATCH':
+        if (empty($handlers['update'])) {
+          header("HTTP/1.1 406 Not Acceptable");
+        }
         $handlers['update']($args, $attr);
         break;
 
       case 'DELETE':
+        if (empty($handlers['delete'])) {
+          header("HTTP/1.1 406 Not Acceptable");
+        }
         $handlers['delete']($args, $attr);
         break;
 
       case 'POST':
+        if (empty($handlers['create'])) {
+          header("HTTP/1.1 406 Not Acceptable");
+        }
         $handlers['create']($args, $attr);
         break;
 
