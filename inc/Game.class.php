@@ -24,7 +24,7 @@ class Game extends \gamepop\Base {
   static $ALL = "`guide_name`, `game_name`, `game_desc`, `update_time`, `icon_path`,
    `os_android`, `os_ios`, `update_time`, `hot`, `tags`";
   static $SLIDE = "`id`, `image`, `link`, `seq`";
-  static $HOMEPAGE_NAV = "`category`, `id`, `guide_name`, `image`, `seq`, `status`";
+  static $HOMEPAGE_NAV = "`category`, `id`, `guide_name`, `image`, `seq`, `status`, `order_by`";
   static $OUTSIDE = "`id`, `guide_name`, `user_id`, `score`";
   static $TAGS = "`id`, `tag`";
 
