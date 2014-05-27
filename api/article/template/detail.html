@@ -18,8 +18,8 @@
           <div class="media-body">
             <h4>作者：{{author}} {{#if source}}<small>来源：<a href="{{src_url}}" target="_blank">{{source}} <i class="fa fa-external-link"></i></a></small>{{else}}<span class="label label-success"><i class="fa fa-thumbs-up"></i> 原创</span>{{/if}}</h4>
             <p>
-              游戏：<a href="#guide_name" data-type="search" class="edit" data-search-url="api/game/list.php" data-display="game_name">{{#if game_name}}{{game_name}}{{else}}（请选择）{{/if}}</a>
-              分类：{{#if label}}<a href="#/article/list/category{{category}}/game{{guide_name}}">{{label}}</a>{{else}}<a href="#category" data-type="select" class="edit" data-url="api/article/category.php" data-display="label" data-add-new="true">（请选择）</a>{{/if}}
+              游戏：<a href="#guide_name" data-type="search" class="edit" data-search-url="api/game/list.php" data-display="game_name">{{game_name}}</a>
+              分类：<a href="#category" data-type="select" class="edit" data-url="api/article/category.php" data-display="label" data-add-new="true">{{label}}</a>
               上线时间：<a href="#pub_date" data-type="datetime" class="edit">{{pub_date}}</a>
             </p>
             <p>

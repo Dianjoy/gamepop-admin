@@ -122,6 +122,7 @@ function create($article, $args) {
   unset($args['path']);
   $args['author'] = $_SESSION['id'];
   $args['status'] = Article::DRAFT;
+  $args['pub_date'] = empty($args['pub_date']) ? date('Y-m-d H:i:s') : $args['pub_date'];
   if (isset($args['icon_path'])) {
     $args['icon_path'] = str_replace('http://r.yxpopo.com/', '', $args['icon_path']);
   }
