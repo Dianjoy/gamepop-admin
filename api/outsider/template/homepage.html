@@ -1,110 +1,66 @@
-<div class="game-info well well-sm smart-info" data-url="api/game/info.php">
-  <div class="media">
-    <div class="pull-left">
-      <img src="img/image.png" class="img-thumbnail icon-100">
-    </div>
-    <div class="media-body">
-      <h4><i class="fa fa-spin fa-spinner"></i></h4>
-      <p>加载中，请稍后</p>
-    </div>
-  </div>
-  <script type="text/x-handlebars-template">
-    <div class="media">
-      <a href="#/game/profile/{{guide_name}}" class="pull-left">
-        <img src="{{#if icon_path}}{{icon_path}}{{else}}img/image.png{{/if}}" class="img-thumbnail icon-100">
-      </a>
-      <div class="media-body">
-        <h4>{{{game_name}}} <small>{{guide_name}}</small></h4>
-        <p>{{game_desc}}</p>
-        <p class="text-muted">更新时间：<time datetime="{{update_time}}">{{update_time}}</time></p>
-      </div>
-    </div>
-  </script>
-</div>
-
 <div class="game-homepage row-container">
-  <div class="emulator">
-    <div class="smart-slide" data-ride="carousel" id="homepage-slide" data-url="api/game/slide-image.php">
-      <script type="text/x-handlebars-template" id="slide-template">
-        <ol class="carousel-indicators">
-          {{#each list}}
-          <li data-target="#homepage-slide" data-slide-to="{{@index}}" class="{{active}}"></li>
-          {{/each}}
-        </ol>
-        <div class="carousel-inner">
-          {{> slide-item}}
+  <div class="phone">
+    <div class="emulator" data-mediator-class="gamepop.game.Emulator">
+      <header class="top-navbar">
+        <h2>模拟器</h2>
+      </header>
+      <div class="game-info smart-info" data-url="api/game/info.php">
+        <div class="media">
+          <div class="pull-left">
+            <img src="img/image.png">
+          </div>
+          <div class="media-body">
+            <h2><i class="fa fa-spin fa-spinner"></i></h2>
+            <p>加载中，请稍后</p>
+          </div>
         </div>
-      </script>
-      <script type="text/x-handlebars-template" id="item-template">
-        {{#each list}}
-        <div class="item {{active}}" id="slide-item-{{id}} seq-{{seq}}">
-          <a href="{{link}}" target="_blank"><img src="{{#if image}}{{image}}{{else}}./img/image.png{{/if}}" /></a>
-        </div>
-        {{/each}}
-      </script>
-      <a class="left carousel-control hide" href="#homepage-slide" data-slide="prev"><i class="glyphicon glyphicon-chevron-left"></i></a>
-      <a class="right carousel-control hide" href="#homepage-slide" data-slide="next"><i class="glyphicon glyphicon-chevron-right"></i></a>
-    </div>
-    <div class="game-header">
-      <h2>模拟器</h2>
-    </div>
-    <nav class="homepage-nav">
-      <div class="row" data-url="api/game/homepage-nav.php" data-mediator-class="gamepop.game.HomepageNav">
-        <script type="text/x-handlebars-template" id="nav-template">
-        {{#each list}}
-        {{#if label}}
-        {{#if image}}
-        <div class="col-md-6 {{#if status}}hide{{/if}}" id="nav-{{id}}">
-          <a class="item" style="background-image: url({{image}});" href="#/artilce/list/category{{category}}/game{{guide_name}}">
-            <span>{{label}}</span>
-          </a>
-        </div>
-        {{/if}}
-        {{/if}}
-        {{/each}}
+        <script type="text/x-handlebars-template">
+          <div class="media">
+            <a href="#/game/profile/{{guide_name}}" class="pull-left">
+              <img src="{{#if icon_path}}{{icon_path}}{{else}}img/image.png{{/if}}">
+            </a>
+            <div class="media-body">
+              <h2>{{{game_name}}} <small>{{guide_name}}</small></h2>
+              <p>{{game_desc}}</p>
+            </div>
+          </div>
         </script>
       </div>
-    </nav>
-    <nav class="top-articles">
-      <ul data-url="api/article/list.php" data-mediator-class="gamepop.game.TopArticles">
-        <script type="text/x-handlebars-template">
-          {{#each list}}
-          <li id="top-{{id}}">
-            <img src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="pull-left">
-            <h2>{{topic}}</h2>
-            <p>{{#if source}}来源：{{source}}{{else}}作者：{{author}}{{/if}}  | {{update_time}}</p>
-          </li>
-          {{/each}}
-        </script>
-      </ul>
-    </nav>
+      <nav class="homepage-nav" data-url="api/game/homepage-nav.php" data-mediator-class="gamepop.game.HomepageNav">
+        <ul>
+          <script type="text/x-handlebars-template" id="nav-template">
+            {{#each list}}
+            {{#if label}}
+            {{#if image}}
+            <li class="{{#if status}}hide{{/if}} item" id="nav-{{id}}">
+              <a href="#/artilce/list/category{{category}}/game{{guide_name}}">
+                <img src="{{image}}">
+              </a>
+              <h3><a href="#/article/list/category{{category}}/game{{guide_name}}">{{label}}</a></h3>
+            </li>
+            {{/if}}
+            {{/if}}
+            {{/each}}
+          </script>
+        </ul>
+      </nav>
+      <h2 class="game-header">热门资讯</h2>
+      <nav class="top-articles">
+        <ul data-url="api/article/list.php" data-mediator-class="gamepop.game.TopArticles">
+          <script type="text/x-handlebars-template">
+            {{#each list}}
+            <li id="top-{{id}}">
+              <img src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="pull-left">
+              <h2>{{topic}}</h2>
+              <p>{{#if source}}来源：{{source}}{{else}}作者：{{author}}{{/if}}  | {{update_time}}</p>
+            </li>
+            {{/each}}
+          </script>
+        </ul>
+      </nav>
+    </div>
   </div>
   <div class="tables flex-auto">
-    <table class="table table-bordered table-hover smart-table sortable" data-url="api/game/slide-image.php" data-map="guide_name:id">
-      <thead>
-      <tr>
-        <th>图片</th>
-        <th>链接</th>
-        <th>操作</th>
-      </tr>
-      </thead>
-      <tbody>
-      <script type="text/x-handlebars-template">
-        {{#each list}}
-        <tr id="{{id}}">
-          <td><a href="#image" class="edit" data-type="img"><img src="{{#if image}}{{image}}{{else}}./img/image.png{{/if}}" class="img-thumbnail icon-mh-100" /></a></td>
-          <td><a href="#link" class="edit">{{#if link}}{{link}}{{else}}（添加）{{/if}}</a></td>
-          <td><button type="button" class="btn btn-danger delete-button"><i class="fa fa-trash-o"></i></button></td>
-        </tr>
-        {{/each}}
-      </script>
-      </tbody>
-      <tfoot>
-      <tr>
-        <td colspan="3"><button type="button" class="btn btn-primary add-row-button">添加图片</button></td>
-      </tr>
-      </tfoot>
-    </table>
     <table class="table table-bordered table-bordered smart-table sortable" data-url="api/game/homepage-nav.php">
       <thead>
       <tr>
