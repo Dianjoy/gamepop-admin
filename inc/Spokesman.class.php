@@ -48,7 +48,7 @@ class Spokesman {
     $url = $_SERVER['PATH_INFO'];
     $arr = array_values(array_filter(explode('/', $url)));
     foreach ($arr as $key => $value) {
-      preg_match('/(category|game|author)(\w+)/', $value, $matches);
+      preg_match('/^(category|game|author)(\w+)$/', $value, $matches);
       if (count($matches) > 0) {
         $param[$matches[1] === 'game' ? 'guide_name' : $matches[1]] = $matches[2];
       } else {
