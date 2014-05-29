@@ -75,7 +75,7 @@ function fetch($args) {
   ));
 }
 
-function update($args, $success = '更新成功', $error = '更新失败') {
+function update($args, $attr, $success = '更新成功', $error = '更新失败') {
   require_once "../../inc/Admin.class.php";
   if (Admin::is_outsider() && isset($args['status'])) {
     header('HTTP/1.1 401 Unauthorized');
@@ -96,7 +96,7 @@ function update($args, $success = '更新成功', $error = '更新失败') {
   }
 
   $article = new Article();
-  $result = $article->update($args)
+  $result = $article->update($attr)
     ->where($conditions)
     ->execute();
   Spokesman::judge($result, $success, $error, $args);
