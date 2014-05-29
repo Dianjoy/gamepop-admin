@@ -13,7 +13,7 @@
       <script type="text/x-handlebars-template">
         <div class="media">
           <a href="#icon_path" class="pull-left edit" data-type="img">
-            <img src="{{#if icon_path}}{{icon_path}}{{else}}img/image.png{{/if}}" class="img-thumbnail icon-100">
+            <img src="{{#if icon_path}}{{icon_path}}{{else}}img/image.png{{/if}}" class="img-thumbnail" width="180" height="120">
           </a>
           <div class="media-body">
             <h4>作者：{{author}} {{#if source}}<small>来源：<a href="{{src_url}}" target="_blank">{{source}} <i class="fa fa-external-link"></i></a></small>{{else}}<span class="label label-success"><i class="fa fa-thumbs-up"></i> 原创</span>{{/if}}</h4>
@@ -113,19 +113,5 @@
         </article>
       </section>
     </script>
-    <div class="btn-group hide" data-toggle="buttons">
-      <label class="btn btn-secondary">
-        <input type="radio" name="device" checked> Android 720P
-      </label>
-      <label class="btn btn-secondary">
-        <input type="radio" name="device"> Meizu
-      </label>
-      <label class="btn btn-secondary">
-        <input type="radio" name="device"> iPhone 5
-      </label>
-      <lable class="btn btn-secondary">
-        <input type="radio" name="device"> iPhone 4
-      </lable>
-    </div>
   </div>
 </div>
