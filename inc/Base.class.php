@@ -10,8 +10,7 @@ namespace gamepop;
 class SQLBuilder {
   const SELECT = "SELECT {{fields}}
     FROM {{tables}}
-    WHERE {{conditions}}
-    LIMIT 0,2560";
+    WHERE {{conditions}}";
   const UPDATE = "UPDATE {{tables}}
     SET {{fields}}
     WHERE {{conditions}}";
