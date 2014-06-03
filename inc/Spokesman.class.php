@@ -10,21 +10,19 @@
 
 class Spokesman {
   public static function say($args) {
-    // 数组，正常输出json
-    if (is_array($args)) {
-      // 判断下是否需要给图片加绝对路径
-      if (isset($args['list']) && is_array($args['list'])) {
-        foreach ($args['list'] as $key => $item) {
-          $args['list'][$key] = self::checkImageUrl($item);
-        }
+    // 判断下是否需要给图片加绝对路径
+    if (isset($args['list']) && is_array($args['list'])) {
+      foreach ($args['list'] as $key => $item) {
+        $args['list'][$key] = self::checkImageUrl($item);
       }
-      $args = self::checkImageUrl($args);
-      exit(json_encode($args));
     }
+    $args = self::checkImageUrl($args);
+    header("Content-Type:application/json;charset=UTF-8");
+    exit(json_encode($args));
   }
 
   public static function judge($result, $success, $error, $args = null) {
-    // boolean，输出信息
+    header("Content-Type:application/json;charset=UTF-8");
     if ($result) {
       echo json_encode(array_merge(array(
         'code' => 0,
@@ -56,6 +54,17 @@ class Spokesman {
       }
     }
     return $param;
+  }
+
+  public static function toHTML($data, $tpl) {
+    require_once "mustache.php";
+    $mustache = new Mustache_Engine(array('cache' => '/var/tmp'));
+    $html = file_get_contents($tpl);
+
+    header("Content-type: text/html; charset=UTF-8");
+    $html = $mustache->render($html, $data);
+    $html = preg_replace('/(http:\/\/r\.yxpopo\.com\/)+/', "\$1", $html);
+    echo $html;
   }
 
   private static function checkImageUrl($item) {

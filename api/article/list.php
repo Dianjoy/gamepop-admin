@@ -46,10 +46,14 @@ function fetch($article, $args) {
   $keyword = $args['keyword'];
   $compare = 'compare' . (isset($args['seq']) ? '_' . $args['seq'] : '');
   $status = array(
-    'status' => 0,
+    'status' => (int)$args['status'],
   );
-  $args = array_omit($args, 'page', 'pagesize', 'keyword', 'id', 'path', 'seq');
+  $args = array_omit($args, 'page', 'pagesize', 'keyword', 'id', 'path', 'seq', 'status');
   $conditions = Spokesman::extract(true);
+  if (isset($args['update_editor'])) {
+    $status['update_editor'] = $args['update_editor'];
+    unset($args['update_editor']);
+  }
   $articles = $article->select(Article::$ALL)
     ->where($status, Article::TABLE)
     ->where(array_merge($conditions, $args))
@@ -61,12 +65,14 @@ function fetch($article, $args) {
 
   // 读取作者，用作者名取代标记
   $editors = array();
-  foreach ($articles as $item) {
+  foreach ($articles as $key => $item) {
     if (!$item['source']) {
       $editors[] = $item['author'];
     }
-    if ($item['update_editor']) {
-      $editors[] = $item['update_editor'];
+    if ((int)$item['update_editor']) {
+      $editors[] = (int)$item['update_editor'];
+    } else {
+      $articles[$key]['update_editor'] = '';
     }
   }
   $editors = array_unique($editors);

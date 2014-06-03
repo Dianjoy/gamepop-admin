@@ -10,7 +10,8 @@ namespace gamepop;
 class SQLBuilder {
   const SELECT = "SELECT {{fields}}
     FROM {{tables}}
-    WHERE {{conditions}}";
+    WHERE {{conditions}}
+    LIMIT 0,2560";
   const UPDATE = "UPDATE {{tables}}
     SET {{fields}}
     WHERE {{conditions}}";
@@ -92,10 +93,10 @@ class SQLBuilder {
    * `key` in (value1, value2 ...) 类型的sql，在prepare的时候，必须对每个值创建单独的占位符
    * @param array $args
    * @param string $table 条件属于哪个表
-   * @param bool $is_in 是in还是=
+   * @param bool $relation key与值的关系
    * @param bool $is_or 是or还是and
    */
-  public function where($args, $table = '', $is_in = false, $is_or = false) {
+  public function where($args, $table = '', $relation = '=', $is_or = false) {
     $conditions = array();
     $values = array();
     foreach ($args as $key => $value) {
@@ -103,7 +104,7 @@ class SQLBuilder {
         continue;
       }
       $value_key = $this->strip($key);
-      if ($is_in) {
+      if (is_array($value)) {
         $keys = array();
         $count = 0;
         foreach ($value as $single) {
@@ -112,9 +113,11 @@ class SQLBuilder {
           $count++;
         }
         $keys = implode(",", $keys);
-        $conditions[] = $this->strip_multi_accent("`$key` IN ($keys)");
+        $conditions[] = $this->strip_multi_accent("`$key` $relation ($keys)");
+      } else if ($relation === Base::R_IS || $relation === Base::R_IS_NOT) {
+        $conditions[] = $this->strip_multi_accent(($table ? "`$table`." : "") . "`$key` $relation NULL");
       } else {
-        $conditions[] = $this->strip_multi_accent(($table ? "`$table`." : "") . "`$key`=:$value_key");
+        $conditions[] = $this->strip_multi_accent(($table ? "`$table`." : "") . "`$key`$relation:$value_key");
         $values[':' . $value_key] = $value;
       }
     }
@@ -200,6 +203,17 @@ class Base {
 
   const TABLE = '`table`';
 
+  const R_EQUAL = '=';
+  const R_NOT_EQUAL = '!=';
+  const R_IN = 'IN';
+  const R_NOT_IN = 'NOT IN';
+  const R_IS = 'IS';
+  const R_IS_NOT = 'IS NOT';
+  const R_LESS = '<';
+  const R_LESS_EQUAL = '<=';
+  const R_MORE = '>';
+  const R_MORE_EQUAL = '>=';
+
   protected $builder;
   protected $sth;
   protected $result;
@@ -253,8 +267,8 @@ class Base {
     $this->sth = null;
     return $this;
   }
-  public function where($args, $table = '', $is_in = false, $is_or = false) {
-    $this->builder->where($args, $table, $is_in, $is_or);
+  public function where($args, $table = '', $relation = '=', $is_or = false) {
+    $this->builder->where($args, $table, $relation, $is_or);
     return $this;
   }
   public function search($keyword) {

@@ -1,0 +1,92 @@
+<div class="navbar navbar-default navbar-static-top smart-navbar">
+  <ul class="nav navbar-nav">
+    <li class="disabled"><a href="#"><i class="fa fa-filter"></i> 筛选</a></li>
+    <li class="disabled"><a href="#"><i class="fa fa-sort-amount-desc"></i> 排序</a></li>
+  </ul>
+  <form class="navbar-form navbar-right keyword-form">
+    <div class="form-group">
+      <input type="text" class="form-control" placeholder="关键词" name="query" autofocus >
+    </div>
+    <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+  </form>
+</div>
+
+<ul class="pagination pull-right hidden-md hidden-lg">
+  <script type="text/x-handlebars-template">
+    <li><a href="#/to/{{prev}}"><i class="fa fa-chevron-left"></i></a></li>
+    {{#each pages}}
+    <li class="hidden-xs"><a href="#/to/{{index}}">{{label}}</a></li>
+    {{/each}}
+    <li><a href="#/to/{{next}}"><i class="fa fa-chevron-right"></i></a></li>
+  </script>
+</ul>
+
+<table class="table table-bordered table-hover smart-table" data-pagination=".pagination" data-pagesize="20" data-url="api/article/list.php" data-filter="update_editor=0">
+  <thead>
+  <tr>
+    <th>类型</th>
+    <th>来源</th>
+    <th>游戏</th>
+    <th>缩略图</th>
+    <th>标题</th>
+    <th>评价</th>
+    <th>发布日期</th>
+    <th>更新日期</th>
+    <th>操作</th>
+  </tr>
+  </thead>
+  <tbody>
+  <script type="text/x-handlebars-template">
+    {{#each list}}
+    <tr id="{{id}}">
+      <td><a href="#category" class="label label-default label-{{category}} edit" data-type="select" data-url="api/article/list.php" data-display="label" data-refresh="true" data-add-new="true">{{#if label}}{{label}}{{else}}（请选择）{{/if}}</a></td>
+      <td>
+        {{#if source}}
+        <a href="{{src_url}}" target="_blank">{{source}} <i class="fa fa-external-link"></i></a>
+        {{else}}
+        {{author}}<span class="label label-success"><i class="fa fa-thumbs-up"></i> 原创</span>
+        {{/if}}
+      </td>
+      <td><a href="#/game/profile/{{guide_name}}">{{game_name}}</a></td>
+      <td><a href="#icon_path" class="edit" data-type="img"><img src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="img-thumbnail icon-mh-50"></a></td>
+      <td><a href="#/article/detail/{{id}}">{{topic}} <i class="fa fa-edit"></i></a></td>
+      <td class="stars" data-value="{{remark}}">
+        <input type="radio" name="remark-{{id}}" value="5" id="star-{{id}}-5" disabled>
+        <label for="star-{{id}}-5" class="fa star disabled"></label>
+        <input type="radio" name="remark-{{id}}" value="4" id="star-{{id}}-4" disabled>
+        <label for="star-{{id}}-4" class="fa star disabled"></label>
+        <input type="radio" name="remark-{{id}}" value="3" id="star-{{id}}-3" disabled>
+        <label for="star-{{id}}-3" class="fa star disabled"></label>
+        <input type="radio" name="remark-{{id}}" value="2" id="star-{{id}}-2" disabled>
+        <label for="star-{{id}}-2" class="fa star disabled"></label>
+        <input type="radio" name="remark-{{id}}" value="1" id="star-{{id}}-1" disabled>
+        <label for="star-{{id}}-1" class="fa star disabled"></label>
+      </td>
+      <td><a href="#pub_date" class="edit" data-type="datetime">{{pub_date}}</a></td>
+      <td>{{update_time}} / {{update_editor}}</td>
+      <td>
+        <div class="btn-group">
+          <a href="#is_top" class="btn btn-info status-button {{#if is_top}}active{{/if}}"><i class="fa fa-arrow-up"></i></a>
+          <button type="button" class="btn btn-danger delete-button"><i class="fa fa-trash-o"></i></button>
+        </div>
+      </td>
+    </tr>
+    {{/each}}
+  </script>
+  </tbody>
+  <tfoot>
+  <tr class="waiting">
+    <td colspan="9" align="center"><i class="fa fa-spin fa-spinner fa-4x"></i><br>加载中，请稍后</td>
+  </tr>
+  </tfoot>
+</table>
+
+<ul class="pagination pull-right mg0">
+  <script type="text/x-handlebars-template">
+    <li><a href="#/to/{{prev}}"><i class="fa fa-chevron-left"></i></a></li>
+    {{#each pages}}
+    <li class="hidden-xs"><a href="#/to/{{index}}">{{label}}</a></li>
+    {{/each}}
+    <li><a href="#/to/{{next}}"><i class="fa fa-chevron-right"></i></a></li>
+  </script>
+</ul>

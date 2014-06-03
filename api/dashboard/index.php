@@ -5,4 +5,6 @@
  * Date: 14-3-7
  * Time: 下午5:23
  */
-echo 'this is a dashboard';
+$role = $_SESSION['role'];
+
+require_once('editor.php');
