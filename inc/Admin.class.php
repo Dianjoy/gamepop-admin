@@ -83,11 +83,11 @@ class Admin extends \gamepop\Base {
     return parent::update($args, $table);
   }
 
-  public function where($args, $table = '', $is_in = false, $is_or = false) {
+  public function where($args, $table = '', $relation = '=', $is_or = false) {
     if (isset($args['password'])) {
       $args['password'] = $this->encrypt($args['user'], $args['password']);
     }
-    return parent::where($args, $is_in, $table);
+    return parent::where($args, $table, $relation);
   }
 
   public function add($username, $fullname, $password, $role, $qq = '') {
