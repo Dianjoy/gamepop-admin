@@ -1,3 +1,27 @@
+<div class="game-info well well-sm smart-info" data-url="api/game/info.php">
+  <div class="media">
+    <div class="pull-left">
+      <img src="img/image.png" class="img-thumbnail icon-100">
+    </div>
+    <div class="media-body">
+      <h4><i class="fa fa-spin fa-spinner"></i></h4>
+      <p>加载中，请稍后</p>
+    </div>
+  </div>
+  <script type="text/x-handlebars-template">
+    <div class="media">
+      <a href="#/game/profile/{{guide_name}}" class="pull-left">
+        <img src="{{#if icon_path}}{{icon_path}}{{else}}img/image.png{{/if}}" class="img-thumbnail icon-100">
+      </a>
+      <div class="media-body">
+        <h4>{{{game_name}}} <small>{{guide_name}}</small></h4>
+        <p>{{game_desc}}</p>
+        <p class="text-muted">更新时间：<time datetime="{{update_time}}">{{update_time}}</time></p>
+      </div>
+    </div>
+  </script>
+</div>
+
 <div class="navbar navbar-default navbar-static-top smart-navbar">
   <ul class="nav navbar-nav">
     <li class="disabled"><a href="#"><i class="fa fa-filter"></i> 筛选</a></li>
@@ -39,7 +63,7 @@
   <script type="text/x-handlebars-template">
     {{#each list}}
     <tr id="{{id}}">
-      <td><a href="#category" class="label label-default label-{{category}} edit" data-type="select" data-url="api/article/list.php" data-display="label" data-refresh="true" data-add-new="true">{{#if label}}{{label}}{{else}}（请选择）{{/if}}</a></td>
+      <td><a href="#category" class="label label-default label-{{category}} edit" data-type="select" data-url="api/article/category.php" data-display="label" data-refresh="true" data-add-new="true">{{label}}</a></td>
       <td>
         {{#if source}}
         <a href="{{src_url}}" target="_blank">{{source}} <i class="fa fa-external-link"></i></a>

@@ -59,6 +59,9 @@ class Game extends \gamepop\Base {
         if ($key === 'link' || $key === 'image') {
           return self::SLIDE;
         }
+        if ($key === 'user_id') {
+          return self::OUTSIDE;
+        }
       }
     }
     return self::TABLE;
