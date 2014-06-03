@@ -46,7 +46,7 @@ function fetch($args) {
     require_once "../../inc/Admin.class.php";
     $admin = new Admin();
     $editors = $admin->select(Admin::$BASE)
-      ->where(array('id', $editors), '', true)
+      ->where(array('id', $editors), '', \gamepop\Base::R_IN)
       ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
     foreach ($articles as $key => $article) {
       $articles[$key]['update_editor'] = $editors[$article['update_editor']];
@@ -60,7 +60,7 @@ function fetch($args) {
     $guide_names[] = $item['guide_name'];
   }
   $games = $game->select(Game::$ALL)
-    ->where(array('guide_name' => $guide_names), '', true)
+    ->where(array('guide_name' => $guide_names), '', \gamepop\Base::R_IN)
     ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
   foreach ($articles as $key => $item) {
     $item['game_name'] = $games[$item['guide_name']]['game_name'];

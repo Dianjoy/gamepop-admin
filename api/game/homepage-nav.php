@@ -52,7 +52,7 @@ function fetch($game, $args) {
   $categories = $article->select(Article::$ALL_CATEGORY, $article->count())
     ->where($conditions)
     ->where(array('status' => Article::NORMAL), Article::TABLE)
-    ->where($status, '', false, true)
+    ->where($status, '', \gamepop\Base::R_EQUAL, true)
     ->group('id', Article::CATEGORY)
     ->fetchAll(PDO::FETCH_ASSOC);
 

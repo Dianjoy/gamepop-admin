@@ -61,7 +61,7 @@ function fetch($game, $args) {
 
   $games = $game->select(Game::$ALL)
     ->where($conditions)
-    ->where(array(Game::ID => $guide_names), '', true)
+    ->where(array(Game::ID => $guide_names), '', \gamepop\Base::R_IN)
     ->search($keyword)
     ->fetchAll(PDO::FETCH_ASSOC);
   $total = count($games);
@@ -93,7 +93,7 @@ function fetch($game, $args) {
   $article = new Article();
 
   $article_number = $article->select(Game::ID, $article->count())
-    ->where(array(Game::ID => $guide_names), '', true)
+    ->where(array(Game::ID => $guide_names), '', \gamepop\Base::R_IN)
     ->where($conditions)
     ->group(Game::ID)
     ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
@@ -104,7 +104,7 @@ function fetch($game, $args) {
   }
 
   $tags = $game->select(Game::$TAGS)
-    ->where(array('id' => $tags), '', true)
+    ->where(array('id' => $tags), '', \gamepop\Base::R_IN)
     ->where(array('status' => 0))
     ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
   foreach ($games as &$row) {
@@ -148,7 +148,7 @@ function update($game, $args, $success = '更新成功', $error = '更新失败'
   if (isset($args['tags'])) {
     $tags = explode('|', $args['tags']);
     $tags = $game->select(Game::$TAGS)
-      ->where(array('id' => $tags), '', true)
+      ->where(array('id' => $tags), '', \gamepop\Base::R_IN)
       ->where(array('status' => 0))
       ->fetchAll(PDO::FETCH_ASSOC);
     $args['tags'] = $tags;
