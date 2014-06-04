@@ -10,7 +10,7 @@ require_once '../../inc/API.class.php';
 require_once '../../inc/Spokesman.class.php';
 
 // 将所有关键游戏放在这个用户id下
-define('OWNER', 33);
+define('VIP', 33);
 
 $api = new API('game', array(
   'fetch' => fetch,
@@ -32,30 +32,25 @@ function fetch($args) {
     'status' => Game::NORMAL,
   );
 
-  // 取用户信息
-  $user = $admin->select(Admin::$ALL)
-    ->where(array('id' => OWNER))
-    ->fetch(PDO::FETCH_ASSOC);
-
-  // 只看“外包账户”这个人的游戏
-  $my_games = $game->select(Game::$OUTSIDE)
-    ->where(array('user_id' => OWNER))
-    ->fetchAll(PDO::FETCH_ASSOC);
-
-  $guide_names = array();
-  foreach ($my_games as $item) {
-    $guide_names[] = $item['guide_name'];
-  }
-
   // 只看有更新的游戏
   $article_number = $article->select(Game::ID, $article->count())
     ->where(array('status' => Article::FETCHED))
     ->group(Game::ID)
     ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
-  $guide_names_article = array_keys($article_number);
+  $guide_names = array_keys($article_number);
 
-  // 去重合并
-  $guide_names = array_intersect($guide_names, array_filter($guide_names_article));
+  // 取对应的用户
+  $outsiders = $game->select(Game::$OUTSIDE)
+    ->where(array(Game::ID => $guide_names), '', \gamepop\Base::R_IN)
+    ->fetchAll(PDO::FETCH_ASSOC);
+  $game_outsiders = array();
+  foreach ($outsiders as $row) {
+    $game_outsiders[$row['guide_name']] = $row['user_id'];
+  }
+  $outsiders = array_values($game_outsiders);
+  $users = $admin->select(Admin::$BASE)
+    ->where(array('id' => $outsiders), '', \gamepop\Base::R_IN)
+    ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
 
   // 取游戏
   $games = $game->select(Game::$ALL)
@@ -63,16 +58,17 @@ function fetch($args) {
     ->where(array(Game::ID => $guide_names), '', \gamepop\Base::R_IN)
     ->search($keyword)
     ->fetchAll(PDO::FETCH_ASSOC);
-  $total = count($games);
-  $games = array_slice($games, $page * $pagesize, $pagesize);
   foreach ($games as &$row) {
     $row['os_android'] = (int)$row['os_android'];
     $row['os_ios'] = (int)$row['os_ios'];
-    $row['user_id'] = OWNER;
-    $row['fullname'] = $user['fullname'];
+    $row['user_id'] = $game_outsiders[$row['guide_name']];
+    $row['fullname'] = $users[$row['user_id']];
     $row['article_number'] = $article_number[$row[Game::ID]];
+    $row['vig'] = (int)($row['user_id'] == VIP);
   }
   usort($games, compare);
+  $total = count($games);
+  $games = array_slice($games, $page * $pagesize, $pagesize);
 
   $result = array(
     'total' => $total,
@@ -98,5 +94,9 @@ function update($args, $attr) {
 }
 
 function compare($a, $b) {
+  $vig = $b['vig'] - $a['vig'];
+  if ($vig !== 0) {
+    return $vig;
+  }
   return $b['article_number'] - $a['article_number'];
 }
