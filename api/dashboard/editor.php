@@ -32,6 +32,14 @@ $result['not-edited'] = $article->select($article->count())
   ))
   ->fetch(PDO::FETCH_COLUMN);
 
+// 取“可删除文章”的数量
+$result['trash'] = $article->select($article->count())
+  ->where(array(
+    'category' => 112, // 可删除文章
+    'status' => 0,
+  ))
+  ->fetch(PDO::FETCH_COLUMN);
+
 foreach ($result as $key => $value) {
   $result[$key] = number_format($value);
 }

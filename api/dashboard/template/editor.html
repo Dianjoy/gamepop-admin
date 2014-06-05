@@ -3,7 +3,7 @@
   <div class="col-md-3 col-sm-6">
     <a href="#/game/latest-fetch" class="dashboard-stat primary">
       <div class="visual">
-        <i class="fa fa-mobile"></i>
+        <i class="fa fa-fire"></i>
       </div>
       <div class="details">
         <span class="content">最新抓取</span>
@@ -15,7 +15,7 @@
   <div class="col-md-3 col-sm-6">
     <div class="dashboard-stat secondary">
       <div class="visual">
-        <i class="fa fa-group"></i>
+        <i class="fa fa-cube"></i>
       </div>
       <div class="details">
         <span class="content">未分类文章</span>
@@ -26,7 +26,7 @@
   <div class="col-md-3 col-sm-6">
     <div class="dashboard-stat tertiary">
       <div class="visual">
-        <i class="fa fa-money"></i>
+        <i class="fa fa-square-o"></i>
       </div>
       <div class="details">
         <span class="content">未编辑文章</span>
@@ -34,4 +34,17 @@
       </div>
     </div>
   </div>
+  <form class="col-md-3 col-sm-6 ajax" action="api/article/action.php" method="post">
+    <input type="hidden" name="m" value="delete-all-deletable">
+    <button class="dashboard-stat expense">
+      <div class="visual">
+        <i class="fa fa-trash-o"></i>
+      </div>
+      <div class="details">
+        <span class="content">可删除数量</span>
+        <span class="value alert-msg alert alert-success">{{trash}}</span>
+      </div>
+      <i class="fa fa-times more"></i>
+    </button>
+  </form>
 </div>

@@ -3,14 +3,14 @@
 /*
  * This file is part of Mustache.php.
  *
- * (c) 2014 Justin Hileman
+ * (c) 2010-2014 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 class Mustache_Engine
 {
-    const VERSION        = '2.5.1';
+    const VERSION        = '2.6.0';
     const SPEC_VERSION   = '1.1.2';
     const PRAGMA_FILTERS = 'FILTERS';
         private $templates = array();
@@ -26,6 +26,9 @@ class Mustache_Engine
     private $charset = 'UTF-8';
     private $logger;
     private $strictCallables = false;
+        private $tokenizer;
+    private $parser;
+    private $compiler;
     public function __construct(array $options = array())
     {
         if (isset($options['template_class_prefix'])) {
@@ -275,9 +278,9 @@ class Mustache_Engine
                 $cache = $this->getCache();
             }
             if (!class_exists($className, false)) {
-                if (!$this->getCache()->load($className)) {
+                if (!$cache->load($className)) {
                     $compiled = $this->compile($source);
-                    $this->getCache()->cache($className, $compiled);
+                    $cache->cache($className, $compiled);
                 }
             }
             $this->log(
@@ -915,6 +918,7 @@ interface Mustache_Loader
 }
 class Mustache_Loader_ArrayLoader implements Mustache_Loader, Mustache_Loader_MutableLoader
 {
+    private $templates;
     public function __construct(array $templates = array())
     {
         $this->templates = $templates;
@@ -1123,6 +1127,7 @@ class Mustache_Logger_StreamLogger extends Mustache_Logger_AbstractLogger
         self::ALERT     => 550,
         self::EMERGENCY => 600,
     );
+    protected $level;
     protected $stream = null;
     protected $url    = null;
     public function __construct($stream, $level = Mustache_Logger::ERROR)
@@ -1229,18 +1234,27 @@ class Mustache_Parser
                     break;
                 case Mustache_Tokenizer::T_END_SECTION:
                     if (!isset($parent)) {
-                        $msg = sprintf('Unexpected closing tag: /%s', $token[Mustache_Tokenizer::NAME]);
+                        $msg = sprintf(
+                            'Unexpected closing tag: /%s on line %d',
+                            $token[Mustache_Tokenizer::NAME],
+                            $token[Mustache_Tokenizer::LINE]
+                        );
                         throw new Mustache_Exception_SyntaxException($msg, $token);
                     }
                     if ($token[Mustache_Tokenizer::NAME] !== $parent[Mustache_Tokenizer::NAME]) {
-                        $msg = sprintf('Nesting error: %s vs. %s', $parent[Mustache_Tokenizer::NAME], $token[Mustache_Tokenizer::NAME]);
+                        $msg = sprintf(
+                            'Nesting error: %s (on line %d) vs. %s (on line %d)',
+                            $parent[Mustache_Tokenizer::NAME],
+                            $parent[Mustache_Tokenizer::LINE],
+                            $token[Mustache_Tokenizer::NAME],
+                            $token[Mustache_Tokenizer::LINE]
+                        );
                         throw new Mustache_Exception_SyntaxException($msg, $token);
                     }
                     $this->clearStandaloneLines($nodes, $tokens);
                     $parent[Mustache_Tokenizer::END]   = $token[Mustache_Tokenizer::INDEX];
                     $parent[Mustache_Tokenizer::NODES] = $nodes;
                     return $parent;
-                    break;
                 case Mustache_Tokenizer::T_PARTIAL:
                 case Mustache_Tokenizer::T_PARTIAL_2:
                                         if ($indent = $this->clearStandaloneLines($nodes, $tokens)) {
@@ -1259,7 +1273,11 @@ class Mustache_Parser
             }
         }
         if (isset($parent)) {
-            $msg = sprintf('Missing closing tag: %s', $parent[Mustache_Tokenizer::NAME]);
+            $msg = sprintf(
+                'Missing closing tag: %s opened on line %d',
+                $parent[Mustache_Tokenizer::NAME],
+                $parent[Mustache_Tokenizer::LINE]
+            );
             throw new Mustache_Exception_SyntaxException($msg, $parent);
         }
         return $nodes;
@@ -1277,7 +1295,6 @@ class Mustache_Parser
                 }
             }
         }
-        $next = null;
         if ($next = reset($tokens)) {
                         if ($next[Mustache_Tokenizer::LINE] !== $this->lineNum) {
                 return;
@@ -1413,24 +1430,29 @@ class Mustache_Tokenizer
     private $line;
     private $otag;
     private $ctag;
+    private $otagLen;
+    private $ctagLen;
     public function scan($text, $delimiters = null)
     {
+                        $encoding = null;
+        if (function_exists('mb_internal_encoding') && ini_get('mbstring.func_overload') & 2) {
+            $encoding = mb_internal_encoding();
+            mb_internal_encoding('ASCII');
+        }
         $this->reset();
         if ($delimiters = trim($delimiters)) {
-            list($otag, $ctag) = explode(' ', $delimiters);
-            $this->otag = $otag;
-            $this->ctag = $ctag;
+            $this->setDelimiters($delimiters);
         }
         $len = strlen($text);
         for ($i = 0; $i < $len; $i++) {
             switch ($this->state) {
                 case self::IN_TEXT:
-                    if ($this->tagChange($this->otag, $text, $i)) {
+                    if ($this->tagChange($this->otag, $this->otagLen, $text, $i)) {
                         $i--;
                         $this->flushBuffer();
                         $this->state = self::IN_TAG_TYPE;
                     } else {
-                        $char = substr($text, $i, 1);
+                        $char = $text[$i];
                         $this->buffer .= $char;
                         if ($char == "\n") {
                             $this->flushBuffer();
@@ -1439,8 +1461,8 @@ class Mustache_Tokenizer
                     }
                     break;
                 case self::IN_TAG_TYPE:
-                    $i += strlen($this->otag) - 1;
-                    $char = substr($text, $i + 1, 1);
+                    $i += $this->otagLen - 1;
+                    $char = $text[$i + 1];
                     if (isset(self::$tagTypes[$char])) {
                         $tag = $char;
                         $this->tagType = $tag;
@@ -1463,17 +1485,17 @@ class Mustache_Tokenizer
                     $this->seenTag = $i;
                     break;
                 default:
-                    if ($this->tagChange($this->ctag, $text, $i)) {
+                    if ($this->tagChange($this->ctag, $this->ctagLen, $text, $i)) {
                         $this->tokens[] = array(
                             self::TYPE  => $this->tagType,
                             self::NAME  => trim($this->buffer),
                             self::OTAG  => $this->otag,
                             self::CTAG  => $this->ctag,
                             self::LINE  => $this->line,
-                            self::INDEX => ($this->tagType == self::T_END_SECTION) ? $this->seenTag - strlen($this->otag) : $i + strlen($this->ctag)
+                            self::INDEX => ($this->tagType == self::T_END_SECTION) ? $this->seenTag - $this->otagLen : $i + $this->ctagLen
                         );
                         $this->buffer = '';
-                        $i += strlen($this->ctag) - 1;
+                        $i += $this->ctagLen - 1;
                         $this->state = self::IN_TEXT;
                         if ($this->tagType == self::T_UNESCAPED) {
                             if ($this->ctag == '}}') {
@@ -1486,25 +1508,30 @@ class Mustache_Tokenizer
                             }
                         }
                     } else {
-                        $this->buffer .= substr($text, $i, 1);
+                        $this->buffer .= $text[$i];
                     }
                     break;
             }
         }
         $this->flushBuffer();
+                if ($encoding) {
+            mb_internal_encoding($encoding);
+        }
         return $this->tokens;
     }
     private function reset()
     {
-        $this->state     = self::IN_TEXT;
-        $this->tagType   = null;
-        $this->tag       = null;
-        $this->buffer    = '';
-        $this->tokens    = array();
-        $this->seenTag   = false;
-        $this->line      = 0;
-        $this->otag      = '{{';
-        $this->ctag      = '}}';
+        $this->state   = self::IN_TEXT;
+        $this->tagType = null;
+        $this->tag     = null;
+        $this->buffer  = '';
+        $this->tokens  = array();
+        $this->seenTag = false;
+        $this->line    = 0;
+        $this->otag    = '{{';
+        $this->ctag    = '}}';
+        $this->otagLen = 2;
+        $this->ctagLen = 2;
     }
     private function flushBuffer()
     {
@@ -1522,14 +1549,20 @@ class Mustache_Tokenizer
         $startIndex = strpos($text, '=', $index) + 1;
         $close      = '='.$this->ctag;
         $closeIndex = strpos($text, $close, $index);
-        list($otag, $ctag) = explode(' ', trim(substr($text, $startIndex, $closeIndex - $startIndex)));
-        $this->otag = $otag;
-        $this->ctag = $ctag;
+        $this->setDelimiters(trim(substr($text, $startIndex, $closeIndex - $startIndex)));
         $this->tokens[] = array(
             self::TYPE => self::T_DELIM_CHANGE,
             self::LINE => $this->line,
         );
         return $closeIndex + strlen($close) - 1;
+    }
+    private function setDelimiters($delimiters)
+    {
+        list($otag, $ctag) = explode(' ', $delimiters);
+        $this->otag = $otag;
+        $this->ctag = $ctag;
+        $this->otagLen = strlen($otag);
+        $this->ctagLen = strlen($ctag);
     }
     private function addPragma($text, $index)
     {
@@ -1540,10 +1573,10 @@ class Mustache_Tokenizer
             self::NAME => $pragma,
             self::LINE => 0,
         ));
-        return $end + strlen($this->ctag) - 1;
+        return $end + $this->ctagLen - 1;
     }
-    private function tagChange($tag, $text, $index)
+    private function tagChange($tag, $tagLen, $text, $index)
     {
-        return substr($text, $index, strlen($tag)) === $tag;
+        return substr($text, $index, $tagLen) === $tag;
     }
 }

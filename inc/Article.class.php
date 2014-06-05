@@ -22,8 +22,8 @@ class Article extends \gamepop\Base {
     `update_time`, `update_editor`, `is_top`, `is_index`, `t_article`.`status`";
   static $TOP = "`id`, `topic`, `update_time`, `seq`, `is_top`, `icon_path`, `source`, `author`";
   static $DETAIL = "`guide_name`, `category`, `label`, `source`,
-    `topic`, `author`, `icon_path`, `content`, `remark`,
-    `pub_date`, `src_url`, `seq`, `update_time`, `update_editor`, `t_article`.`status`";
+    `topic`, `author`, `icon_path`, `content`, `remark`, `pub_date`, `src_url`,
+     `seq`, `update_time`, `update_editor`, `t_article`.`status`, `is_top`";
   static $ALL_CATEGORY = "`t_article_category`.`id`, `cate`, `label`";
 
   public function __construct($need_write = false, $need_cache = true, $is_debug = false) {

@@ -50,6 +50,7 @@ function fetch($article, $args) {
   $markdown = new HTML_To_Markdown($result['content']);
   $result['content'] = preg_replace('/]\(\/?(?!http)([a-z]+)/', '](http://r.yxpopo.com/$1', $markdown);
   $result['status'] = (int)$result['status'];
+  $result['is_top'] = (int)$result['is_top'];
 
   // 取相关游戏
   if ($result['guide_name']) {
