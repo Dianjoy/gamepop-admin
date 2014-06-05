@@ -24,13 +24,14 @@ class SQLBuilder {
   private $fields;
   private $tables;
   private $conditions = array();
+  private $key_dict = array();
   private $order_sql = '';
   private $group_by = '';
   private $template = '';
   private $reg = '/{{(\w+)}}/';
 
   public function __construct() {
-
+    $this->key_dict = array();
   }
 
   // --> 生成select
@@ -191,7 +192,14 @@ class SQLBuilder {
     return preg_replace('/`{2,}/', '`', $string);
   }
   private function strip($string) {
-    return preg_replace('/[`\.]/', '', $string);
+    $key = preg_replace('/[`\.]/', '', $string);
+    $count = 0;
+    while (in_array($key, $this->key_dict)) {
+      $key = $key . $count;
+      $count++;
+    }
+    $this->key_dict[] = $key;
+    return $key;
   }
 }
 
