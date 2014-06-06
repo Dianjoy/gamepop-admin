@@ -46,7 +46,7 @@ function fetch($args) {
     require_once "../../inc/Admin.class.php";
     $admin = new Admin();
     $editors = $admin->select(Admin::$BASE)
-      ->where(array('id', $editors), '', \gamepop\Base::R_IN)
+      ->where(array('id' => $editors), '', \gamepop\Base::R_IN)
       ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
     foreach ($articles as $key => $article) {
       $articles[$key]['update_editor'] = $editors[$article['update_editor']];
