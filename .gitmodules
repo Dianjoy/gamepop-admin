@@ -1,3 +1,6 @@
 [submodule "web"]
 	path = web
 	url = git@github.com:Dianjoy/nozdormu.git
+[submodule "client"]
+	path = client
+	url = git@github.com:Dianjoy/gamepop.git

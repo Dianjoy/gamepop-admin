@@ -1,0 +1,64 @@
+<link rel="stylesheet" href="client/css/framework.css">
+<link rel="stylesheet" href="client/css/layout.css">
+<div class="game-homepage row-container">
+  <div class="phone">
+    <div class="emulator column" data-mediator-class="gamepop.game.TopGame" data-url="api/app/homepage.php">
+      <div id="homepage-search">
+        <img src="img/logo1.png" width="38" height="37" class="homepage-logo">
+        <form id="search-form" action="">
+          <input type="text" name="keyword" placeholder="搜索您最爱的游戏" autocomplete="off">
+          <button><i class="fa fa-search"></i></button>
+        </form>
+        <script type="text/x-handlebars-template">
+          <a href="#/game/profile/{{guide_name}}" class="entrance"><img src="{{entrance}}" ></a>
+        </script>
+      </div>
+      <h2 class="apps-title">我的游戏攻略</h2>
+      <div id="apps">
+        <div id="apps-container" class="carousel">
+          <ul style="height: 70px">
+
+          </ul>
+        </div>
+        <div class="indicators">
+          <div class="token"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tables flex-auto">
+    <table class="table table-bordered table-hover smart-table sortable" data-url="api/app/homepage.php">
+      <thead>
+      <tr>
+        <th>背景大图</th>
+        <th>入口小图</th>
+        <th>游戏别名</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <script type="text/x-handlebars-template">
+      {{#each list}}
+      <tr id="{{id}}">
+        <td>
+          <a href="#big_pic" class="edit" data-type="img" data-refresh="true"><img
+          src="{{#if big_pic}}{{big_pic}}{{else}}./img/image.png{{/if}}" class="icon-100"></a>
+        </td>
+        <td>
+          <a href="#logo" class="edit" data-type="img" data-refresh="true"><img
+            src="{{#if logo}}{{logo}}{{else}}./img/image.png{{/if}}" class="icon-100"></a>
+        </td>
+        <td><a href="#guide_name" class="edit">{{game_desc}}</a></td>
+        <td><button class="btn btn-danger delete-button" type="button"><i class="fa fa-trash-o"></i></button></td>
+      </tr>
+      {{/each}}
+      </script>
+      </tbody>
+      <tfoot>
+      <tr>
+        <td colspan="4"><button type="button" class="btn btn-primary add-row-button">添加图片</button></td>
+      </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>

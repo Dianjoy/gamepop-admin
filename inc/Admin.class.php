@@ -49,18 +49,21 @@ class Admin extends \gamepop\Base {
       'game',
       'upload',
       'article',
+      'app',
       'article_wb',
     ),
     1 => array( // 开发权限
       'game',
       'article',
       'upload',
+      'app',
       'article_wb',
     ),
     2 => array( // 编辑权限
       'game',
       'upload',
       'article',
+      'app',
     ),
     100 => array(
       'article_wb',

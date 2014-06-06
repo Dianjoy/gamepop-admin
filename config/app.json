@@ -1,0 +1,12 @@
+{
+  "icon": "rocket",
+  "title": "应用",
+  "has_sub": true,
+  "sub": [
+    {
+      "icon": "image",
+      "title": "首页推荐",
+      "url": "#/app/main"
+    }
+  ]
+}
