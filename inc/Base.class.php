@@ -27,6 +27,7 @@ class SQLBuilder {
   private $key_dict = array();
   private $order_sql = '';
   private $group_by = '';
+  private $limit = '';
   private $template = '';
   private $reg = '/{{(\w+)}}/';
 
@@ -107,6 +108,7 @@ class SQLBuilder {
       if (is_array($value)) {
         $keys = array();
         $count = 0;
+        $value = array_unique($value);
         foreach ($value as $single) {
           $keys[] = ":{$value_key}_{$count}";
           $values[":{$value_key}_{$count}"] = $single;
@@ -144,6 +146,9 @@ class SQLBuilder {
       $this->group_by = "\nGROUP BY " . ($table ? "$table." : "" ) . "`$key`";
     }
     return $this;
+  }
+  public function limit($start, $length) {
+    $this->limit = "\nLIMIT $start,$length";
   }
   public function output() {
     if ($this->sql) {
@@ -184,7 +189,7 @@ class SQLBuilder {
           break;
       }
     }, $this->template);
-    $this->sql = $sql . $this->order_sql . $this->group_by;
+    $this->sql = $sql . $this->order_sql . $this->group_by . $this->limit;
     return $this->sql;
   }
 
@@ -288,6 +293,10 @@ class Base {
   }
   public function order($key, $order = 'DESC') {
     $this->builder->order($key, $order);
+    return $this;
+  }
+  public function limit($start, $length) {
+    $this->builder->limit($start, $length);
     return $this;
   }
   public function execute($debug = false) {
