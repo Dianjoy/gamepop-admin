@@ -12,17 +12,25 @@ $api = new API('article', array(
   'create' => create,
   'fetch' => fetch,
   'update' => update,
+  'delete' => delete,
 ));
 
 function create($args, $attr) {
   require_once "../../inc/App.class.php";
   $app = new App();
 
+  // 因为dpi的关系，前端显示的时候要缩小到50%，所以这里需要记录图片大小
+  if (isset($attr['logo'])) {
+    $size = getimagesize('../../' . $attr['logo']);
+    $attr['logo_width'] = $size[0] >> 1;
+  }
+
   $init = array(
     'guide_name' => '',
     'big_pic' => '',
     'logo' => '',
     'create_time' => date('Y-m-d H:i:s'),
+    'online_time' => date('Y-m-d', time() + 86400) . ' 23:59:59', // 默认次日晚上更新
   );
   $attr = array_merge($init, $attr);
   $result = $app->insert($attr, App::HOMEPAGE)
@@ -39,8 +47,8 @@ function fetch() {
 
   $list = $app->select(App::$HOMEPAGE)
     ->where(array('status' => App::NORMAL))
-    ->limit(0, 5)
     ->fetchAll(PDO::FETCH_ASSOC);
+  usort($list, compare);
 
   Spokesman::say(array(
     'total' => count($list),
@@ -53,9 +61,25 @@ function update($args, $attr) {
   $app = new App();
 
   $conditions = Spokesman::extract();
+  unset($attr['game_name']);
 
-  $result = $app->update($attr, App::$HOMEPAGE)
+  // 因为dpi的关系，前端显示的时候要缩小到50%，所以这里需要记录图片大小
+  if (isset($attr['logo'])) {
+    $size = getimagesize('../../' . $attr['logo']);
+    $attr['logo_width'] = $size[0] >> 1;
+  }
+
+  $result = $app->update($attr, App::HOMEPAGE)
+    ->where($conditions)
     ->execute();
 
   Spokesman::judge($result, '修改成功', '修改失败', $attr);
+}
+
+function delete($args) {
+  update($args, array('status' => 1));
+}
+
+function compare($a, $b) {
+  return (int)$a['seq'] - (int)$b['seq'];
 }
