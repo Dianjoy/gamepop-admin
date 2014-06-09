@@ -4,3 +4,6 @@
 [submodule "client"]
 	path = client
 	url = git@github.com:Dianjoy/gamepop.git
+[submodule "inc"]
+	path = inc
+	url = git@github.com:meathill/gamepop-inc.git
