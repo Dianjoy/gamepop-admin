@@ -50,10 +50,32 @@ foreach ($result as $key => $value) {
   $result[$key] = number_format($value);
 }
 
-// 昨日搜索top10
-$yesterday = date('Y-m-d', time() - 86400);
-$today = date('Y-m-d');
 $corp_ip = '218.247.145.70';
+// 一个月内的搜索统计
+$month = date('Y-m-d', time() - 2592000);
+$ips = $log->select('DATE(`insert_time`)', $log->count('ip', '', true))
+  ->where(array('insert_time' => $month), '', Log::R_MORE_EQUAL)
+  ->where(array('ip' => $corp_ip), '', Log::R_NOT_EQUAL)
+  ->group('DATE(`insert_time`)')
+  ->fetchAll(PDO::FETCH_UNIQUE | PDO::FETCH_COLUMN);
+$times = $log->select('DATE(`insert_time`)', $log->count())
+  ->where(array('insert_time' => $month), '', Log::R_MORE_EQUAL)
+  ->where(array('ip' => $corp_ip), '', Log::R_NOT_EQUAL)
+  ->group('DATE(`insert_time`)')
+  ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
+$result['search'] = array();
+for ($i = time() - 2592000; $i < time(); $i += 86400) {
+  $date = date('Y-m-d', $i);
+  $result['search'][] = array(
+    'date' => $date,
+    'ip' => (int)$ips[$date],
+    'num' => (int)$times[$date],
+  );
+}
+
+// 七日搜索top10
+$yesterday = date('Y-m-d', time() - 86400 * 7);
+$today = date('Y-m-d');
 $top10 = $log->select(Log::$SEARCH)
   ->where(array('insert_time' => $yesterday), '', \gamepop\Base::R_MORE_EQUAL)
   ->where(array('insert_time' => $today), '', \gamepop\Base::R_LESS)
@@ -74,7 +96,7 @@ foreach ($top10 as $key => $item) {
   );
   $other += $item['num'];
   $count++;
-  if ($count > 19) {
+  if ($count > 14) {
     break;
   }
 }
