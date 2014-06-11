@@ -63,6 +63,7 @@ $times = $log->select('DATE(`insert_time`)', $log->count())
   ->where(array('ip' => $corp_ip), '', Log::R_NOT_EQUAL)
   ->group('DATE(`insert_time`)')
   ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
+$times['2014-05-20'] = 1; // 这天做了压力测试，数据有问题
 $result['search'] = array();
 for ($i = time() - 2592000; $i < time(); $i += 86400) {
   $date = date('Y-m-d', $i);

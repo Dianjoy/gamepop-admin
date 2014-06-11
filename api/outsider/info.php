@@ -53,9 +53,7 @@ function fetch($game) {
   }
 
   $info = $admin->select(Admin::$BASE)
-    ->where(array(
-      'id' => $outsider['user_id']
-    ))
+    ->where(array('id' => $outsider['user_id']))
     ->fetch(PDO::FETCH_ASSOC);
   unset($info['id']);
 
