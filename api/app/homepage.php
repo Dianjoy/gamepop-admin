@@ -21,7 +21,7 @@ function create($args, $attr) {
 
   // 因为dpi的关系，前端显示的时候要缩小到50%，所以这里需要记录图片大小
   if (isset($attr['logo'])) {
-    $size = getimagesize('../../' . $attr['logo']);
+    $size = getimagesize((substr($attr['logo'], 0, 7) != 'http://' ? '../../' : '' ) . $attr['logo']);
     $attr['logo_width'] = $size[0] >> 1;
   }
 
@@ -65,7 +65,7 @@ function update($args, $attr) {
 
   // 因为dpi的关系，前端显示的时候要缩小到50%，所以这里需要记录图片大小
   if (isset($attr['logo'])) {
-    $size = getimagesize('../../' . $attr['logo']);
+    $size = getimagesize((substr($attr['logo'], 0, 7) != 'http://' ? '../../' : '' ) . $attr['logo']);
     $attr['logo_width'] = $size[0] >> 1;
   }
 
