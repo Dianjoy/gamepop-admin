@@ -21,7 +21,7 @@ function create($args, $attr) {
 
   // 因为dpi的关系，前端显示的时候要缩小到50%，所以这里需要记录图片大小
   if (isset($attr['logo'])) {
-    $size = getimagesize((substr($attr['logo'], 0, 7) != 'http://' ? '../../' : '' ) . $attr['logo']);
+    $size = getimagesize('../../' . (substr($attr['logo'], 0, 7) != 'upload/' ? 'upload/' : '' ) . $attr['logo']);
     $attr['logo_width'] = $size[0] >> 1;
   }
 
@@ -53,7 +53,7 @@ function fetch() {
   Spokesman::say(array(
     'total' => count($list),
     'list' => $list,
-  ));
+  ), array('logo', 'big_pic'));
 }
 
 function update($args, $attr) {
@@ -65,7 +65,7 @@ function update($args, $attr) {
 
   // 因为dpi的关系，前端显示的时候要缩小到50%，所以这里需要记录图片大小
   if (isset($attr['logo'])) {
-    $size = getimagesize((substr($attr['logo'], 0, 7) != 'http://' ? '../../' : '' ) . $attr['logo']);
+    $size = getimagesize('../../' . (substr($attr['logo'], 0, 7) != 'upload/' ? 'upload/' : '' ) . $attr['logo']);
     $attr['logo_width'] = $size[0] >> 1;
   }
 
@@ -73,7 +73,7 @@ function update($args, $attr) {
     ->where($conditions)
     ->execute();
 
-  Spokesman::judge($result, '修改成功', '修改失败', $attr);
+  Spokesman::judge($result, '修改成功', '修改失败', $attr, array('logo', 'big_pic'));
 }
 
 function delete($args) {
