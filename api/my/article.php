@@ -88,18 +88,23 @@ function update($args, $attr, $success = '更新成功', $error = '更新失败'
 
   $conditions = Spokesman::extract();
   // label 不能在文章列表修改
-  unset($args['label']);
+  unset($attr['label']);
   // 去掉条件中和更新中重复的键
   $conditions = array_diff_key($conditions, $args);
-  if (isset($args['icon_path'])) {
-    $args['icon_path'] = str_replace('http://r.yxpopo.com/', '', $args['icon_path']);
+  if ($attr['icon_path_article']) {
+    $attr['icon_path'] = str_replace('http://r.yxpopo.com/', '', $attr['icon_path_article']);
+    unset($attr['icon_path_article']);
   }
 
   $article = new Article();
   $result = $article->update($attr)
     ->where($conditions)
     ->execute();
-  Spokesman::judge($result, $success, $error, $args);
+
+  if ($attr['icon_path']) {
+    $attr['icon_path_article'] = $attr['icon_path'];
+  }
+  Spokesman::judge($result, $success, $error, $attr);
 
   if (Admin::is_outsider()) {
     Admin::log_outsider_action($conditions['id'], 'update', implode(',', array_keys($args)));

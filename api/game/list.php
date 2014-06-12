@@ -139,8 +139,10 @@ function update($game, $args, $success = '更新成功', $error = '更新失败'
     exit();
   }
   $conditions = Spokesman::extract(true);
-  if (isset($args['icon_path'])) {
-    $args['icon_path'] = str_replace('http://r.yxpopo.com/', '', $args['icon_path']);
+  // 为了在上传的时候区分
+  if (isset($args['icon_path_article'])) {
+    $args['icon_path'] = str_replace('http://r.yxpopo.com/', '', $args['icon_path_article']);
+    unset($args['icon_path_article']);
   }
   $result = $game->update($args)
     ->where($conditions)
@@ -152,6 +154,10 @@ function update($game, $args, $success = '更新成功', $error = '更新失败'
       ->where(array('status' => 0))
       ->fetchAll(PDO::FETCH_ASSOC);
     $args['tags'] = $tags;
+  }
+  // 为了显示
+  if ($args['icon_path']) {
+    $args['icon_path_article'] = $args['icon_path'];
   }
   Spokesman::judge($result, $success, $error, $args);
 }

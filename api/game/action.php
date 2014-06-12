@@ -17,6 +17,7 @@ $game = new Game();
 $args = $_REQUEST;
 $args['os_android'] = (int)in_array(1, $args['platform']);
 $args['os_ios'] = (int)in_array(2, $args['platform']);
+$args['icon_path'] = str_replace('http://r.yxpopo.com/', '', $args['icon_path']);
 unset($args['platform']);
 
 $check = $game->insert($args)

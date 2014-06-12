@@ -39,7 +39,7 @@
     <tr id="{{id}}">
       <td><a href="#category" class="label label-default label-{{category}} edit" data-type="select" data-url="api/article/category.php" data-display="label" data-refresh="true" data-add-new="true">{{#if label}}{{label}}{{else}}（请选择）{{/if}}</a></td>
       <td><a href="#/game/profile/{{guide_name}}">{{game_name}}</a></td>
-      <td><a href="#icon_path" class="edit" data-type="img"><img src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="img-thumbnail icon-mh-50"></a></td>
+      <td><a href="#icon_path_article" class="edit" data-type="img" data-display="icon_path"><img src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="img-thumbnail icon-mh-50"></a></td>
       <td><a href="#/article/detail/{{id}}">{{topic}} <i class="fa fa-edit"></i></a></td>
       <td>{{pub_date}}</td>
       <td>{{update_time}} / {{update_editor_label}}</td>

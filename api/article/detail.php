@@ -62,7 +62,7 @@ function fetch($article, $args) {
   }
 
   // 如果不是抓取的话，还要取作者
-  if (!$result['source']) {
+  if (!$result['source'] || $result['source'] === 'gamepopo') {
     require_once "../../inc/Admin.class.php";
     $admin = new Admin();
     $author = $admin->select(Admin::$BASE)
@@ -94,13 +94,18 @@ function update($article, $args) {
     $args['content'] = strip_tags($args['content'], '<table><tr><td><span><video><audio>'); // 过滤掉所有script标签
     $args['content'] = \Michelf\Markdown::defaultTransform($args['content']);
   }
-  if (isset($args['icon_path'])) {
-    $args['icon_path'] = str_replace('http://r.yxpopo.com/', '', $args['icon_path']);
+  if (isset($args['icon_path_article'])) {
+    $args['icon_path'] = str_replace('http://r.yxpopo.com/', '', $args['icon_path_article']);
+    unset($args['icon_path_article']);
   }
   $conditions = Spokesman::extract();
   $result = $article->update($args)
     ->where($conditions)
     ->execute();
+
+  if ($args['icon_path']) {
+    $args['icon_path_article'] = $args['icon_path'];
+  }
   Spokesman::judge($result, '修改成功', '修改失败', $args);
 
   if (Admin::is_outsider()) {
@@ -124,8 +129,9 @@ function create($article, $args) {
   $args['author'] = $_SESSION['id'];
   $args['status'] = Article::DRAFT;
   $args['pub_date'] = empty($args['pub_date']) ? date('Y-m-d H:i:s') : $args['pub_date'];
-  if (isset($args['icon_path'])) {
-    $args['icon_path'] = str_replace('http://r.yxpopo.com/', '', $args['icon_path']);
+  if (isset($args['icon_path_article'])) {
+    $args['icon_path'] = str_replace('http://r.yxpopo.com/', '', $args['icon_path_article']);
+    unset($args['icon_path_article']);
   }
   $id = (int)$article->insert($args)
     ->execute()
@@ -134,6 +140,7 @@ function create($article, $args) {
     $args['id'] = $id;
   }
   $args['author'] = $_SESSION['fullname'];
+  $args['icon_path_article'] = $args['icon_path'];
 
   Spokesman::judge($id, '创建成功', '创建失败', $args);
 
