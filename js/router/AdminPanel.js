@@ -8,8 +8,8 @@
     label: '',
     source: '',
     topic: '',
-    author: '您',
-    icon_path: './img/image.png',
+    author: 0,
+    icon_path: '',
     pub_date: '',
     src_url: ''
   };
