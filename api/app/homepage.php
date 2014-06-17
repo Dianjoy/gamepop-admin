@@ -43,13 +43,29 @@ function create($args, $attr) {
 
 function fetch() {
   require_once "../../inc/App.class.php";
+  require_once "../../inc/Game.class.php";
   $app = new App();
+  $game = new Game();
 
   $list = $app->select(App::$HOMEPAGE)
     ->where(array('status' => App::NORMAL))
     ->fetchAll(PDO::FETCH_ASSOC);
   usort($list, compare);
 
+  $guide_names = array();
+  foreach ($list as $item) {
+    $guide_names[] = $item['guide_name'];
+  }
+
+  $games = $game->select(Game::$ALL)
+    ->where(array(Game::ID => $guide_names), '', \gamepop\Base::R_IN)
+    ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
+
+  foreach ($list as $key => $item) {
+    $item['game_name'] = $games[$item['guide_name']]['game_name'];
+    $list[$key] = $item;
+  }
+  
   Spokesman::say(array(
     'total' => count($list),
     'list' => $list,
