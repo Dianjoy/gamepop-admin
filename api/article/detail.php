@@ -91,7 +91,7 @@ function update($article, $args) {
   if (isset($args['content'])) {
     require_once(dirname(__FILE__) . '/../../inc/Markdown.inc.php');
     $args['content'] = str_replace('http://r.yxpopo.com/', '', $args['content']); // 把资源替换成相对路径
-    $args['content'] = strip_tags($args['content'], '<table><tr><td><span><video><audio>'); // 过滤掉所有script标签
+    $args['content'] = strip_tags($args['content'], '<table><tr><td><span><video><audio>'); // 只保留特定标签
     $args['content'] = \Michelf\Markdown::defaultTransform($args['content']);
   }
   if (isset($args['icon_path_article'])) {
