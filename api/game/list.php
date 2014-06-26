@@ -127,6 +127,12 @@ function fetch($game, $args) {
 }
 
 function delete($game) {
+  // 删掉m_pack_guide对应记录
+  $conditions = Spokesman::extract(true);
+  $game->delete(Game::PACK)
+    ->where($conditions)
+    ->execute();
+
   $args = array(
     'status' => 1,
   );
