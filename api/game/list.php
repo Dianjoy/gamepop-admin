@@ -59,14 +59,18 @@ function fetch($game, $args) {
     }
   }
 
+  $total = $game->select($game->count())
+    ->where($conditions)
+    ->where(array(Game::ID => $guide_names), '', \gamepop\Base::R_IN)
+    ->search($keyword)
+    ->fetch(PDO::FETCH_COLUMN);
   $games = $game->select(Game::$ALL)
     ->where($conditions)
     ->where(array(Game::ID => $guide_names), '', \gamepop\Base::R_IN)
     ->search($keyword)
+    ->order('hot')
+    ->limit($page * $pagesize, $pagesize)
     ->fetchAll(PDO::FETCH_ASSOC);
-  $total = count($games);
-  usort($games, compare_hot);
-  $games = array_slice($games, $page * $pagesize, $pagesize);
 
   // 某些地方检索到这里就OK了，比如文章关联游戏的页面
   if (isset($args['from'])) {
