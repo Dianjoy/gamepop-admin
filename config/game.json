@@ -12,6 +12,11 @@
       "icon": "list",
       "title": "全部游戏",
       "url": "#/game/list"
+    },
+    {
+      "icon": "question",
+      "title": "未知游戏",
+      "url": "#/game/lost"
     }
   ]
 }

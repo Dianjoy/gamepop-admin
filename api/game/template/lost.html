@@ -1,0 +1,86 @@
+<div class="navbar navbar-default navbar-static-top smart-navbar" role="navigation">
+  <ul class="nav navbar-nav">
+    <li class="disabled"><a href="#"><i class="fa fa-filter"></i> 筛选</a></li>
+    <li class="disabled"><a href="#"><i class="fa fa-sort-amount-desc"></i> 排序</a></li>
+  </ul>
+</div>
+
+<ul class="pagination pull-right hidden-md hidden-lg">
+  <script type="text/x-handlebars-template">
+    <li><a href="#/to/{{prev}}"><i class="fa fa-chevron-left"></i></a></li>
+    {{#each pages}}
+    <li class="hidden-xs"><a href="#/to/{{index}}">{{label}}</a></li>
+    {{/each}}
+    <li><a href="#/to/{{next}}"><i class="fa fa-chevron-right"></i></a></li>
+  </script>
+</ul>
+
+<table class="table table-bordered smart-table responsive-table" data-pagination=".pagination" data-pagesize="20" data-url="api/game/lost.php" data-id="guide_name">
+  <thead>
+  <tr>
+    <th>游戏图标</th>
+    <th>游戏名称</th>
+    <th>关联到现有游戏</th>
+    <th>游戏标签</th>
+    <th>游戏描述</th>
+    <th>游戏平台</th>
+    <th>攻略数量</th>
+    <th>操作</th>
+  </tr>
+  </thead>
+  <tbody>
+  <script type="text/x-handlebars-template">
+    {{#each list}}
+    <tr id="{{guide_name}}">
+      <td><a href="#icon_path" class="edit" data-type="img" data-refresh="true"><img
+        src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="icon-100"></a></td>
+      <td data-title="游戏名称">
+        <a href="#game_name" class="edit">{{game_name}}</a>
+        <small>{{guide_name}}</small>
+      </td>
+      <td>
+        <a href="#link" class="edit" data-type="search" title="关联已有游戏" data-search-url="api/game/list.php" data-display="game_name"><i class="fa fa-link"></i></a>
+      </td>
+      <td data-title="游戏标签" class="label-list"><a href="#tags" class="edit" data-type="tags" data-multiple="true" data-add-new="true" data-display="label" data-refresh="true" data-url="api/game/tags.php">{{#each tags}}<span class="label label-info">{{tag}}</span> {{/each}}</a></td>
+      <td data-title="游戏描述">
+        <a href="#game_desc" class="edit" data-type="long-text">{{game_desc}}</a>
+      </td>
+      <td data-title="游戏平台">
+        <div class="btn-group btn-amount-2">
+          <a href="#os_android" class="btn btn-success status-button {{#if os_android}}active{{/if}}" title="Android"><i class="fa fa-android"></i></a>
+          <a href="#os_ios" class="btn btn-success status-button {{#if os_ios}}active{{/if}}" title="iOS"><i class="fa fa-apple"></i></a>
+        </div>
+      </td>
+      <td data-title="攻略数量">
+        {{#if articles}}
+        <ul class="list-group">
+          <li class="list-group-item list-group-item-info">参考文章 总计{{NUM}}篇</li>
+          {{#each articles}}
+          <li class="list-group-item"><a href="#/article/detail/{{id}}">{{#if topic}}{{topic}}{{else}}（无标题）{{/if}}</a></li>
+          {{/each}}
+        </ul>
+        {{/if}}
+      </td>
+      <td>
+        <button class="btn btn-danger delete-button" type="button"><i class="fa fa-trash-o"></i></button>
+      </td>
+    </tr>
+    {{/each}}
+  </script>
+  </tbody>
+  <tfoot>
+  <tr class="waiting">
+    <td colspan="8" align="center"><i class="fa fa-spin fa-spinner fa-4x"></i><br>加载数据，请稍后</td>
+  </tr>
+  </tfoot>
+</table>
+
+<ul class="pagination pull-right mg0">
+  <script type="text/x-handlebars-template">
+    <li><a href="#/to/{{prev}}"><i class="fa fa-chevron-left"></i></a></li>
+    {{#each pages}}
+    <li class="hidden-xs"><a href="#/to/{{index}}">{{label}}</a></li>
+    {{/each}}
+    <li><a href="#/to/{{next}}"><i class="fa fa-chevron-right"></i></a></li>
+  </script>
+</ul>

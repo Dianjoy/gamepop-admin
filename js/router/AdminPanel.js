@@ -19,7 +19,7 @@
       if (path) {
         var params = path.split('/');
         for (var i = 0, len = params.length, isFind = false; i < len; i++) {
-          isFind = false
+          isFind = false;
           for (var j = 0, jlen = regs.length; j < jlen; j++) {
             var arr = regs[j].exec(params[i]);
             if (arr) {
