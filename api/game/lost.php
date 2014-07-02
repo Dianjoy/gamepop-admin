@@ -80,7 +80,6 @@ function update($args, $attr) {
         ->execute();
     }
     unset($attr['link']);
-    unset($attr['game_name']);
 
     if (!$result) {
       Spokesman::judge($result, '', '关联失败');
