@@ -3,6 +3,7 @@
  */
 ;(function (ns) {
   ns.TopGame = Backbone.View.extend({
+    $mediator: null,
     entrance: null,
     initialize: function () {
       this.template = Handlebars.compile(this.$('script').remove().html());
@@ -15,7 +16,7 @@
       this.collection.on('sort', this.collection_sortHandler, this);
     },
     render: function () {
-      if (this.collection.length === 0) {
+      if (this.collection.length === 0 || (this.$mediator.has('page') && this.$mediator.get('page') !== 0)) {
         return;
       }
       this.model = this.collection.at(0);
@@ -27,7 +28,7 @@
           this.entrance.remove();
         }
         this.entrance = $(this.template(this.model.toJSON()));
-        this.$('#homepage-search').append(this.entrance);
+        this.$('#homepage').append(this.entrance);
       }
     },
     collection_addHandler: function (model) {

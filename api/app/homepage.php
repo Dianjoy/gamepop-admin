@@ -41,16 +41,27 @@ function create($args, $attr) {
   Spokesman::judge($result, '创建成功', '创建失败', $attr);
 }
 
-function fetch() {
+function fetch($args) {
   require_once "../../inc/App.class.php";
   require_once "../../inc/Game.class.php";
   $app = new App();
   $game = new Game();
 
+  $page = (int)$args['page'];
+  $pagesize = empty($args['pagesize']) ? 20 : (int)$args['pagesize'];
+  $condition = array(
+    'status' => App::NORMAL,
+  );
+
+  $total = $app->select($app->count())
+    ->where($condition)
+    ->fetch(PDO::FETCH_COLUMN);
+
   $list = $app->select(App::$HOMEPAGE)
-    ->where(array('status' => App::NORMAL))
+    ->where($condition)
+    ->order('seq', 'ASC')
+    ->limit($page * $pagesize, $pagesize)
     ->fetchAll(PDO::FETCH_ASSOC);
-  usort($list, compare);
 
   $guide_names = array();
   foreach ($list as $item) {
@@ -67,7 +78,7 @@ function fetch() {
   }
   
   Spokesman::say(array(
-    'total' => count($list),
+    'total' => $total,
     'list' => $list,
   ), array('logo', 'big_pic'));
 }

@@ -14,7 +14,8 @@
     showNormalPage: function (cate, sub, path) {
       var data = {
         cate: cate,
-        sub: sub
+        sub: sub,
+        path: path
       };
       if (path) {
         var params = path.split('/');

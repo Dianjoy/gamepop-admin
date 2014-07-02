@@ -44,24 +44,49 @@ function fetch($article, $args) {
   $pagesize = empty($args['pagesize']) ? 20 : (int)$args['pagesize'];
   $page = isset($args['page']) ? (int)$args['page'] : 0;
   $keyword = $args['keyword'];
-  $compare = 'compare' . (isset($args['seq']) ? '_' . $args['seq'] : '');
+  $seq = isset($args['seq']) ? $args['seq'] : '';
   $status = array(
     'status' => (int)$args['status'],
   );
   $args = array_omit($args, 'page', 'pagesize', 'keyword', 'id', 'path', 'seq', 'status');
   $conditions = Spokesman::extract(true);
+  $conditions = array_merge($conditions, $args);
   if (isset($args['update_editor'])) {
     $status['update_editor'] = $args['update_editor'];
     unset($args['update_editor']);
   }
-  $articles = $article->select(Article::$ALL)
+  $total = $article->select($article->count())
     ->where($status, Article::TABLE)
-    ->where(array_merge($conditions, $args))
+    ->where($conditions)
     ->search($keyword)
-    ->fetchAll(PDO::FETCH_ASSOC);
-  usort($articles, $compare);
-  $total = count($articles);
-  $articles = array_slice($articles, $page * $pagesize, $pagesize);
+    ->fetch(PDO::FETCH_COLUMN);
+
+  if (!isset($args['category']) && !$seq) {
+    $articles = $article->select(Article::$ALL, 'CEIL(`category`/1000) AS num')
+      ->where($status, Article::TABLE)
+      ->where($conditions)
+      ->search($keyword)
+      ->order('num', 'ASC')
+      ->order('pub_date')
+      ->limit($pagesize * $page, $pagesize)
+      ->fetchAll(PDO::FETCH_ASSOC);
+  } elseif ($seq == 'seq') {
+    $articles = $article->select(Article::$ALL)
+      ->where($status, Article::TABLE)
+      ->where($conditions)
+      ->search($keyword)
+      ->order('seq', 'ASC')
+      ->limit($pagesize * $page, $pagesize)
+      ->fetchAll(PDO::FETCH_ASSOC);
+  } elseif (isset($args['category'])) {
+    $articles = $article->select(Article::$ALL)
+      ->where($status, Article::TABLE)
+      ->where($conditions)
+      ->search($keyword)
+      ->order('pub_date')
+      ->limit($pagesize * $page, $pagesize)
+      ->fetchAll(PDO::FETCH_ASSOC);
+  }
 
   // 读取作者，用作者名取代标记
   $editors = array();

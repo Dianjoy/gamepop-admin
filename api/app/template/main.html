@@ -1,31 +1,26 @@
 <div class="game-homepage row-container">
   <div class="phone">
     <div class="emulator column" data-mediator-class="gamepop.game.TopGame" data-url="api/app/homepage.php">
-      <div id="homepage-search">
+      <div id="homepage">
         <img src="img/logo1.png" width="38" height="37" class="homepage-logo">
         <form id="search-form" action="">
           <input type="text" name="keyword" placeholder="搜索您最爱的游戏" autocomplete="off">
           <button><i class="fa fa-search"></i></button>
         </form>
+        <h2 id="my-apps-title">我的游戏</h2>
+        <ul id="my-apps">
+        </ul>
         <script type="text/x-handlebars-template">
-          <a href="#/game/profile/{{guide_name}}" class="entrance"><img src="{{logo}}" width="{{logo_width}}" ></a>
+          <a href="#/remote/{{guide_name}}" class="entrance">
+            {{#if logo}}<img src="{{logo}}" width="{{logo_width}}">{{/if}}
+            <span>点击进入</span>
+          </a>
         </script>
-      </div>
-      <h2 class="apps-title">我的游戏攻略</h2>
-      <div id="apps">
-        <div id="apps-container" class="carousel">
-          <ul style="height: 70px">
-
-          </ul>
-        </div>
-        <div class="indicators">
-          <div class="token"></div>
-        </div>
       </div>
     </div>
   </div>
   <div class="tables flex-auto">
-    <table class="table table-bordered table-hover smart-table sortable" data-url="api/app/homepage.php">
+    <table class="table table-bordered table-hover smart-table sortable" data-url="api/app/homepage.php" data-pagesize="5" data-pagination=".pagination">
       <thead>
       <tr>
         <th>背景大图</th>
@@ -58,5 +53,14 @@
       </tr>
       </tfoot>
     </table>
+    <ul class="pagination pull-right mg0">
+      <script type="text/x-handlebars-template">
+        <li><a href="#/to/{{prev}}"><i class="fa fa-chevron-left"></i></a></li>
+        {{#each pages}}
+        <li class="hidden-xs"><a href="#/to/{{index}}">{{label}}</a></li>
+        {{/each}}
+        <li><a href="#/to/{{next}}"><i class="fa fa-chevron-right"></i></a></li>
+      </script>
+    </ul>
   </div>
 </div>
