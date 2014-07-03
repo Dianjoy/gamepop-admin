@@ -11,6 +11,7 @@ include_once '../../inc/session.php';
  */
 include_once "../../inc/Spokesman.class.php";
 include_once "../../inc/Article.class.php";
+include_once "../../inc/utils.php";
 $article = new Article();
 
 $methods = array(
@@ -123,9 +124,7 @@ function create($article, $args) {
     ));
     exit();
   }
-  unset($args['game_name']);
-  unset($args['label']);
-  unset($args['path']);
+  $args = array_omit($args, 'label', 'cate', 'sub', 'path', 'game_name');
   $args['author'] = $_SESSION['id'];
   $args['status'] = Article::DRAFT;
   $args['pub_date'] = empty($args['pub_date']) ? date('Y-m-d H:i:s') : $args['pub_date'];

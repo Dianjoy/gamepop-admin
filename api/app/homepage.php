@@ -29,6 +29,7 @@ function create($args, $attr) {
     'guide_name' => '',
     'big_pic' => '',
     'logo' => '',
+    'seq' => 0,
     'create_time' => date('Y-m-d H:i:s'),
     'online_time' => date('Y-m-d', time() + 86400) . ' 23:59:59', // 默认次日晚上更新
   );
