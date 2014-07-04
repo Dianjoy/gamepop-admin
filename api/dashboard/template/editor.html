@@ -6,16 +6,28 @@
         <i class="fa fa-fire"></i>
       </div>
       <div class="details">
-        <span class="content">最新抓取</span>
+        <span class="content">新抓取文章</span>
         <span class="value">{{latest-fetch}}</span>
       </div>
       <i class="fa fa-play-circle more"></i>
     </a>
   </div>
   <div class="col-md-3 col-sm-6">
-    <a href="#/game/lost" class="dashboard-stat secondary">
+    <a href="#/game/fetched" class="dashboard-stat secondary">
       <div class="visual">
-        <i class="fa fa-cube"></i>
+        <i class="fa fa-trophy"></i>
+      </div>
+      <div class="details">
+        <span class="content">新收录游戏</span>
+        <span class="value">{{fetched}}</span>
+      </div>
+      <i class="fa fa-play-circle more"></i>
+    </a>
+  </div>
+  <div class="col-md-3 col-sm-6">
+    <a href="#/game/lost" class="dashboard-stat tertiary">
+      <div class="visual">
+        <i class="fa fa-gift"></i>
       </div>
       <div class="details">
         <span class="content">未收录游戏</span>
@@ -23,17 +35,6 @@
       </div>
       <i class="fa fa-play-circle more"></i>
     </a>
-  </div>
-  <div class="col-md-3 col-sm-6">
-    <div class="dashboard-stat tertiary">
-      <div class="visual">
-        <i class="fa fa-square-o"></i>
-      </div>
-      <div class="details">
-        <span class="content">未编辑文章</span>
-        <span class="value">{{not-edited}}</span>
-      </div>
-    </div>
   </div>
   <form class="col-md-3 col-sm-6 ajax" action="api/article/action.php" method="post">
     <input type="hidden" name="m" value="delete-all-deletable">

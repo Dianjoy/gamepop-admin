@@ -13,6 +13,7 @@ include_once '../../inc/session.php';
 include_once "../../inc/Spokesman.class.php";
 include_once "../../inc/Game.class.php";
 include_once "../../inc/Admin.class.php";
+include_once "../../inc/utils.php";
 $game = new Game();
 
 $args = $_REQUEST;
@@ -43,9 +44,11 @@ function fetch($game, $args) {
   $pagesize = empty($args['pagesize']) ? 20 : (int)$args['pagesize'];
   $page = isset($args['page']) ? (int)$args['page'] : 0;
   $keyword = empty($args['keyword']) ? '' : trim(addslashes(strip_tags($args['keyword'])));
-  $conditions = array(
+  $only_game = isset($args['from']);
+  $args = array_omit($args, 'pagesize', 'page', 'keyword', 'from');
+  $conditions = array_merge(array(
     'status' => Game::NORMAL,
-  );
+  ), $args);
 
   // 外包人员只能看到自己的游戏
   if (Admin::is_outsider()) {
@@ -59,7 +62,7 @@ function fetch($game, $args) {
     }
   }
 
-  $total = $game->select($game->count())
+  $total = (int)$game->select($game->count())
     ->where($conditions)
     ->where(array(Game::ID => $guide_names), '', \gamepop\Base::R_IN)
     ->search($keyword)
@@ -73,7 +76,7 @@ function fetch($game, $args) {
     ->fetchAll(PDO::FETCH_ASSOC);
 
   // 某些地方检索到这里就OK了，比如文章关联游戏的页面
-  if (isset($args['from'])) {
+  if ($only_game) {
     foreach ($games as $key => $single) {
       $games[$key]['id'] = $single['guide_name'];
       $games[$key]['label'] = $single['game_name'];

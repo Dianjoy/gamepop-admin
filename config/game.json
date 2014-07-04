@@ -14,6 +14,16 @@
       "url": "#/game/list"
     },
     {
+      "icon": "link",
+      "title": "合并游戏",
+      "url": "#/game/merge"
+    },
+    {
+      "icon": "truck",
+      "title": "新收录游戏",
+      "url": "#/game/fetched"
+    },
+    {
       "icon": "question",
       "title": "未知游戏",
       "url": "#/game/lost"

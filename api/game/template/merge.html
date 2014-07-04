@@ -1,0 +1,55 @@
+<div class="row">
+  <form class="col-sm-12 col-md-8 col-lg-6" action="api/game/action.php" class="ajax" method="post" data-mediator-class="gamepop.game.MergeGame">
+    <input type="hidden" name="m" value="merge">
+    <div class="alert alert-msg" style="display: none">
+
+    </div>
+    <div class="alert alert-info">
+      <p>此项功能用于将多余的游戏合并到一起。但仅限将ptbus的游戏合并到4399。用法：</p>
+      <ol>
+        <li>搜索要合并的游戏</li>
+        <li>搜索目标游戏</li>
+        <li>确认后按下“合并”按钮</li>
+      </ol>
+    </div>
+    <fieldset class="form-group">
+      <legend>将此游戏</legend>
+      <div class="input-group">
+        <input type="search" name="from" class="form-control">
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default search-button" value="from"><i class="fa fa-search"></i></button>
+        </span>
+      </div>
+    </fieldset>
+    <div class="form-group item-grid label-button from">
+      <script type="text/x-handlebars-template">
+        {{#if list}}
+        {{#each list}}
+        <input type="radio" id="{{name}}-{{guide_name}}" name="{{name}}" value="{{guide_name}}" class="item">
+        <label for="{{name}}-{{guide_name}}" class="item-label">
+          {{#if icon_path}}<img src="{{icon_path}}" class="icon-mh-25">{{/if}} {{game_name}}
+        </label>
+        {{/each}}
+        <hr />
+        {{else}}
+        <div class="alert alert-warning">
+          <i class="fa fa-frown-o"></i> 查无此游戏，换个关键词试试吧。
+        </div>
+        {{/if}}
+      </script>
+    </div>
+    <fieldset class="form-group">
+      <legend>合并到</legend>
+      <div class="input-group">
+        <input type="search" name="to" class="form-control">
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default search-button" value="to"><i class="fa fa-search"></i></button>
+        </span>
+      </div>
+    </fieldset>
+    <div class="form-group item-grid label-button to">
+
+    </div>
+    <button class="btn btn-primary btn-lg btn-block" disabled><i class="fa fa-play"></i> 合并</button>
+  </form>
+</div>

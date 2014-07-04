@@ -25,12 +25,9 @@ $result['latest-fetch'] = $article->get_latest_fetched_article_number();
 // 取未收录的游戏
 $result['lost-game'] = count($article->get_unknown_games());
 
-// 取未编辑的文章
-$result['not-edited'] = $article->select($article->count())
-  ->where(array(
-    'update_editor' => 0,
-    'status' => 0,
-  ))
+// 取新收录的游戏
+$result['fetched'] = $game->select($game->count())
+  ->where(array('status' => Game::FETCHED))
   ->fetch(PDO::FETCH_COLUMN);
 
 // 取“可删除文章”的数量

@@ -9,6 +9,11 @@
       "url": "#/article/detail"
     },
     {
+      "icon": "truck",
+      "title": "新收录文章",
+      "url": "#/game/latest-fetch"
+    },
+    {
       "icon": "list",
       "title": "我的文章",
       "url": "#/my/article"
