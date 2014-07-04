@@ -3,15 +3,17 @@
   <tr>
     <th>来源</th>
     <th>上次抓取时间</th>
+    <th>抓取间隔</th>
     <th>操作</th>
   </tr>
   </thead>
   <tbody>
   <script type="text/x-handlebars-template">
     {{#each list}}
-    <tr>
+    <tr id="{{id}}">
       <td><a href="#source" class="edit">{{#if source}}{{source}}{{else}}（请填写内容来源）{{/if}}</a></td>
       <td><time datetime="{{last_fetch_time}}">{{last_fetch_time}}</time></td>
+      <td><a href="#min_catch_time" class="edit" data-type="select" data-display="label" data-url="api/game/json/fetch-rate.json">{{label}}</a></td>
       <td>
         <a href="#status" class="btn btn-success status-button {{^if status}}active{{/if}}" title="抓取"><i class="fa fa-refresh"></i></a>
       </td>
@@ -21,7 +23,7 @@
   </tbody>
   <tfoot>
   <tr>
-    <td colspan="3"><button class="btn btn-primary add-row-button">添加来源</button></td>
+    <td colspan="4"><button class="btn btn-primary add-row-button">添加来源</button></td>
   </tr>
   </tfoot>
 </table>
