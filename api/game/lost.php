@@ -31,7 +31,6 @@ function fetch($args) {
       ->fetchAll(PDO::FETCH_ASSOC);
   }
 
-
   $total = count($games);
   $games = array_slice($games, $pagesize * $page, $pagesize);
 
@@ -76,6 +75,12 @@ function update($args, $attr) {
       require_once "../../inc/Article.class.php";
       $article = new Article();
       $result = $article->update(array(Game::ID => $attr['link']), Article::TABLE)
+        ->where($conditions)
+        ->execute();
+    }
+    // 删掉游戏
+    if ($result) {
+      $game->update(array('status' => 1))
         ->where($conditions)
         ->execute();
     }

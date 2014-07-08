@@ -15,12 +15,13 @@ require_once "../../inc/Game.class.php";
 require_once "../../inc/utils.php";
 $game = new Game();
 
-switch ($_GET['m']) {
+switch ($_REQUEST['m']) {
   case 'add':
     $attr = array_pick($_REQUEST, 'guide_name', 'game_name', 'game_desc');
     $attr['os_android'] = (int)in_array(1, $_REQUEST['platform']);
     $attr['os_ios'] = (int)in_array(2, $_REQUEST['platform']);
     $attr['icon_path'] = str_replace('http://r.yxpopo.com/', '', $_REQUEST['icon_path']);
+    $attr['guide_from'] = 'local'; // 手工填的认为是4399的，可以被合并进来
 
     $result = $game->insert($attr)
       ->execute()

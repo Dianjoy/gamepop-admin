@@ -31,7 +31,7 @@
       Backbone.View.prototype.remove.call(this);
     },
     search: function (input) {
-      this.target = input.attr('name');
+      this.target = input.data('for');
       var keyword = input.val();
       this.collection.fetch({
         reset: true,
@@ -57,7 +57,7 @@
         data = {list: data};
       }
       this.$('.' + this.target).html(this.template(data));
-      this.$('[name=' + this.target + ']').prop('disabled', false)
+      this.$('[data-for=' + this.target + ']').prop('disabled', false)
         .next().find('button').prop('disabled', false);
     },
     input_keyDownHandler: function (event) {
