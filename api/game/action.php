@@ -27,7 +27,7 @@ switch ($_GET['m']) {
       ->getResult();
 
     $args = array(
-      'go_to_url' => '#/game/profile/' . $args['guide_name']
+      'go_to_url' => '#/game/profile/' . $args['guide_name'],
     );
     $success = '创建成功';
     $error = '创建失败';
