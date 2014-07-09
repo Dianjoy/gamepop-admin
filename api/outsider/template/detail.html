@@ -12,14 +12,14 @@
       </div>
       <script type="text/x-handlebars-template">
         <div class="media">
-          <a href="#/game/profile/{{guide_name}}" class="pull-left">
+          <a href="#icon_path_article" class="edit pull-left" data-type="img" data-display="icon_path">
             <img src="{{#if icon_path}}{{icon_path}}{{else}}img/image.png{{/if}}" class="img-thumbnail" width="180" height="120">
           </a>
           <div class="media-body">
-            <h4>作者：{{author}} <small>{{#if source}}来源：<a href="{{src_url}}" target="_blank">{{source}} <i class="fa fa-external-link"></i></a>{{else}}[原创]{{/if}}</small></h4>
+            <h4>作者：{{author}} {{#if source}}<small>来源：<a href="{{src_url}}" target="_blank">{{source}} <i class="fa fa-external-link"></i></a></small>{{else}}<span class="label label-success"><i class="fa fa-thumbs-up"></i> 原创</span>{{/if}}</h4>
             <p>
               游戏：{{game_name}}
-              分类：{{label}}
+              分类：<a href="#category" data-type="select" class="edit" data-url="api/article/category.php" data-display="label">{{label}}</a>
             </p>
             <p class="text-muted">
               更新时间：<time datetime="{{update_time}}">{{update_time}}</time>
@@ -48,7 +48,6 @@
           <div class="media-body">
             <h4>{{{game_name}}} <small>{{guide_name}}</small></h4>
             <p>{{game_desc}}</p>
-            <p class="text-muted">更新时间：<time datetime="{{update_time}}">{{update_time}}</time></p>
           </div>
         </div>
       </script>
@@ -80,7 +79,10 @@
           <div class="alert alert-info auto-save-info"></div>
         </div>
         <div class="col-md-7 col-sm-12">
-          <button class="btn btn-primary btn-block btn-lg save-button"><i class="fa fa-check"></i> 保存 (Ctrl+Enter)</button>
+          <div class="btn-group btn-group-lg">
+            <button class="btn btn-primary save-button"><i class="fa fa-check"></i> 保存 (Ctrl+Enter)</button>
+            <button type="button" class="btn btn-success publish-button" data-active="0" data-deactive="2"><i class="fa fa-square-o"></i> 发布</button>
+          </div>
         </div>
       </div>
     </form>

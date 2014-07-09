@@ -41,6 +41,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
 }
 
 function fetch($game, $args) {
+  include_once "../../inc/Article.class.php";
+
   $pagesize = empty($args['pagesize']) ? 20 : (int)$args['pagesize'];
   $page = isset($args['page']) ? (int)$args['page'] : 0;
   $keyword = empty($args['keyword']) ? '' : trim(addslashes(strip_tags($args['keyword'])));
@@ -60,20 +62,36 @@ function fetch($game, $args) {
     foreach ($my_games as $item) {
       $guide_names[] = $item['guide_name'];
     }
+    $range = array(Game::ID => $guide_names);
   }
 
   $total = (int)$game->select($game->count())
     ->where($conditions)
-    ->where(array(Game::ID => $guide_names), '', \gamepop\Base::R_IN)
+    ->where($range, '', \gamepop\Base::R_IN)
     ->search($keyword)
     ->fetch(PDO::FETCH_COLUMN);
-  $games = $game->select(Game::$ALL)
-    ->where($conditions)
-    ->where(array(Game::ID => $guide_names), '', \gamepop\Base::R_IN)
-    ->search($keyword)
-    ->order('hot')
-    ->limit($page * $pagesize, $pagesize)
-    ->fetchAll(PDO::FETCH_ASSOC);
+  // 外包人员按新抓取的数量排序
+  if (Admin::is_outsider()) {
+    $num = "SUM(CASE `t_article`.`status` WHEN 3 THEN 1 ELSE 0 END) AS `NUM`";
+    $games = $game->select(Game::$LATEST, $num)
+      ->join(Article::TABLE, Game::ID, Game::ID, 'LEFT', true)
+      ->where($conditions, Game::TABLE)
+      ->where($range, Game::TABLE, \gamepop\Base::R_IN)
+      ->search($keyword)
+      ->group(Game::ID, Game::TABLE)
+      ->order('NUM')
+      ->order('hot')
+      ->limit($pagesize * $page, $pagesize)
+      ->fetchAll(PDO::FETCH_ASSOC);
+  } else {
+    $games = $game->select(Game::$ALL)
+      ->where($conditions)
+      ->search($keyword)
+      ->order('hot')
+      ->limit($page * $pagesize, $pagesize)
+      ->fetchAll(PDO::FETCH_ASSOC);
+  }
+
 
   // 某些地方检索到这里就OK了，比如文章关联游戏的页面
   if ($only_game) {
@@ -96,18 +114,17 @@ function fetch($game, $args) {
     $tags = array_merge($tags, explode('|', $row['tags']));
   }
   $tags = array_unique($tags);
-  include_once "../../inc/Article.class.php";
   $article = new Article();
-
+  $range = array(Game::ID => $guide_names);
   $article_number = $article->select(Game::ID, $article->count())
-    ->where(array(Game::ID => $guide_names), '', \gamepop\Base::R_IN)
+    ->where($range, '', \gamepop\Base::R_IN)
     ->where($conditions)
     ->group(Game::ID)
     ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
   foreach ($games as &$row) {
     $row['os_android'] = (int)$row['os_android'];
     $row['os_ios'] = (int)$row['os_ios'];
-    $row['article_number'] = $article_number[$row[Game::ID]];
+    $row['article_number'] = (int)$article_number[$row[Game::ID]];
   }
 
   $tags = $game->select(Game::$TAGS)

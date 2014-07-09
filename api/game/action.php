@@ -37,12 +37,18 @@ switch ($_REQUEST['m']) {
   case 'merge':
     $from = $_REQUEST['from'];
     $to = $_REQUEST['to'];
+    // 取游戏名称
+    $game_name = $game->select(Game::ID, 'game_name')
+      ->where(array(Game::ID => array($from, $to)), '', \gamepop\Base::R_IN)
+      ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
     // 建立关联
     require_once "../../inc/Source.class.php";
     $source = new Source();
     $result = $source->insert(array(
         '4399id' => $to,
+        '4399name' => $game_name[$to],
         'ptbusid' => $from,
+        'ptbusname' => $game_name[$from],
       ), Source::VS)
       ->execute()
       ->getResult();

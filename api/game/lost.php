@@ -66,7 +66,9 @@ function update($args, $attr) {
     $source = new Source();
     $result = $source->insert(array(
         '4399id' => $attr['link'],
+        '4399name' => $attr['game_name'],
         'ptbusid' => $conditions['guide_name'],
+        'ptbusname' => $attr['game_name'],
       ), Source::VS)
       ->execute()
       ->getResult();

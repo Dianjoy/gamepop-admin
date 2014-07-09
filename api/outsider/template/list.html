@@ -41,7 +41,11 @@
       <td data-title="游戏别名">{{guide_name}}</td>
       <td data-title="游戏描述"><a href="#game_desc" class="edit" data-type="long-text">{{#if game_desc}}{{game_desc}}{{else}}（请添加）{{/if}}</a></td>
       <td>
-        <a href="#/outsider/articles/{{guide_name}}" class="btn btn-info"><i class="fa fa-list"></i> {{article_number}}</a>
+        <div class="btn-group btn-amount-2">
+          <a href="#/outsider/latest-fetch/{{guide_name}}" class="btn btn-info" title="新抓取"><i class="fa fa-list"></i> {{NUM}}</a>
+          <a href="#/outsider/articles/{{guide_name}}" class="btn btn-success" title="已发布"><i class="fa fa-list"></i> {{article_number}}</a>
+        </div>
+
       </td>
       <td>
         <a class="btn btn-info" href="#/outsider/homepage/{{guide_name}}" title="编辑首页"><i class="fa fa-th-large"></i> 编辑首页</a>

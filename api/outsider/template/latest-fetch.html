@@ -44,7 +44,7 @@
   </script>
 </ul>
 
-<table class="table table-bordered table-hover smart-table" data-pagination=".pagination" data-pagesize="20" data-url="api/article/list.php">
+<table class="table table-bordered table-hover smart-table" data-pagination=".pagination" data-pagesize="20" data-url="api/article/list.php" data-filter="status=3">
   <thead>
   <tr>
     <th>类型</th>
@@ -65,7 +65,7 @@
         {{#if source}}
         <a href="{{src_url}}" target="_blank">{{source}} <i class="fa fa-external-link"></i></a>
         {{else}}
-        {{author}}
+        {{author}}<span class="label label-success"><i class="fa fa-thumbs-up"></i> 原创</span>
         {{/if}}
       </td>
       <td><a href="#/game/profile/{{guide_name}}">{{game_name}}</a></td>
