@@ -87,9 +87,20 @@ function update($args, $attr) {
     $args['icon_path'] = str_replace('http://r.yxpopo.com/', '', $args['icon_path']);
   }
   unset($attr['fullname']);
-  $result = $game->update($attr)
+  $check = $game->select(Game::$OUTSIDE)
     ->where($conditions)
-    ->execute();
+    ->fetch(PDO::FETCH_ASSOC);
+  if ($check) {
+    $result = $game->update($attr)
+      ->where($conditions)
+      ->execute();
+  } else {
+    $attr = array_merge($attr, $conditions);
+    $result = $game->insert($attr, Game::OUTSIDE)
+      ->execute()
+      ->getResult();
+  }
+
   Spokesman::judge($result, '修改成功', '修改失败', $attr);
 }
 
