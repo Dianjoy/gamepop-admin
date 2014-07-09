@@ -87,10 +87,14 @@ function update($args, $attr) {
     $args['icon_path'] = str_replace('http://r.yxpopo.com/', '', $args['icon_path']);
   }
   unset($attr['fullname']);
-  $check = $game->select(Game::$OUTSIDE)
-    ->where($conditions)
-    ->fetch(PDO::FETCH_ASSOC);
-  if ($check) {
+  $has_user_id = array_key_exists('user_id', $attr);
+  if ($has_user_id) {
+    $check = $game->select(Game::$OUTSIDE)
+      ->where($conditions)
+      ->fetch(PDO::FETCH_ASSOC);
+  }
+
+  if ($check || !$has_user_id) {
     $result = $game->update($attr)
       ->where($conditions)
       ->execute();
