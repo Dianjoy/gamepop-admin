@@ -18,8 +18,9 @@ function fetch($args) {
 
   $pagesize = empty($args['pagesize']) ? 20 : (int)$args['pagesize'];
   $page = isset($args['page']) ? (int)$args['page'] : 0;
+  $keyword = $args['keyword'];
 
-  $games = $article->get_unknown_games();
+  $games = $article->get_unknown_games($keyword);
   usort($games, compare);
 
   // 各取5篇文章以便查阅
