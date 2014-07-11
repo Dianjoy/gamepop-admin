@@ -11,9 +11,10 @@
   </form>
 </div>
 
-<table class="table table-bordered smart-table responsive-table" data-url="api/article/category.php">
+<table class="table table-bordered table-hover smart-table responsive-table" data-url="api/article/category.php">
   <thead>
   <tr>
+    <th>ID</th>
     <th>类名</th>
     <th>别名</th>
     <th>父类</th>
@@ -25,6 +26,7 @@
   <script type="text/x-handlebars-template">
     {{#each list}}
     <tr id="{{id}}">
+      <td>{{id}}</td>
       <td data-title="类名"><a href="#label" class="edit">{{label}}</a></td>
       <td data-title="别名"><a href="#cate" class="edit">{{#if cate}}{{cate}}{{else}}（可添加，勿使用中文）{{/if}}</a></td>
       <td data-title="父类">{{parent}}</td>

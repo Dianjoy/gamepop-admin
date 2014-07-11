@@ -43,6 +43,9 @@
               <a href="http://49.212.132.111:8889/reget.do?action=add_article&param=:json" class="btn btn-warning btn-sm process-button"><i class="fa fa-cloud-download"></i> 重新抓取</a>
               {{/if}}
             </p>
+            <p>
+              <a href="http://49.212.132.111:8889/localimg.do?aid={{id}}" class="btn btn-sm btn-default process-button"><i class="fa fa-refresh" data-title="开始工作！" data-content="整个过程会持续大约5分钟，大侠请继续别的工作先。"></i> 外链图片本地化</a>
+            </p>
           </div>
         </div>
       </script>
@@ -87,10 +90,10 @@
       </div>
       <div class="alert alert-msg" style="display: none"></div>
       <div class="row">
-        <div class="col-md-5 col-sm-12">
+        <div class="col-md-12">
           <div class="alert alert-info auto-save-info"></div>
         </div>
-        <div class="col-md-7 col-sm-12">
+        <div class="col-md-12">
           <div class="btn-group btn-group-lg">
             <button class="btn btn-primary save-button"><i class="fa fa-floppy-o"></i> 保存 (Ctrl+Enter)</button>
             <button type="button" class="btn btn-success publish-button" data-active="0" data-deactive="2"><i class="fa fa-square-o"></i> 发布</button>
