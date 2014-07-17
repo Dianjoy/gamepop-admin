@@ -155,6 +155,7 @@ function update($article, $args, $success = '更新成功', $error = '更新失�
     $args['icon_path'] = str_replace('http://r.yxpopo.com/', '', $args['icon_path_article']);
     unset($args['icon_path_article']);
   }
+  $args['update_editor'] = (int)$_SESSION['id'];
   $result = $article->update($args)
     ->where($conditions)
     ->execute();
