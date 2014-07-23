@@ -1,7 +1,8 @@
-<div class="navbar navbar-default navbar-static-top smart-navbar" role="navigation">
+<div class="navbar navbar-default navbar-static-top smart-navbar" role="navigation" data-collection-id="category">
   <ul class="nav navbar-nav">
     <li class="disabled"><a href="#"><i class="fa fa-filter"></i> 筛选</a></li>
     <li class="disabled"><a href="#"><i class="fa fa-sort-amount-desc"></i> 排序</a></li>
+    <li><a href="#" class="add-row-button"><i class="fa fa-plus">添加新分类</i></a></li>
   </ul>
   <form class="navbar-form navbar-right keyword-form">
     <div class="form-group">
@@ -11,12 +12,13 @@
   </form>
 </div>
 
-<table class="table table-bordered table-hover smart-table responsive-table" data-url="api/article/category.php">
+<table class="table table-bordered table-hover smart-table responsive-table" data-url="api/article/category.php" data-pagination=".pagination" data-pagesize="20" data-collection-id="category">
   <thead>
   <tr>
     <th>ID</th>
     <th>类名</th>
     <th>别名</th>
+    <th>备注</th>
     <th>父类</th>
     <th>攻略数量</th>
     <th>操作</th>
@@ -28,8 +30,9 @@
     <tr id="{{id}}">
       <td>{{id}}</td>
       <td data-title="类名"><a href="#label" class="edit">{{label}}</a></td>
-      <td data-title="别名"><a href="#cate" class="edit">{{#if cate}}{{cate}}{{else}}（可添加，勿使用中文）{{/if}}</a></td>
-      <td data-title="父类">{{parent}}</td>
+      <td data-title="别名"><a href="#cate" class="edit">{{cate}}</a></td>
+      <td data-title="备注"><a href="#comment" class="edit">{{comment}}</a></td>
+      <td data-title="父类"><a href="#parent" class="edit" data-type="select" data-url="api/article/category.php" data-display="label">{{parent}}</a></td>
       <td>
         <a href="#/article/list/category{{id}}" class="btn btn-info"><i class="fa fa-list"></i> {{NUM}}</a>
       </td>
@@ -42,13 +45,17 @@
   </tbody>
   <tfoot>
   <tr class="waiting">
-    <td colspan="6" align="center"><i class="fa fa-spin fa-spinner fa-4x"></i><br>加载数据，请稍后</td>
+    <td colspan="7" align="center"><i class="fa fa-spin fa-spinner fa-4x"></i><br>加载数据，请稍后</td>
   </tr>
   </tfoot>
 </table>
 
-<div class="help-info hide">
-  <div class="alert alert-info" data-for="nav_pic">
-    用于游戏首页分类导航的图片，衬在文字下方。里面不要包含文字，尺寸以 360&times;120 为宜。
-  </div>
-</div>
+<ul class="pagination pull-right mg0">
+  <script type="text/x-handlebars-template">
+    <li><a href="#/to/{{prev}}"><i class="fa fa-chevron-left"></i></a></li>
+    {{#each pages}}
+    <li class="hidden-xs"><a href="#/to/{{index}}">{{label}}</a></li>
+    {{/each}}
+    <li><a href="#/to/{{next}}"><i class="fa fa-chevron-right"></i></a></li>
+  </script>
+</ul>

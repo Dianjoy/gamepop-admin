@@ -8,7 +8,8 @@
 
       var spec = this.$el.data();
       this.collection = dianjoy.model.ListCollection.createInstance(null, {
-        url: spec.url + '/' + this.model.get('path')
+        url: spec.url + '/' + this.model.get('path'),
+        id: spec.collectionId
       });
       this.collection.on('reset', this.render, this);
       this.collection.on('change', this.collection_changeHandler, this);

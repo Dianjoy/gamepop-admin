@@ -57,7 +57,7 @@ function update($args, $attr) {
   $conditions = Spokesman::extract(true);
   // 处理图标路径
   if (isset($attr['icon_path'])) {
-    $attr['icon_path'] = str_replace('http://r.yxpopo.com/', '', $attr['icon_path_article']);
+    $attr['icon_path'] = str_replace('http://r.yxpopo.com/', '', $attr['icon_path']);
   }
 
   // 这个比较复杂，关于是否要在对应表里建立关联
@@ -91,6 +91,7 @@ function update($args, $attr) {
 
     if (!$result) {
       Spokesman::judge($result, '', '关联失败');
+      exit();
     }
   }
 

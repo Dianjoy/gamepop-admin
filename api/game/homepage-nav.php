@@ -58,6 +58,7 @@ function fetch($game, $args) {
 
   $nav = $game->select(Game::$HOMEPAGE_NAV)
     ->where($conditions)
+    ->where(array('status' => 0))
     ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
 
   foreach ($categories as $key => $value) {

@@ -1,8 +1,4 @@
 <?php
-define('OPTIONS', 'article|article_wb');
-include_once '../../inc/session.php';
-?>
-<?php
 /**
  * Created by PhpStorm.
  * User: meathill
@@ -14,45 +10,28 @@ include_once '../../inc/session.php';
 include_once "../../inc/Spokesman.class.php";
 include_once "../../inc/Article.class.php";
 require_once "../../inc/Admin.class.php";
-$article = new Article();
+require_once "../../inc/API.class.php";
 
-$args = $_REQUEST;
-$request = file_get_contents('php://input');
-if ($request) {
-  $args = array_merge($_POST, json_decode($request, true));
-}
+$api = new API('article|article_wb', array(
+  'fetch' => fetch,
+  'update' => update,
+  'create' => create,
+  'delete' => delete,
+));
 
-// 只允许外包用户看分类
-if (Admin::is_outsider()) {
-  fetch($article, $args);
-  exit();
-}
+function create($args, $attr) {
+  // 只允许外包用户看分类
+  if (Admin::is_outsider()) {
+    header('HTTP/1.1 401 Unauthorized');
+    exit(json_encode(array(
+      'code' => 1,
+      'msg' => '没有权限',
+    )));
+  }
 
-switch ($_SERVER['REQUEST_METHOD']) {
-  case 'GET':
-    fetch($article, $args);
-    break;
-
-  case 'PATCH':
-    update($article, $args);
-    break;
-
-  case 'POST':
-    create($article, $args);
-    break;
-
-  case 'DELETE':
-    delete($article, $args);
-    break;
-
-  default:
-    header("HTTP/1.1 406 Not Acceptable");
-    break;
-}
-
-function create($article, $args) {
+  $article = new Article();
   // 新建分类
-  $category = (int)$article->add_category($args['label']);
+  $category = (int)$article->add_category($attr['label']);
 
   Spokesman::judge($category, '创建成功', '创建失败', array(
     'category' => $category,
@@ -65,45 +44,49 @@ function delete($article) {
   );
   update($article, $args, '删除成功', '删除失败');
 }
-function fetch($article, $args) {
-  if (isset($args['pagesize'])) {
-    $status = array('`' . Article::CATEGORY . '`.`status`' => Article::NORMAL);
-  } else {
-    $status = array(
-      "`" . Article::CATEGORY. "`.`status`" => Article::NORMAL,
-      'category' => 0,
-    );
-  }
+function fetch($args) {
+  $pagesize = isset($args['pagesize']) && $args['pagesize'] != '' ? (int)$args['pagesize'] : 20;
+  $page = isset($args['page']) ? (int)$args['page'] : 0;
+  $keyword = $args['keyword'];
 
-  $conditions = array();
-  foreach (array('game', 'category', 'author', 'id') as $row) {
-    if (isset($args[$row])) {
-      $conditions[$row === 'game' || $row === 'id' ? 'guide_name' : $row] = $args[$row];
-    }
-  }
+  $article = new Article();
+  $conditions = Spokesman::extract(true);
+  $status = array('status' => Article::NORMAL);
+
+  $total = $article->select($article->count())
+    ->from(Article::CATEGORY)
+    ->search(array('label' => $keyword))
+    ->where($status)
+    ->fetch(PDO::FETCH_COLUMN);
+
   $result = $article->select(Article::$ALL_CATEGORY, $article->count())
     ->where($conditions)
-    ->where(array('status' => Article::NORMAL), Article::TABLE)
-    ->where($status, '', \gamepop\Base::R_EQUAL, true)
+    ->where($status, Article::TABLE)
+    ->where($status, Article::CATEGORY)
+    ->search(array('label' => $keyword))
     ->group('id', Article::CATEGORY)
+    ->order(Article::CATEGORY . '.`id`')
+    ->limit($pagesize * $page, $pagesize)
     ->fetchAll(PDO::FETCH_ASSOC);
 
-  if ($conditions) {
-    foreach ($result as &$category) {
-      $category = array_merge($category, $conditions);
-    }
-  }
-
-  // 倒序输出，一般新建的分类更有效些
   Spokesman::say(array(
-    'total' => count($result),
-    'list' => array_reverse($result),
+    'total' => $total,
+    'list' => $result,
   ));
 }
-function update($article, $args, $success = '修改成功', $error = '修改失败') {
+function update($args, $attr, $success = '修改成功', $error = '修改失败') {
+  // 只允许外包用户看分类
+  if (Admin::is_outsider()) {
+    header('HTTP/1.1 401 Unauthorized');
+    exit(json_encode(array(
+      'code' => 1,
+      'msg' => '没有权限',
+    )));
+  }
+  $article = new Article();
   $conditions = Spokesman::extract();
 
-  $result = $article->update($args, Article::CATEGORY)
+  $result = $article->update($attr, Article::CATEGORY)
     ->where($conditions)
     ->execute();
 

@@ -26,22 +26,51 @@ function fetch($args) {
   $status = array(
     'author' => $_SESSION['id'],
   );
+
+  $total = $article->select($article->count())
+    ->where($status)
+    ->search($keyword)
+    ->fetch(PDO::FETCH_COLUMN);
+
   $articles = $article->select(Article::$ALL)
     ->where($status, Article::TABLE)
     ->search($keyword)
+    ->order('id')
+    ->limit($page * $pagesize, $pagesize)
     ->fetchAll(PDO::FETCH_ASSOC);
-  usort($articles, compare);
-  $total = count($articles);
-  $articles = array_slice($articles, $page * $pagesize, $pagesize);
 
-  // 读取作者，用作者名取代标记
+  // 取出各种数据
+  $ids = array();
   $editors = array();
+  $guide_names = array();
   foreach ($articles as $item) {
+    $ids[] = $item['id'];
+    $guide_names[] = $item['guide_name'];
     if ($item['update_editor']) {
       $editors[] = $item['update_editor'];
     }
   }
+  $guide_names = array_unique($guide_names);
   $editors = array_unique($editors);
+
+  // 读取分类
+  $category = $article->select(Article::$CATEGORY)
+    ->where(array('aid' => $ids), '', gamepop\Base::R_IN)
+    ->fetchAll(PDO::FETCH_ASSOC);
+  $cates = array();
+  foreach ($category as $item) {
+    if (isset($cates[$item['aid']])) {
+      $cates[$item['aid']][] = $item;
+    } else {
+      $cates[$item['aid']] = array($item);
+    }
+  }
+  foreach ($articles as $key => $article) {
+    $articles[$key]['category'] = $cates[$article['id']];
+  }
+
+
+  // 读取作者，用作者名取代标记
   if (count($editors)) {
     require_once "../../inc/Admin.class.php";
     $admin = new Admin();
@@ -53,12 +82,9 @@ function fetch($args) {
     }
   }
 
+  // 读取关联游戏
   require_once "../../inc/Game.class.php";
   $game = new Game();
-  $guide_names = array();
-  foreach ($articles as $item) {
-    $guide_names[] = $item['guide_name'];
-  }
   $games = $game->select(Game::$ALL)
     ->where(array('guide_name' => $guide_names), '', \gamepop\Base::R_IN)
     ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
@@ -118,8 +144,4 @@ function delete($article) {
     'update_editor' => (int)$_SESSION['id'],
   );
   update($article, $args, '删除成功', '删除失败');
-}
-
-function compare($a, $b) {
-  return strtotime($b['update_time']) - strtotime($a['update_time']);
 }
