@@ -53,6 +53,15 @@ function fetch($article, $args) {
   $result['status'] = (int)$result['status'];
   $result['is_top'] = (int)$result['is_top'];
 
+  // 取分类
+  $category = $article->select(Article::$CATEGORY)
+    ->where(array('aid' => $conditions['id']))
+    ->fetchAll(PDO::FETCH_ASSOC);
+  foreach ($category as $key => $item) {
+    $category[$key]['id'] = $item['cid'];
+  }
+  $result['category'] = $category;
+
   // 取相关游戏
   if ($result['guide_name']) {
     require_once(dirname(__FILE__) . '/../../inc/Game.class.php');

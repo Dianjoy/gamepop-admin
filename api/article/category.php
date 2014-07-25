@@ -30,8 +30,9 @@ function create($args, $attr) {
   }
 
   $article = new Article();
+  $label = $attr['label'] ? $attr['label'] : $attr['tag'];
   // 新建分类
-  $category = (int)$article->add_category($attr['label']);
+  $category = (int)$article->add_category($label);
 
   Spokesman::judge($category, '创建成功', '创建失败', array(
     'category' => $category,

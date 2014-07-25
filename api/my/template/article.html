@@ -38,8 +38,10 @@
     {{#each list}}
     <tr id="{{id}}">
       <td class="label-list">
-        <a href="#category" class="edit" data-type="tags" data-url="api/article/category.php" data-display="label" data-add-new="true">
+        <a href="#category" class="edit" data-type="tags" data-url="api/article/category.php" data-refresh="true" data-tag="label">
+          {{#if category}}
           {{#each category}}<span class="label label-info">{{label}}</span> {{/each}}
+          {{/if}}
         </a>
       </td>
       <td><a href="#/game/profile/{{guide_name}}">{{game_name}}</a></td>

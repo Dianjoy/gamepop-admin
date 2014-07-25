@@ -18,9 +18,15 @@
           <div class="media-body">
             <h4>作者：{{author}} {{#if source}}<small>来源：<a href="{{src_url}}" target="_blank">{{source}} <i class="fa fa-external-link"></i></a></small>{{else}}<span class="label label-success"><i class="fa fa-thumbs-up"></i> 原创</span>{{/if}}</h4>
             <p>
-              游戏：<a href="#guide_name" data-type="search" class="edit" data-search-url="api/game/list.php" data-display="game_name">{{game_name}}</a>
-              分类：<a href="#category" data-type="select" class="edit" data-url="api/article/category.php" data-display="label" data-add-new="true">{{label}}</a>
+              游戏：<a href="#guide_name" data-type="search" class="edit" data-search-url="api/game/list.php" data-display="game_name">{{game_name}}</a> |
               上线时间：<a href="#pub_date" data-type="datetime" class="edit">{{pub_date}}</a>
+            </p>
+            <p>
+              分类：<a href="#category" data-type="tags" class="edit" data-url="api/article/category.php" data-tag="label" data-refresh="true" >
+              {{#if category}}
+              {{#each category}}{{label}} {{/each}}
+              {{/if}}
+              </a>
             </p>
             <p>
               质量评定：

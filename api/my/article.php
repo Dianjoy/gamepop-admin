@@ -59,6 +59,7 @@ function fetch($args) {
     ->fetchAll(PDO::FETCH_ASSOC);
   $cates = array();
   foreach ($category as $item) {
+    $item['id'] = $item['cid'];
     if (isset($cates[$item['aid']])) {
       $cates[$item['aid']][] = $item;
     } else {
@@ -66,7 +67,7 @@ function fetch($args) {
     }
   }
   foreach ($articles as $key => $article) {
-    $articles[$key]['category'] = $cates[$article['id']];
+    $articles[$key]['category'] = (array)$cates[$article['id']];
   }
 
 
@@ -113,22 +114,46 @@ function update($args, $attr, $success = '更新成功', $error = '更新失败'
   }
 
   $conditions = Spokesman::extract();
-  // label 不能在文章列表修改
-  unset($attr['label']);
+  $article = new Article();
+
+  // 分类单独存到t_category里
+  if (array_key_exists('category', $attr)) {
+    $new = explode('|', $attr['category']);
+    $article->delete(Article::ARTICLE_CATEGORY)
+      ->where(array('aid' => $conditions['id']))
+      ->execute();
+    $categories = array();
+    foreach ($new as $category) {
+      $categories[] = array(
+        'aid' => $conditions['id'],
+        'cid' => $category,
+      );
+    }
+    $article->insert($categories, Article::ARTICLE_CATEGORY)
+      ->execute()
+      ->getResult();
+    unset($attr['category']);
+  }
+
   // 去掉条件中和更新中重复的键
-  $conditions = array_diff_key($conditions, $args);
-  if ($attr['icon_path_article']) {
+  $conditions = array_diff_key($conditions, $attr);
+  if (array_key_exists('icon_path_article', $attr)) {
     $attr['icon_path'] = str_replace('http://r.yxpopo.com/', '', $attr['icon_path_article']);
     unset($attr['icon_path_article']);
   }
 
-  $article = new Article();
   $result = $article->update($attr)
     ->where($conditions)
     ->execute();
 
   if ($attr['icon_path']) {
     $attr['icon_path_article'] = $attr['icon_path'];
+  }
+  if (is_array($categories)) {
+    $categories = $article->select(Article::$ALL_CATEGORY)
+      ->where(array('id' => $new), '', \gamepop\Base::R_IN)
+      ->fetchAll(PDO::FETCH_ASSOC);
+    $attr['category'] = $categories;
   }
   Spokesman::judge($result, $success, $error, $attr);
 

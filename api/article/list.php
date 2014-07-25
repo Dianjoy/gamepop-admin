@@ -88,8 +88,10 @@ function fetch($article, $args) {
       ->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  // 读取作者，用作者名取代标记
+  // 集中取各种数据
   $editors = array();
+  $guide_names = array();
+  $ids = array();
   foreach ($articles as $key => $item) {
     if (!$item['source']) {
       $editors[] = $item['author'];
@@ -99,8 +101,27 @@ function fetch($article, $args) {
     } else {
       $articles[$key]['update_editor'] = '';
     }
+    $guide_names[] = $item['guide_name'];
+    $ids = array();
   }
   $editors = array_unique($editors);
+  $guide_names = array_unique($guide_names);
+
+  // 读取分类
+  $category = $article->select(Article::$CATEGORY)
+    ->where(array('aid' => $ids), '', gamepop\Base::R_IN)
+    ->fetchAll(PDO::FETCH_ASSOC);
+  $categories = array();
+  foreach ($category as $item) {
+    $item['id'] = $item['cid'];
+    if (isset($categories[$item['aid']])) {
+      $categories[$item['aid']][] = $item;
+    } else {
+      $categories[$item['aid']] = array($item);
+    }
+  }
+
+  // 读取作者，用作者名取代标记
   if (count($editors)) {
     require_once "../../inc/Admin.class.php";
     $admin = new Admin();
@@ -115,17 +136,18 @@ function fetch($article, $args) {
     }
   }
 
+  // 读取游戏信息
   require_once "../../inc/Game.class.php";
   $game = new Game();
-  $guide_names = array();
-  foreach ($articles as $item) {
-    $guide_names[] = $item['guide_name'];
-  }
-  $games = $game->select(Game::$ALL)
-    ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
+  $games = $game->select(Game::$BASE)
+    ->where(array(Game::ID => $guide_names), '', \gamepop\Base::R_IN)
+    ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
+
+  // 完成文章信息
   foreach ($articles as $key => $item) {
-    $item['game_name'] = $games[$item['guide_name']]['game_name'];
+    $item['game_name'] = $games[$item['guide_name']];
     $item['is_top'] = (int)$item['is_top'];
+    $item['category'] = (array)$categories[$item['id']];
     $articles[$key] = $item;
   }
 
