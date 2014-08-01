@@ -32,7 +32,7 @@
             {{#each list}}
             {{#if label}}
             {{#if image}}
-            <li class="{{#if status}}hide{{/if}} item" id="nav-{{id}}">
+            <li class="item" id="nav-{{id}}">
               <a href="#/artilce/list/category{{category}}/game{{guide_name}}">
                 <img src="{{image}}">
               </a>
@@ -50,7 +50,7 @@
           <script type="text/x-handlebars-template">
             {{#each list}}
             <li id="top-{{id}}">
-              <img src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="pull-left">
+              {{#if icon_path}}<img src="{{icon_path}}" class="pull-left">{{/if}}
               <h2>{{topic}}</h2>
               <p>{{#if source}}来源：{{source}}{{else}}作者：{{author}}{{/if}}  | {{update_time}}</p>
             </li>
@@ -73,7 +73,6 @@
       <tbody>
       <script type="text/x-handlebars-template">
         {{#each list}}
-        {{#if category}}
         <tr id="{{id}}">
           <td><a href="#image" class="edit" data-type="img"><img src="{{#if image}}{{image}}{{else}}./img/image.png{{/if}}" class="img-thumbnail icon-mh-100"></a></td>
           <td><a href="#label" class="edit">{{label}}</a></td>
@@ -86,13 +85,17 @@
           </td>
           <td class="btn-group">
             <a href="#/article/list/category{{category}}/game{{guide_name}}" class="btn btn-info"><i class="fa fa-list"></i> {{NUM}}</a>
-            <button type="button" class="btn btn-success delete-button" title="删除"><i class="fa fa-trash-o"></i></button>
+            <button type="button" class="btn btn-danger delete-button" title="删除"><i class="fa fa-trash-o"></i></button>
           </td>
         </tr>
-        {{/if}}
         {{/each}}
       </script>
       </tbody>
+      <tfoot>
+      <tr>
+        <td colspan="4"><button type="button" class="btn btn-primary add-row-button"><i class="fa fa-plus"></i> 添加</button></td>
+      </tr>
+      </tfoot>
     </table>
     <table class="table table-bordered table-hover sortable smart-table" data-url="api/article/list.php" data-filter="is_top=1&seq=seq" data-collection-id="top">
       <thead>

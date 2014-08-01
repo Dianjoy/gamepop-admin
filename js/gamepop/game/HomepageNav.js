@@ -12,20 +12,25 @@
         url: spec.url + '/' + this.model.get('path'),
         id: spec.collectionId
       });
-      this.collection.on('reset', this.render, this);
+
       this.collection.on('add', this.collection_addHandler, this);
       this.collection.on('remove', this.collection_removeHandler, this);
       this.collection.on('change', this.collection_changeHandler, this);
       this.collection.on('sort', this.collection_sortHandler, this);
+      if (this.collection.length) {
+        this.render();
+      } else {
+        this.collection.on('reset', this.render, this);
+      }
     },
     remove: function () {
       this.collection.off();
       Backbone.View.prototype.remove.call(this);
       dianjoy.model.ListCollection.destroyInstance(this.collection.url);
     },
-    render: function (collection) {
-      this.list.width(collection.length * 115);
-      this.list.html(this.template({list: collection.toJSON()}));
+    render: function () {
+      this.list.html(this.template({list: this.collection.toJSON()}));
+      this.list.width(this.list.children().length * 115);
     },
     createItem: function (model) {
       return this.template({list: [model.toJSON()]});
