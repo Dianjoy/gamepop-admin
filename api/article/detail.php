@@ -1,8 +1,4 @@
 <?php
-define('OPTIONS', 'article|article_wb');
-include_once '../../inc/session.php';
-?>
-<?php
 /**
  * Created by PhpStorm.
  * User: meathill
@@ -12,34 +8,17 @@ include_once '../../inc/session.php';
 include_once "../../inc/Spokesman.class.php";
 include_once "../../inc/Article.class.php";
 include_once "../../inc/utils.php";
-$article = new Article();
+include_once "../../inc/API.class.php";
 
-$methods = array(
-  'GET' => 'fetch',
-  'PATCH' => 'update',
-  'POST' => 'create',
-);
+$api = new API('article|article_wb', array(
+  'fetch' => fetch,
+  'update' => update,
+  'create' => create,
+));
 
-$args = $_REQUEST;
-$request = file_get_contents('php://input');
-if ($request) {
-  $args = array_merge($_POST, json_decode($request, true));
-}
-
-if (!isset($_SERVER['REQUEST_METHOD'], $methods)) {
-  header("HTTP/1.1 406 Not Acceptable");
-  exit(json_encode(array(
-    'code' => 1,
-    'msg' => '指令错误',
-  )));
-}
-$method = $methods[$_SERVER['REQUEST_METHOD']];
-if ($method) {
-  $method($article, $args);
-}
-
-function fetch($article, $args) {
+function fetch($args) {
   require_once(dirname(__FILE__) . '/../../inc/HTML_To_Markdown.php');
+  $article = new Article();
 
   $conditions = Spokesman::extract();
   $result = $article->select(Article::$DETAIL)
@@ -51,7 +30,6 @@ function fetch($article, $args) {
   $markdown = new HTML_To_Markdown($result['content']);
   $result['content'] = preg_replace('/]\(\/?(?!http)([a-z]+)/', '](http://r.yxpopo.com/$1', $markdown);
   $result['status'] = (int)$result['status'];
-  $result['is_top'] = (int)$result['is_top'];
 
   // 取分类
   $category = $article->select(Article::$CATEGORY)
@@ -84,9 +62,9 @@ function fetch($article, $args) {
   Spokesman::say($game ? array_merge($game, $result) : $result);
 }
 
-function update($article, $args) {
+function update($args, $attr) {
   require_once "../../inc/Admin.class.php";
-  if (Admin::is_outsider() && isset($args['status'])) {
+  if (Admin::is_outsider() && isset($attr['status'])) {
     header('HTTP/1.1 401 Unauthorized');
     Spokesman::say(array(
       'code' => 1,
@@ -94,37 +72,44 @@ function update($article, $args) {
     ));
     exit();
   }
-  $args['update_editor'] = (int)$_SESSION['id'];
-  unset($args['msg']);
-  unset($args['label']);
-  unset($args['game_name']);
-  if (isset($args['content'])) {
-    require_once(dirname(__FILE__) . '/../../inc/MarkdownExtra.inc.php');
-    $args['content'] = str_replace('http://r.yxpopo.com/', '', $args['content']); // 把资源替换成相对路径
-    $args['content'] = strip_tags($args['content'], '<table><tr><td><span><video><audio>'); // 只保留特定标签
-    $args['content'] = preg_replace('/<td(.*?)?>(.*?!\[.*?\]\(.*?\).*?)<\/td>/', "<td\$1 markdown=\"1\">\$2</td>", $args['content']);
-    $args['content'] = \Michelf\MarkdownExtra::defaultTransform($args['content']);
-  }
-  if (isset($args['icon_path_article'])) {
-    $args['icon_path'] = str_replace('http://r.yxpopo.com/', '', $args['icon_path_article']);
-    unset($args['icon_path_article']);
-  }
+  $article = new Article();
   $conditions = Spokesman::extract();
-  $result = $article->update($args)
+
+  // 置顶文章
+  if (array_key_exists('top', $attr)) {
+    return $article->set_article_top($conditions['id'], $attr['top']);
+  }
+
+  $attr['update_editor'] = (int)$_SESSION['id'];
+  unset($attr['msg']);
+  unset($attr['label']);
+  unset($attr['game_name']);
+  if (isset($attr['content'])) {
+    require_once(dirname(__FILE__) . '/../../inc/MarkdownExtra.inc.php');
+    $attr['content'] = str_replace('http://r.yxpopo.com/', '', $attr['content']); // 把资源替换成相对路径
+    $attr['content'] = strip_tags($attr['content'], '<table><tr><td><span><video><audio>'); // 只保留特定标签
+    $attr['content'] = preg_replace('/<td(.*?)?>(.*?!\[.*?\]\(.*?\).*?)<\/td>/', "<td\$1 markdown=\"1\">\$2</td>", $attr['content']);
+    $attr['content'] = \Michelf\MarkdownExtra::defaultTransform($attr['content']);
+  }
+  if (isset($attr['icon_path_article'])) {
+    $attr['icon_path'] = str_replace('http://r.yxpopo.com/', '', $attr['icon_path_article']);
+    unset($attr['icon_path_article']);
+  }
+  $result = $article->update($attr)
     ->where($conditions)
     ->execute();
 
-  if ($args['icon_path']) {
-    $args['icon_path_article'] = $args['icon_path'];
+  if ($attr['icon_path']) {
+    $attr['icon_path_article'] = $attr['icon_path'];
   }
-  Spokesman::judge($result, '修改成功', '修改失败', $args);
+  Spokesman::judge($result, '修改成功', '修改失败', $attr);
 
   if (Admin::is_outsider()) {
     Admin::log_outsider_action($conditions['id'], 'edit');
   }
 }
 
-function create($article, $args) {
+function create($args, $attr) {
   require_once "../../inc/Admin.class.php";
   if (Admin::is_outsider()) {
     header('HTTP/1.1 401 Unauthorized');
@@ -134,23 +119,25 @@ function create($article, $args) {
     ));
     exit();
   }
-  $args = array_omit($args, 'label', 'cate', 'sub', 'path', 'game_name');
-  $args['author'] = $_SESSION['id'];
-  $args['status'] = Article::DRAFT;
-  $args['pub_date'] = empty($args['pub_date']) ? date('Y-m-d H:i:s') : $args['pub_date'];
-  if (isset($args['icon_path_article'])) {
-    $args['icon_path'] = str_replace('http://r.yxpopo.com/', '', $args['icon_path_article']);
-    unset($args['icon_path_article']);
+  $article = new Article();
+
+  $attr = array_omit($attr, 'label', 'cate', 'sub', 'path', 'game_name');
+  $attr['author'] = $_SESSION['id'];
+  $attr['status'] = Article::DRAFT;
+  $attr['pub_date'] = empty($attr['pub_date']) ? date('Y-m-d H:i:s') : $attr['pub_date'];
+  if (isset($attr['icon_path_article'])) {
+    $attr['icon_path'] = str_replace('http://r.yxpopo.com/', '', $attr['icon_path_article']);
+    unset($attr['icon_path_article']);
   }
-  $id = (int)$article->insert($args)
+  $id = (int)$article->insert($attr)
     ->execute()
     ->lastInsertId();
   if ($id) {
-    $args['id'] = $id;
+    $attr['id'] = $id;
   }
-  $args['author'] = $_SESSION['fullname'];
-  $args['icon_path_article'] = $args['icon_path'];
+  $attr['author'] = $_SESSION['fullname'];
+  $attr['icon_path_article'] = $attr['icon_path'];
 
-  Spokesman::judge($id, '创建成功', '创建失败', $args);
+  Spokesman::judge($id, '创建成功', '创建失败', $attr);
 
 }

@@ -22,6 +22,13 @@ function fetch($args) {
   $article = new Article();
   $conditions = Spokesman::extract(true);
 
+  if (empty($conditions['guide_name'])) {
+    exit(json_encode(array(
+      'code' => 1,
+      'msg' => '缺少参数：guide_name',
+    )));
+  }
+
   $nav = $game->select(Game::$HOMEPAGE_NAV)
     ->where($conditions)
     ->where(array('status' => 0))
@@ -33,12 +40,27 @@ function fetch($args) {
     $categories[] = $nav_item['category'];
   }
 
+  // “编辑首页”用这个接口搜索未在列表中的文章分类
+  $is_search = array_key_exists('search', $args);
+  $in_or_not = $is_search ? \gamepop\Base::R_NOT_IN : \gamepop\Base::R_IN;
+
   $categories = $article->select(Article::$ALL_CATEGORY, $article->count())
     ->where($conditions)
-    ->where(array('category' => $categories), '', \gamepop\Base::R_IN)
+    ->where(array('category' => $categories), '', $in_or_not)
     ->where(array('status' => Article::NORMAL), Article::TABLE)
     ->group('id', Article::CATEGORY)
     ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
+
+  if ($is_search) {
+    $options = array();
+    foreach ($categories as $key => $category) {
+      $options[] = array(
+        'id' => $key,
+        'label' => $category['label'] . "（" . $category['NUM'] . "）",
+      );
+    }
+    Spokesman::say($options);
+  }
 
   foreach ($nav as $key => $value) {
     $value['guide_name'] = $conditions['guide_name'];

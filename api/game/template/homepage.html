@@ -61,7 +61,7 @@
     </div>
   </div>
   <div class="tables flex-auto">
-    <table class="table table-bordered table-bordered smart-table sortable" data-url="api/game/homepage-nav.php" data-collection-id="nav">
+    <table class="table table-bordered table-bordered smart-table sortable" data-url="api/game/homepage-nav.php" data-collection-id="nav" data-include="guide_name">
       <thead>
       <tr>
         <th>图片</th>
@@ -75,7 +75,7 @@
         {{#each list}}
         <tr id="{{id}}">
           <td><a href="#image" class="edit" data-type="img"><img src="{{#if image}}{{image}}{{else}}./img/image.png{{/if}}" class="img-thumbnail icon-mh-100"></a></td>
-          <td><a href="#label" class="edit">{{label}}</a></td>
+          <td><a href="#label" class="edit" data-type="select" data-url="api/game/homepage-nav.php/{{guide_name}}?search=1">{{label}}</a></td>
           <td>
             <select name="order_by" value="{{order_by}}" class="edit form-control">
               <option value="0">缺省</option>
