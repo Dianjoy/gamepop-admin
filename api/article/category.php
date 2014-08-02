@@ -70,6 +70,13 @@ function fetch($args) {
     ->limit($pagesize * $page, $pagesize)
     ->fetchAll(PDO::FETCH_ASSOC);
 
+  // 为了profile中的分类列表
+  if (array_key_exists('guide_name', $conditions)) {
+    foreach ($result as $key => $value) {
+      $result[$key]['guide_name'] = $conditions['guide_name'];
+    }
+  }
+
   Spokesman::say(array(
     'total' => $total,
     'list' => $result,

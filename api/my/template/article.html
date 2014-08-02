@@ -2,6 +2,7 @@
   <ul class="nav navbar-nav">
     <li class="disabled"><a href="#"><i class="fa fa-filter"></i> 筛选</a></li>
     <li class="disabled"><a href="#"><i class="fa fa-sort-amount-desc"></i> 排序</a></li>
+    <li><a href="#help-info" data-toggle="modal"><i class="fa fa-question"></i> 帮助</a></li>
   </ul>
   <form class="navbar-form navbar-right keyword-form">
     <div class="form-group">
@@ -44,15 +45,15 @@
           {{/if}}
         </a>
       </td>
-      <td><a href="#/game/profile/{{guide_name}}">{{game_name}}</a></td>
+      <td><a href="#guide_name" class="edit" data-type="search" data-search-url="api/game/list.php" data-display="game_name">{{game_name}}</a></td>
       <td><a href="#icon_path_article" class="edit" data-type="img" data-display="icon_path"><img src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="img-thumbnail icon-mh-50"></a></td>
       <td><a href="#/article/detail/{{id}}">{{topic}} <i class="fa fa-edit"></i></a></td>
       <td>{{pub_date}}</td>
       <td>{{update_time}} / {{update_editor_label}}</td>
       <td>
-        <div class="btn-group hide">
+        <div class="btn-group">
           <a href="#status" class="btn btn-success status-button {{^if status}}active{{/if}}" data-deactive="2"><i class="fa fa{{^if status}}-check{{/if}}-square-o"></i> 发布</a>
-          <a href="#is_top" class="btn btn-info status-button {{#if is_top}}active{{/if}}"><i class="fa fa-arrow-up"></i></a>
+          <a href="#top" class="btn btn-info status-button {{#if top}}active{{/if}}"><i class="fa fa-arrow-up"></i></a>
           <a href="#status" class="btn btn-danger status-button {{#if status}}active{{/if}}" data-active="1" data-deactive="0"><i class="fa fa-trash-o"></i></a>
         </div>
       </td>
@@ -76,3 +77,20 @@
     <li><a href="#/to/{{next}}"><i class="fa fa-chevron-right"></i></a></li>
   </script>
 </ul>
+
+<div class="modal fade" id="help-info">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+        <h4 class="modal-title">帮助</h4>
+      </div>
+      <div class="modal-body">
+        <ul>
+          <li>点击编辑项即可开始编辑</li>
+          <li>置顶按钮默认置顶一周（从上线时间开始算），需要修改请到“首页编辑”</li>
+        </ul>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

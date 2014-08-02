@@ -1,8 +1,4 @@
 <?php
-define('OPTIONS', 'article|article_wb');
-include_once '../../inc/session.php';
-?>
-<?php
 /**
  * Created by PhpStorm.
  * User: meathill
@@ -13,34 +9,16 @@ include_once '../../inc/session.php';
 include_once "../../inc/utils.php";
 include_once "../../inc/Spokesman.class.php";
 include_once "../../inc/Article.class.php";
-$article = new Article();
+include_once "../../inc/API.class.php";
 
-$args = $_REQUEST;
-$request = file_get_contents('php://input');
-if ($request) {
-  $args = array_merge($_POST, json_decode($request, true));
-}
+$api = new API('article|article_wb', array(
+  'fetch' => fetch,
+  'delete' => delete,
+  'update' => update,
+));
 
-header("Content-Type:application/json;charset=utf-8");
-switch ($_SERVER['REQUEST_METHOD']) {
-  case 'GET':
-    fetch($article, $args);
-    break;
-
-  case 'PATCH':
-    update($article, $args);
-    break;
-
-  case 'DELETE':
-    delete($article);
-    break;
-
-  default:
-    header("HTTP/1.1 406 Not Acceptable");
-    break;
-}
-
-function fetch($article, $args) {
+function fetch($args) {
+  $article = new Article();
   $pagesize = empty($args['pagesize']) ? 20 : (int)$args['pagesize'];
   $page = isset($args['page']) ? (int)$args['page'] : 0;
   $keyword = $args['keyword'];
@@ -88,68 +66,7 @@ function fetch($article, $args) {
       ->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  // 集中取各种数据
-  $editors = array();
-  $guide_names = array();
-  $ids = array();
-  foreach ($articles as $key => $item) {
-    if (!$item['source']) {
-      $editors[] = $item['author'];
-    }
-    if ((int)$item['update_editor']) {
-      $editors[] = (int)$item['update_editor'];
-    } else {
-      $articles[$key]['update_editor'] = '';
-    }
-    $guide_names[] = $item['guide_name'];
-    $ids = array();
-  }
-  $editors = array_unique($editors);
-  $guide_names = array_unique($guide_names);
-
-  // 读取分类
-  $category = $article->select(Article::$CATEGORY)
-    ->where(array('aid' => $ids), '', gamepop\Base::R_IN)
-    ->fetchAll(PDO::FETCH_ASSOC);
-  $categories = array();
-  foreach ($category as $item) {
-    $item['id'] = $item['cid'];
-    if (isset($categories[$item['aid']])) {
-      $categories[$item['aid']][] = $item;
-    } else {
-      $categories[$item['aid']] = array($item);
-    }
-  }
-
-  // 读取作者，用作者名取代标记
-  if (count($editors)) {
-    require_once "../../inc/Admin.class.php";
-    $admin = new Admin();
-    $editors = $admin->select(Admin::$BASE)
-      ->where(array('id' => $editors), '', \gamepop\Base::R_IN)
-      ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
-    foreach ($articles as $key => $article) {
-      $articles[$key]['update_editor'] = $editors[$article['update_editor']];
-      if (!$article['source']) {
-        $articles[$key]['author'] = $editors[$article['source']];
-      }
-    }
-  }
-
-  // 读取游戏信息
-  require_once "../../inc/Game.class.php";
-  $game = new Game();
-  $games = $game->select(Game::$BASE)
-    ->where(array(Game::ID => $guide_names), '', \gamepop\Base::R_IN)
-    ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
-
-  // 完成文章信息
-  foreach ($articles as $key => $item) {
-    $item['game_name'] = $games[$item['guide_name']];
-    $item['is_top'] = (int)$item['is_top'];
-    $item['category'] = (array)$categories[$item['id']];
-    $articles[$key] = $item;
-  }
+  $articles = $article->fetch_meta_data($articles);
 
   Spokesman::say(array(
     'total' => $total,
@@ -157,7 +74,7 @@ function fetch($article, $args) {
   ));
 }
 
-function update($article, $args, $success = '更新成功', $error = '更新失败') {
+function update($args, $attr, $success = '更新成功', $error = '更新失败') {
   require_once "../../inc/Admin.class.php";
   if (Admin::is_outsider() && isset($args['status'])) {
     header('HTTP/1.1 401 Unauthorized');
@@ -167,10 +84,41 @@ function update($article, $args, $success = '更新成功', $error = '更新失�
     ));
     exit();
   }
-
+  $article = new Article();
   $conditions = Spokesman::extract();
+
   // label 不能在文章列表修改
   unset($args['label']);
+
+  // 更新置顶信息
+  if (array_key_exists('top', $attr)) {
+    $pub_date = $article->select('pub_date')
+      ->where($conditions)
+      ->fetch(PDO::FETCH_COLUMN);
+    // 以上线时间和当前时间较晚者为准
+    $now = date('Y-m-d H:i:s');
+    $start_date = $pub_date > $now ? $pub_date : $now;
+    $end_date = date('Y-m-d H:i:s', strtotime($start_date) + 86400 * 7);
+    if ($attr['top']) {
+      $array = array(
+        'aid' => $conditions['id'],
+        'start_time' => $start_date,
+        'end_time' => $end_date,
+      );
+      $result = $article->insert($array, Article::TOP)
+        ->execute()
+        ->getResult();
+    } else {
+      $result = $article->update(array('status' => 1), Article::TOP)
+        ->where(array('aid' => $conditions['id']))
+        ->where(array('end_time' => $now), '', \gamepop\Base::R_MORE_EQUAL)
+        ->execute();
+    }
+    $attr['top'] = (int)$attr['top'];
+    Spokesman::judge($result, '修改成功', '修改失败', $attr);
+    exit();
+  }
+
   // 去掉条件中和更新中重复的键
   $conditions = array_diff_key($conditions, $args);
   if (isset($args['icon_path_article'])) {
@@ -192,13 +140,13 @@ function update($article, $args, $success = '更新成功', $error = '更新失�
   }
 }
 
-function delete($article) {
-  $args = array(
+function delete($args) {
+  $attr = array(
     'status' => 1,
     'update_time' => date('Y-m-d H:i:s'),
     'update_editor' => (int)$_SESSION['id'],
   );
-  update($article, $args, '删除成功', '删除失败');
+  update($args, $attr, '删除成功', '删除失败');
 }
 
 function compare($a, $b) {

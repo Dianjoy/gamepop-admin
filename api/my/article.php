@@ -25,6 +25,7 @@ function fetch($args) {
   $keyword = $args['keyword'];
   $status = array(
     'author' => $_SESSION['id'],
+    'status' => 0,
   );
 
   $total = $article->select($article->count())
@@ -39,62 +40,7 @@ function fetch($args) {
     ->limit($page * $pagesize, $pagesize)
     ->fetchAll(PDO::FETCH_ASSOC);
 
-  // 取出各种数据
-  $ids = array();
-  $editors = array();
-  $guide_names = array();
-  foreach ($articles as $item) {
-    $ids[] = $item['id'];
-    $guide_names[] = $item['guide_name'];
-    if ($item['update_editor']) {
-      $editors[] = $item['update_editor'];
-    }
-  }
-  $guide_names = array_unique($guide_names);
-  $editors = array_unique($editors);
-
-  // 读取分类
-  $category = $article->select(Article::$CATEGORY)
-    ->where(array('aid' => $ids), '', gamepop\Base::R_IN)
-    ->fetchAll(PDO::FETCH_ASSOC);
-  $cates = array();
-  foreach ($category as $item) {
-    $item['id'] = $item['cid'];
-    if (isset($cates[$item['aid']])) {
-      $cates[$item['aid']][] = $item;
-    } else {
-      $cates[$item['aid']] = array($item);
-    }
-  }
-  foreach ($articles as $key => $article) {
-    $articles[$key]['category'] = (array)$cates[$article['id']];
-  }
-
-
-  // 读取作者，用作者名取代标记
-  if (count($editors)) {
-    require_once "../../inc/Admin.class.php";
-    $admin = new Admin();
-    $editors = $admin->select(Admin::$BASE)
-      ->where(array('id' => $editors), '', \gamepop\Base::R_IN)
-      ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
-    foreach ($articles as $key => $article) {
-      $articles[$key]['update_editor'] = $editors[$article['update_editor']];
-    }
-  }
-
-  // 读取关联游戏
-  require_once "../../inc/Game.class.php";
-  $game = new Game();
-  $games = $game->select(Game::$ALL)
-    ->where(array('guide_name' => $guide_names), '', \gamepop\Base::R_IN)
-    ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
-  foreach ($articles as $key => $item) {
-    $item['game_name'] = $games[$item['guide_name']]['game_name'];
-    $item['is_top'] = (int)$item['is_top'];
-    $item['status'] = (int)$item['status'];
-    $articles[$key] = $item;
-  }
+  $articles = $article->fetch_meta_data($articles);
 
   Spokesman::say(array(
     'total' => $total,
@@ -133,6 +79,35 @@ function update($args, $attr, $success = '更新成功', $error = '更新失败'
       ->execute()
       ->getResult();
     unset($attr['category']);
+  }
+
+  // 更新置顶信息
+  if (array_key_exists('top', $attr)) {
+    $pub_date = $article->select('pub_date')
+      ->where($conditions)
+      ->fetch(PDO::FETCH_COLUMN);
+    // 以上线时间和当前时间较晚者为准
+    $now = date('Y-m-d H:i:s');
+    $start_date = $pub_date > $now ? $pub_date : $now;
+    $end_date = date('Y-m-d H:i:s', strtotime($start_date) + 86400 * 7);
+    if ($attr['top']) {
+      $array = array(
+        'aid' => $conditions['id'],
+        'start_time' => $start_date,
+        'end_time' => $end_date,
+      );
+      $result = $article->insert($array, Article::TOP)
+        ->execute()
+        ->getResult();
+    } else {
+      $result = $article->update(array('status' => 1), Article::TOP)
+        ->where(array('aid' => $conditions['id']))
+        ->where(array('end_time' => $now), '', \gamepop\Base::R_MORE_EQUAL)
+        ->execute();
+    }
+    $attr['top'] = (int)$attr['top'];
+    Spokesman::judge($result, '修改成功', '修改失败', $attr);
+    exit();
   }
 
   // 去掉条件中和更新中重复的键

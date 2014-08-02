@@ -26,7 +26,7 @@
           </div>
         </script>
       </div>
-      <nav class="homepage-nav" data-url="api/game/homepage-nav.php" data-mediator-class="gamepop.game.HomepageNav" data-collection-id="nav">
+      <nav class="homepage-nav" data-mediator-class="gamepop.game.HomepageNav" data-collection-id="nav">
         <ul>
           <script type="text/x-handlebars-template" id="nav-template">
             {{#each list}}
@@ -46,7 +46,7 @@
       </nav>
       <h2 class="game-header">热门资讯</h2>
       <nav class="top-articles">
-        <ul data-url="api/article/list.php" data-mediator-class="gamepop.game.TopArticles" data-collection-id="top">
+        <ul data-mediator-class="gamepop.game.TopArticles" data-collection-id="top">
           <script type="text/x-handlebars-template">
             {{#each list}}
             <li id="top-{{id}}">
@@ -97,11 +97,12 @@
       </tr>
       </tfoot>
     </table>
-    <table class="table table-bordered table-hover sortable smart-table" data-url="api/article/list.php" data-filter="is_top=1&seq=seq" data-collection-id="top">
+    <table class="table table-bordered table-hover sortable smart-table" data-url="api/article/top.php" data-collection-id="top">
       <thead>
       <tr>
-        <th>图标</th>
         <th>置顶文章</th>
+        <th>开始时间</th>
+        <th>结束时间</th>
         <th>操作</th>
       </tr>
       </thead>
@@ -109,9 +110,10 @@
       <script type="text/x-handlebars-template">
         {{#each list}}
       <tr id="{{id}}">
-        <td><a href="#icon_path_article" class="edit" data-type="img" data-display="icon_path"><img src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="img-thumbnail icon-mh-100"></a></td>
-        <td><a href="#topic" class="edit">{{topic}}</a></td>
-        <td><a href="#is_top" class="btn btn-info status-button {{#if is_top}}active{{/if}}"><i class="fa fa-arrow-up"></i></a></td>
+        <td><a href="#icon_path_article" class="edit" data-type="img" data-display="icon_path"><img src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="img-thumbnail icon-mh-100"></a> <a href="#topic" class="edit">{{topic}}</a></td>
+        <td><a href="#start_time" class="edit" data-type="datetime">{{start_time}}</a></td>
+        <td><a href="#end_time" class="edit" data-type="datetime">{{end_time}}</a></td>
+        <td><button type="button" class="btn btn-danger delete-button" title="提前下线"><i class="fa fa-trash-o"></i></button></td>
       </tr>
         {{/each}}
       </script>
