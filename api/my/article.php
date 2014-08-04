@@ -64,20 +64,7 @@ function update($args, $attr, $success = '更新成功', $error = '更新失败'
 
   // 分类单独存到t_category里
   if (array_key_exists('category', $attr)) {
-    $new = explode('|', $attr['category']);
-    $article->delete(Article::ARTICLE_CATEGORY)
-      ->where(array('aid' => $conditions['id']))
-      ->execute();
-    $categories = array();
-    foreach ($new as $category) {
-      $categories[] = array(
-        'aid' => $conditions['id'],
-        'cid' => $category,
-      );
-    }
-    $article->insert($categories, Article::ARTICLE_CATEGORY)
-      ->execute()
-      ->getResult();
+    $category = $article->update_category($conditions['id'], $attr['category']);
     unset($attr['category']);
   }
 
@@ -100,11 +87,8 @@ function update($args, $attr, $success = '更新成功', $error = '更新失败'
   if ($attr['icon_path']) {
     $attr['icon_path_article'] = $attr['icon_path'];
   }
-  if (is_array($categories)) {
-    $categories = $article->select(Article::$ALL_CATEGORY)
-      ->where(array('id' => $new), '', \gamepop\Base::R_IN)
-      ->fetchAll(PDO::FETCH_ASSOC);
-    $attr['category'] = $categories;
+  if ($category) {
+    $attr['category'] = $category;
   }
   Spokesman::judge($result, $success, $error, $attr);
 

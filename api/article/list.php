@@ -76,7 +76,7 @@ function fetch($args) {
 
 function update($args, $attr, $success = '更新成功', $error = '更新失败') {
   require_once "../../inc/Admin.class.php";
-  if (Admin::is_outsider() && isset($args['status'])) {
+  if (Admin::is_outsider() && isset($attr['status'])) {
     header('HTTP/1.1 401 Unauthorized');
     Spokesman::say(array(
       'code' => 1,
@@ -87,8 +87,14 @@ function update($args, $attr, $success = '更新成功', $error = '更新失败'
   $article = new Article();
   $conditions = Spokesman::extract();
 
+  // 分类单独存到t_category里
+  if (array_key_exists('category', $attr)) {
+    $category = $article->update_category($conditions['id'], $attr['category']);
+    unset($attr['category']);
+  }
+
   // label 不能在文章列表修改
-  unset($args['label']);
+  unset($attr['label']);
 
   // 更新置顶信息
   if (array_key_exists('top', $attr)) {
@@ -96,23 +102,26 @@ function update($args, $attr, $success = '更新成功', $error = '更新失败'
   }
 
   // 去掉条件中和更新中重复的键
-  $conditions = array_diff_key($conditions, $args);
-  if (isset($args['icon_path_article'])) {
-    $args['icon_path'] = str_replace('http://r.yxpopo.com/', '', $args['icon_path_article']);
-    unset($args['icon_path_article']);
+  $conditions = array_diff_key($conditions, $attr);
+  if (isset($attr['icon_path_article'])) {
+    $attr['icon_path'] = str_replace('http://r.yxpopo.com/', '', $attr['icon_path_article']);
+    unset($attr['icon_path_article']);
   }
-  $args['update_editor'] = (int)$_SESSION['id'];
-  $result = $article->update($args)
+  $attr['update_editor'] = (int)$_SESSION['id'];
+  $result = $article->update($attr)
     ->where($conditions)
     ->execute();
 
-  if ($args['icon_path']) {
-    $args['icon_path_article'] = $args['icon_path'];
+  if ($attr['icon_path']) {
+    $attr['icon_path_article'] = $attr['icon_path'];
   }
-  Spokesman::judge($result, $success, $error, $args);
+  if ($category) {
+    $attr['category'] = $category;
+  }
+  Spokesman::judge($result, $success, $error, $attr);
 
   if (Admin::is_outsider()) {
-    Admin::log_outsider_action($conditions['id'], 'update', implode(',', array_keys($args)));
+    Admin::log_outsider_action($conditions['id'], 'update', implode(',', array_keys($attr)));
   }
 }
 

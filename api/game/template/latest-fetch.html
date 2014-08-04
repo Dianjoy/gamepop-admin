@@ -37,8 +37,7 @@
   <script type="text/x-handlebars-template">
     {{#each list}}
     <tr id="{{guide_name}}">
-      <td><a href="#icon_path" class="edit" data-type="img" data-refresh="true"><img
-        src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="icon-100"></a></td>
+      <td><a href="#icon_path" class="edit" data-type="img" data-refresh="true"><img src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="icon-100"></a></td>
       <td data-title="游戏名称">{{game_name}} <small>{{guide_name}}</small></td>
       <td data-title="游戏描述">
         <a href="#game_desc" class="edit" data-type="long-text">{{game_desc}}</a>

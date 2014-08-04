@@ -80,6 +80,12 @@ function update($args, $attr) {
     return $article->set_article_top($conditions['id'], $attr['top']);
   }
 
+  // 修改分类
+  $label = $attr['label'];
+  if (array_key_exists('category', $attr)) {
+    $category = $article->update_category($conditions['id'], $attr['category']);
+  }
+
   $attr['update_editor'] = (int)$_SESSION['id'];
   unset($attr['msg']);
   unset($attr['label']);
@@ -101,6 +107,12 @@ function update($args, $attr) {
 
   if ($attr['icon_path']) {
     $attr['icon_path_article'] = $attr['icon_path'];
+  }
+  if ($label) {
+    $attr['label'] = $label;
+  }
+  if ($category) {
+    $attr['category'] = $category;
   }
   Spokesman::judge($result, '修改成功', '修改失败', $attr);
 
