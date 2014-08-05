@@ -33,37 +33,52 @@ function fetch($args) {
     $status['update_editor'] = $args['update_editor'];
     unset($args['update_editor']);
   }
-  $total = $article->select($article->count())
-    ->where($status, Article::TABLE)
-    ->where($conditions)
-    ->search($keyword)
-    ->fetch(PDO::FETCH_COLUMN);
+  if (isset($conditions['category'])) {
+    $category = $conditions['category'];
+    unset($conditions['category']);
 
-  if (!isset($args['category']) && !$seq) {
-    $articles = $article->select(Article::$ALL, 'CEIL(`category`/1000) AS num')
+    $total = $article->select($article->count())
+      ->join(Article::ARTICLE_CATEGORY, 'id', 'aid')
+      ->where(array('cid' => $category))
       ->where($status, Article::TABLE)
       ->where($conditions)
       ->search($keyword)
-      ->order('num', 'ASC')
-      ->order('pub_date')
-      ->limit($pagesize * $page, $pagesize)
-      ->fetchAll(PDO::FETCH_ASSOC);
-  } elseif ($seq == 'seq') {
+      ->fetch(PDO::FETCH_COLUMN);
+
     $articles = $article->select(Article::$ALL)
+      ->join(Article::ARTICLE_CATEGORY, 'id', 'aid')
       ->where($status, Article::TABLE)
-      ->where($conditions)
-      ->search($keyword)
-      ->order('seq', 'ASC')
-      ->limit($pagesize * $page, $pagesize)
-      ->fetchAll(PDO::FETCH_ASSOC);
-  } elseif (isset($args['category'])) {
-    $articles = $article->select(Article::$ALL)
-      ->where($status, Article::TABLE)
+      ->where(array('cid' => $category))
       ->where($conditions)
       ->search($keyword)
       ->order('pub_date')
       ->limit($pagesize * $page, $pagesize)
       ->fetchAll(PDO::FETCH_ASSOC);
+  } else {
+    $total = $article->select($article->count())
+      ->where($status, Article::TABLE)
+      ->where($conditions)
+      ->search($keyword)
+      ->fetch(PDO::FETCH_COLUMN);
+
+    if (!$seq) {
+      $articles = $article->select(Article::$ALL, 'CEIL(`category`/1000) AS num')
+        ->where($status, Article::TABLE)
+        ->where($conditions)
+        ->search($keyword)
+        ->order('num', 'ASC')
+        ->order('pub_date')
+        ->limit($pagesize * $page, $pagesize)
+        ->fetchAll(PDO::FETCH_ASSOC);
+    } elseif ($seq == 'seq') {
+      $articles = $article->select(Article::$ALL)
+        ->where($status, Article::TABLE)
+        ->where($conditions)
+        ->search($keyword)
+        ->order('seq', 'ASC')
+        ->limit($pagesize * $page, $pagesize)
+        ->fetchAll(PDO::FETCH_ASSOC);
+    }
   }
 
   $articles = $article->fetch_meta_data($articles);

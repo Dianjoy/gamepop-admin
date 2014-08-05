@@ -46,9 +46,10 @@ function delete($article) {
   update($article, $args, '删除成功', '删除失败');
 }
 function fetch($args) {
-  $pagesize = isset($args['pagesize']) && $args['pagesize'] != '' ? (int)$args['pagesize'] : 20;
+  $pagesize = isset($args['pagesize']) ? (int)$args['pagesize'] : 20;
   $page = isset($args['page']) ? (int)$args['page'] : 0;
   $keyword = $args['keyword'];
+  $seq = isset($args['seq']) ? $args['seq'] : 'cid';
 
   $article = new Article();
   $conditions = Spokesman::extract(true);
@@ -56,30 +57,49 @@ function fetch($args) {
 
   $total = $article->select($article->count())
     ->from(Article::CATEGORY)
-    ->search(array('label' => $keyword))
+    ->where($conditions)
     ->where($status)
+    ->search(array('label' => $keyword))
     ->fetch(PDO::FETCH_COLUMN);
 
-  $result = $article->select(Article::$ALL_CATEGORY, $article->count())
+  $result = $article->select('cid', $article->count())
+    ->join(Article::ARTICLE_CATEGORY, 'id', 'aid')
     ->where($conditions)
     ->where($status, Article::TABLE)
-    ->where($status, Article::CATEGORY)
     ->search(array('label' => $keyword))
-    ->group('id', Article::CATEGORY)
-    ->order(Article::CATEGORY . '.`id`')
+    ->group('cid')
+    ->order($seq, 'DESC')
     ->limit($pagesize * $page, $pagesize)
     ->fetchAll(PDO::FETCH_ASSOC);
 
-  // 为了profile中的分类列表
-  if (array_key_exists('guide_name', $conditions)) {
-    foreach ($result as $key => $value) {
-      $result[$key]['guide_name'] = $conditions['guide_name'];
-    }
+  // 取label
+  $ids = array();
+  foreach ($result as $category) {
+    $ids[] = $category['cid'];
   }
+  $labels = $article->select(Article::$ALL_CATEGORY)
+    ->where(array('id' => $ids), '', \gamepop\Base::R_IN)
+    ->where($status)
+    ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
+
+  foreach ($result as $key => $item) {
+    if (!$labels[$item['cid']]) {
+      unset($result[$key]);
+      continue;
+    }
+    $item['id'] = $item['cid'];
+    $item['label'] = $labels[$item['cid']]['label'];
+    if (array_key_exists('guide_name', $conditions)) {
+      $item['guide_name'] = $conditions['guide_name'];
+    }
+    $result[$key] = $item;
+  }
+
+  // 为了profile中的分类列表
 
   Spokesman::say(array(
     'total' => $total,
-    'list' => $result,
+    'list' => array_values($result),
   ));
 }
 function update($args, $attr, $success = '修改成功', $error = '修改失败') {

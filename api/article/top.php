@@ -13,11 +13,13 @@ function fetch() {
   $article = new Article();
   $conditions = Spokesman::extract(true);
   $status = array('status' => 0);
+  $now = date('Y-m-d H:i:s');
 
   $articles = $article->select(Article::$TOP)
     ->where($conditions)
     ->where($status, Article::TOP)
     ->where($status, Article::TABLE)
+    ->where(array('end_time' => $now), '', \gamepop\Base::R_LESS_EQUAL)
     ->fetchAll(PDO::FETCH_ASSOC);
 
   Spokesman::say(array(
