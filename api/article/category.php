@@ -47,13 +47,37 @@ function delete($article) {
 }
 function fetch($args) {
   $pagesize = isset($args['pagesize']) ? (int)$args['pagesize'] : 20;
-  $page = isset($args['page']) ? (int)$args['page'] : 0;
+  $page = (int)$args['page'];
   $keyword = $args['keyword'];
-  $seq = isset($args['seq']) ? $args['seq'] : 'cid';
 
   $article = new Article();
   $conditions = Spokesman::extract(true);
   $status = array('status' => Article::NORMAL);
+
+  if (isset($conditions['guide_name'])) {
+    $category = $article->select('cid', $article->count())
+      ->join(Article::ARTICLE_CATEGORY, 'id', 'aid')
+      ->where($conditions)
+      ->where($status)
+      ->group('cid')
+      ->fetchAll(PDO::FETCH_ASSOC);
+
+    $ids = array();
+    foreach ($category as $item) {
+      $ids[] = $item['cid'];
+    }
+    $labels = $article->select(Article::$ALL_CATEGORY)
+      ->where($status)
+      ->where(array('id' => $ids), '', \gamepop\Base::R_IN)
+      ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
+    foreach ($category as $key => $item) {
+      $item['label'] = $labels[$item['cid']]['label'];
+      $item['id'] = $item['cid'];
+      $category[$key] = $item;
+    }
+
+    Spokesman::say(array('list' => $category));
+  }
 
   $total = $article->select($article->count())
     ->from(Article::CATEGORY)
@@ -62,44 +86,32 @@ function fetch($args) {
     ->search(array('label' => $keyword))
     ->fetch(PDO::FETCH_COLUMN);
 
-  $result = $article->select('cid', $article->count())
-    ->join(Article::ARTICLE_CATEGORY, 'id', 'aid')
-    ->where($conditions)
-    ->where($status, Article::TABLE)
-    ->search(array('label' => $keyword))
-    ->group('cid')
-    ->order($seq, 'DESC')
-    ->limit($pagesize * $page, $pagesize)
-    ->fetchAll(PDO::FETCH_ASSOC);
-
-  // 取label
-  $ids = array();
-  foreach ($result as $category) {
-    $ids[] = $category['cid'];
-  }
-  $labels = $article->select(Article::$ALL_CATEGORY)
-    ->where(array('id' => $ids), '', \gamepop\Base::R_IN)
+  $category = $article->select(Article::$ALL_CATEGORY)
     ->where($status)
+    ->search(array('label' => $keyword))
+    ->order('id', 'DESC')
+    ->limit($pagesize * $page, $pagesize)
     ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
 
-  foreach ($result as $key => $item) {
-    if (!$labels[$item['cid']]) {
-      unset($result[$key]);
-      continue;
-    }
-    $item['id'] = $item['cid'];
-    $item['label'] = $labels[$item['cid']]['label'];
+  $count = $article->select('cid', $article->count())
+    ->join(Article::ARTICLE_CATEGORY, 'id', 'aid')
+    ->where($status)
+    ->where(array('cid' => array_keys($category)), '', \gamepop\Base::R_IN)
+    ->group('cid')
+    ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
+  foreach ($category as $key => $value) {
+    $value['NUM'] = (int)$count[$key];
+    $value['id'] = $key;
+    // 为了profile中的分类列表
     if (array_key_exists('guide_name', $conditions)) {
-      $item['guide_name'] = $conditions['guide_name'];
+      $value['guide_name'] = $conditions['guide_name'];
     }
-    $result[$key] = $item;
+    $category[$key] = $value;
   }
-
-  // 为了profile中的分类列表
 
   Spokesman::say(array(
     'total' => $total,
-    'list' => array_values($result),
+    'list' => array_values($category),
   ));
 }
 function update($args, $attr, $success = '修改成功', $error = '修改失败') {
