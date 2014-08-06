@@ -75,20 +75,43 @@ function fetch($args) {
   Spokesman::say($result);
 }
 
-function create($args, $attr) {
+function create($args, $attr, $success = '创建成功', $error = '创建失败') {
   $game = new Game();
-  unset($attr['NUM']);
-  unset($attr['cate']);
-  unset($attr['label']);
+  $article = new Article();
+  if (isset($attr['label'])) {
+    $attr['category'] = $attr['label'];
+    unset($attr['label']);
+  }
   $attr = array_merge($attr, Spokesman::extract(true));
   if (isset($attr['image'])) {
     $attr['image'] = str_replace('http://r.yxpopo.com/', '', $attr['image']);
   }
+  // 如果以前有被删了，则恢复以前的
+  $result = $game->select(Game::$HOMEPAGE_NAV)
+    ->where($attr)
+    ->fetch(PDO::FETCH_ASSOC);
+  if ($result) {
+    $attr = $result;
+    $result = $game->update(array('status' => 0), Game::HOMEPAGE_NAV)
+      ->where($attr)
+      ->limit(1)
+      ->execute()
+      ->getResult();
+    Spokesman::judge($result, $success, $error, $attr);
+    exit();
+  }
+
   $result = $game->insert($attr, Game::HOMEPAGE_NAV)
     ->execute()
     ->lastInsertId();
-  $attr = array_merge(array('id' => $result), $attr);
-  Spokesman::judge($result, '创建成功', '创建失败', $attr);
+  $label = $article->select('label')
+    ->where(array('id' => $attr['category']))
+    ->fetch(PDO::FETCH_COLUMN);
+  $attr = array_merge(array(
+    'id' => $result,
+    'label' => $label,
+  ), $attr);
+  Spokesman::judge($result, $success, $error, $attr);
 }
 
 function delete($args) {
