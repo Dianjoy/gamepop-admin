@@ -7,13 +7,18 @@
     entrance: null,
     initialize: function () {
       this.template = Handlebars.compile(this.$('script').remove().html());
+      var cid = this.$el.data('collection-id');
       this.collection = dianjoy.model.ListCollection.createInstance(null, {
-        url: this.$el.data('url')
+        url: this.$el.data('url'),
+        id: cid
       });
       this.collection.on('reset', this.render, this);
       this.collection.on('add', this.collection_addHandler, this);
       this.collection.on('change', this.collection_changeHandler, this);
       this.collection.on('sort', this.collection_sortHandler, this);
+      if (this.collection.length) {
+        this.render();
+      }
     },
     render: function () {
       if (this.collection.length === 0 || (this.$mediator.has('page') && this.$mediator.get('page') !== 0)) {

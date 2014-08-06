@@ -6,6 +6,9 @@
  * Time: 下午5:37
  */
 require_once "../../inc/API.class.php";
+require_once "../../inc/App.class.php";
+require_once "../../inc/Article.class.php";
+require_once "../../inc/Game.class.php";
 require_once "../../inc/Spokesman.class.php";
 
 $api = new API('article', array(
@@ -16,7 +19,6 @@ $api = new API('article', array(
 ));
 
 function create($args, $attr) {
-  require_once "../../inc/App.class.php";
   $app = new App();
 
   // 因为dpi的关系，前端显示的时候要缩小到50%，所以这里需要记录图片大小
@@ -43,8 +45,6 @@ function create($args, $attr) {
 }
 
 function fetch($args) {
-  require_once "../../inc/App.class.php";
-  require_once "../../inc/Game.class.php";
   $app = new App();
   $game = new Game();
 
@@ -85,11 +85,19 @@ function fetch($args) {
 }
 
 function update($args, $attr) {
-  require_once "../../inc/App.class.php";
   $app = new App();
+  $article = new Article();
 
   $conditions = Spokesman::extract();
   unset($attr['game_name']);
+
+  if ($attr['link']) {
+    $data = $article->select('guide_name', 'cid')
+      ->join(Article::ARTICLE_CATEGORY, 'id', 'aid')
+      ->where(array('id' => $attr['link']), Article::TABLE)
+      ->fetch(PDO::FETCH_ASSOC);
+    $attr['link'] = "#/remote/" . $data['guide_name'] . '/' . (int)$data['cid'] . '/' . $attr['link'] . '/detail.html';
+  }
 
   // 因为dpi的关系，前端显示的时候要缩小到50%，所以这里需要记录图片大小
   if (isset($attr['logo'])) {

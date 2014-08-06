@@ -7,10 +7,9 @@
       this.template = Handlebars.compile(this.$('script').remove().html().replace(/\s{2,}|\r|\n/g, ''));
 
       this.list = this.$('ul');
-      var spec = this.$el.data();
+      var cid = this.$el.data('collection-id');
       this.collection = dianjoy.model.ListCollection.createInstance(null, {
-        url: spec.url + '/' + this.model.get('path'),
-        id: spec.collectionId
+        id: cid
       });
 
       this.collection.on('add', this.collection_addHandler, this);

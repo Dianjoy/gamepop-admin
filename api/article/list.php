@@ -26,7 +26,7 @@ function fetch($args) {
   $status = array(
     'status' => (int)$args['status'],
   );
-  $args = array_omit($args, 'page', 'pagesize', 'keyword', 'id', 'path', 'seq', 'status');
+  $args = array_omit($args, 'page', 'pagesize', 'keyword', 'id', 'path', 'seq', 'status', 'from');
   $conditions = Spokesman::extract(true);
   $conditions = array_merge($conditions, $args);
   if (isset($args['update_editor'])) {

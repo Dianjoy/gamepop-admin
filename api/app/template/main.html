@@ -1,6 +1,6 @@
 <div class="game-homepage row-container">
   <div class="phone">
-    <div class="emulator column" data-mediator-class="gamepop.game.TopGame" data-url="api/app/homepage.php">
+    <div class="emulator column" data-mediator-class="gamepop.game.TopGame" data-collection-id="top">
       <div id="homepage">
         <img src="img/logo1.png" width="38" height="37" class="homepage-logo">
         <form id="search-form" action="">
@@ -20,12 +20,13 @@
     </div>
   </div>
   <div class="tables flex-auto">
-    <table class="table table-bordered table-hover smart-table sortable" data-url="api/app/homepage.php" data-pagesize="5" data-pagination=".pagination">
+    <table class="table table-bordered table-hover smart-table sortable" data-url="api/app/homepage.php" data-pagesize="5" data-pagination=".pagination" data-collection-id="top">
       <thead>
       <tr>
         <th>背景大图</th>
         <th>入口小图</th>
         <th>目标游戏</th>
+        <th>链接</th>
         <th>生效时间</th>
         <th></th>
       </tr>
@@ -41,6 +42,7 @@
           <a href="#logo" class="edit" data-type="img" data-refresh="true"><img src="{{#if logo}}{{logo}}{{else}}./img/image.png{{/if}}" class="icon-mh-100 img-thumbnail bg-gray"></a>
         </td>
         <td><a href="#guide_name" data-type="search" class="edit" data-search-url="api/game/list.php" data-display="game_name">{{game_name}}</a></td>
+        <td><a href="#link" class="edit" data-type="search" data-search-url="api/article/list.php">{{link}}</a></td>
         <td><a href="#online_time" class="edit" data-type="datetime">{{online_time}}</a></td>
         <td><button class="btn btn-danger delete-button" type="button"><i class="fa fa-trash-o"></i></button></td>
       </tr>
