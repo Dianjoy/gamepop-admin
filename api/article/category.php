@@ -54,6 +54,7 @@ function fetch($args) {
   $conditions = Spokesman::extract(true);
   $status = array('status' => Article::NORMAL);
 
+  // 取某游戏下所有分类的数据，多用与game/profile等页面
   if (isset($conditions['guide_name'])) {
     $category = $article->select('cid', $article->count())
       ->join(Article::ARTICLE_CATEGORY, 'id', 'aid')
@@ -73,12 +74,24 @@ function fetch($args) {
     foreach ($category as $key => $item) {
       $item['label'] = $labels[$item['cid']]['label'];
       $item['id'] = $item['cid'];
+      // 为了profile中的分类列表
+      $item['guide_name'] = $conditions['guide_name'];
       $category[$key] = $item;
     }
 
     Spokesman::say(array('list' => $category));
   }
 
+  // 不分页的取全部，多用于文章关联类型
+  if ($pagesize === 0) {
+    $category = $article->select(Article::$ALL_CATEGORY)
+      ->where($status)
+      ->search(array('label' => $keyword))
+      ->fetchAll(PDO::FETCH_ASSOC);
+    Spokesman::say(array('list' => $category));
+  }
+
+  // 详情列表，包括文章数量多用于列表页
   $total = $article->select($article->count())
     ->from(Article::CATEGORY)
     ->where($conditions)
@@ -93,19 +106,28 @@ function fetch($args) {
     ->limit($pagesize * $page, $pagesize)
     ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
 
+  // 取父分类
+  $parent = array();
+  foreach ($category as $item) {
+    $parent[] = $item['parent'];
+  }
+  $parent = array_unique(array_filter($parent));
+  $parent = $article->select(Article::$ALL_CATEGORY)
+    ->where(array('id' => $parent), '', \gamepop\Base::R_IN)
+    ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
+
+  // 取文章数
   $count = $article->select('cid', $article->count())
     ->join(Article::ARTICLE_CATEGORY, 'id', 'aid')
     ->where($status)
     ->where(array('cid' => array_keys($category)), '', \gamepop\Base::R_IN)
     ->group('cid')
     ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
+
   foreach ($category as $key => $value) {
     $value['NUM'] = (int)$count[$key];
     $value['id'] = $key;
-    // 为了profile中的分类列表
-    if (array_key_exists('guide_name', $conditions)) {
-      $value['guide_name'] = $conditions['guide_name'];
-    }
+    $value['parent_label'] = $parent[$value['parent']]['label'];
     $category[$key] = $value;
   }
 
@@ -126,9 +148,18 @@ function update($args, $attr, $success = '修改成功', $error = '修改失败'
   $article = new Article();
   $conditions = Spokesman::extract();
 
+  if (isset($attr['parent'])) {
+    $label = $attr['parent_label'];
+    unset($attr['parent_label']);
+  }
+
   $result = $article->update($attr, Article::CATEGORY)
     ->where($conditions)
     ->execute();
 
-  Spokesman::judge($result, $success, $error, $args);
+  if (isset($attr['parent'])) {
+    $attr['parent_label'] = $label;
+  }
+
+  Spokesman::judge($result, $success, $error, $attr);
 }
