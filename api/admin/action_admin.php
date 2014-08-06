@@ -20,6 +20,7 @@ function add($admin){
 	$username = trim($_POST['username']); 
 	$password = trim($_POST['newpassword']);
   $fullname = trim($_POST['fullname']);
+  $nickname = trim($_POST['nickname']);
   $qq = trim($_POST['qq']);
 
   $exist = $admin->select('x')
@@ -34,7 +35,7 @@ function add($admin){
 	}
 
   $permission = $_POST['role'];
-  $result = $admin->add($username, $fullname, $password, $permission, $qq);
+  $result = $admin->add($username, $fullname, $nickname, $password, $permission, $qq);
   $result = $result ? array(
     'code' => 0,
     'msg' => '添加成功',

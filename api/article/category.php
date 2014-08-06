@@ -68,7 +68,6 @@ function fetch($args) {
       $ids[] = $item['cid'];
     }
     $labels = $article->select(Article::$ALL_CATEGORY)
-      ->where($status)
       ->where(array('id' => $ids), '', \gamepop\Base::R_IN)
       ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
     foreach ($category as $key => $item) {
