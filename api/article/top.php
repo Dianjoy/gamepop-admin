@@ -19,7 +19,7 @@ function fetch() {
     ->where($conditions)
     ->where($status, Article::TOP)
     ->where($status, Article::TABLE)
-    ->where(array('end_time' => $now), '', \gamepop\Base::R_LESS_EQUAL)
+    ->where(array('end_time' => $now), '', \gamepop\Base::R_MORE_EQUAL)
     ->fetchAll(PDO::FETCH_ASSOC);
 
   Spokesman::say(array(
