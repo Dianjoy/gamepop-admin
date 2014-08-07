@@ -60,7 +60,7 @@ function fetch($args) {
 
   $list = $app->select(App::$HOMEPAGE)
     ->where($condition)
-    ->order('seq', 'ASC')
+    ->order('online_time')
     ->limit($page * $pagesize, $pagesize)
     ->fetchAll(PDO::FETCH_ASSOC);
 
