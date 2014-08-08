@@ -17,6 +17,18 @@ $game = new Game();
 
 switch ($_REQUEST['m']) {
   case 'add':
+    // 游戏是否存在
+    $result = $game->select("'x'")
+      ->where(array('guide_name' => $_REQUEST['guide_name']))
+      ->fetch(PDO::FETCH_COLUMN);
+    if ($result) {
+      Spokesman::say(array(
+        'code' => 2,
+        'msg' => '该游戏别名已存在',
+      ));
+      exit();
+    }
+
     $attr = array_pick($_REQUEST, 'guide_name', 'game_name', 'game_desc');
     $attr['os_android'] = (int)in_array(1, $_REQUEST['platform']);
     $attr['os_ios'] = (int)in_array(2, $_REQUEST['platform']);
