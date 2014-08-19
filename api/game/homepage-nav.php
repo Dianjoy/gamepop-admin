@@ -41,26 +41,36 @@ function fetch($args) {
   }
 
   // “编辑首页”用这个接口搜索未在列表中的文章分类
-  $is_search = array_key_exists('search', $args);
-  $in_or_not = $is_search ? \gamepop\Base::R_NOT_IN : \gamepop\Base::R_IN;
+  if (array_key_exists('search', $args)) {
+    $categories = $article->select('cid', $article->count())
+      ->join(Article::ARTICLE_CATEGORY, 'id', 'aid')
+      ->where($conditions)
+      ->where(array('status' => Article::NORMAL))
+      ->where(array('cid' => $categories), '', \gamepop\Base::R_NOT_IN)
+      ->group('cid')
+      ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
 
-  $categories = $article->select(Article::$ALL_CATEGORY, $article->count())
-    ->where($conditions)
-    ->where(array('category' => $categories), '', $in_or_not)
-    ->where(array('status' => Article::NORMAL), Article::TABLE)
-    ->group('id', Article::CATEGORY)
-    ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
+    $labels = $article->select(Article::$ALL_CATEGORY)
+      ->where(array('id' => array_keys($categories)), '', \gamepop\Base::R_IN)
+      ->where(array('status' => Article::NORMAL))
+      ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
 
-  if ($is_search) {
     $options = array();
-    foreach ($categories as $key => $category) {
+    foreach ($categories as $key => $num) {
       $options[] = array(
         'id' => $key,
-        'label' => $category['label'] . "（" . $category['NUM'] . "）",
+        'label' => $labels[$key]['label'] . "（{$num}）",
       );
     }
     Spokesman::say($options);
   }
+
+  $categories = $article->select(Article::$ALL_CATEGORY, $article->count())
+    ->where($conditions)
+    ->where(array('category' => $categories), '', \gamepop\Base::R_IN)
+    ->where(array('status' => Article::NORMAL), Article::TABLE)
+    ->group('id', Article::CATEGORY)
+    ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
 
   foreach ($nav as $key => $value) {
     $value['guide_name'] = $conditions['guide_name'];
