@@ -46,7 +46,7 @@ function fetch($args) {
       ->join(Article::ARTICLE_CATEGORY, 'id', 'aid')
       ->where($conditions)
       ->where(array('status' => Article::NORMAL))
-      ->where(array('cid' => $categories), '', \gamepop\Base::R_NOT_IN)
+      ->where(array('cid' => array_filter($categories)), '', \gamepop\Base::R_NOT_IN)
       ->group('cid')
       ->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_UNIQUE);
 
