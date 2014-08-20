@@ -65,10 +65,8 @@ function fetch($args) {
     Spokesman::say($options);
   }
 
-  $categories = $article->select(Article::$ALL_CATEGORY, $article->count())
-    ->where($conditions)
-    ->where(array('category' => $categories), '', \gamepop\Base::R_IN)
-    ->where(array('status' => Article::NORMAL), Article::TABLE)
+  $categories = $article->select(Article::$ALL_CATEGORY)
+    ->where(array('id' => $categories), '', \gamepop\Base::R_IN)
     ->group('id', Article::CATEGORY)
     ->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
 

@@ -100,7 +100,8 @@
     <table class="table table-bordered table-hover sortable smart-table" data-url="api/article/top.php" data-collection-id="top">
       <thead>
       <tr>
-        <th>置顶文章</th>
+        <th>配图</th>
+        <th>标题</th>
         <th>开始时间</th>
         <th>结束时间</th>
         <th>操作</th>
@@ -110,7 +111,10 @@
       <script type="text/x-handlebars-template">
         {{#each list}}
       <tr id="{{id}}">
-        <td><a href="#icon_path_article" class="edit" data-type="img" data-display="icon_path"><img src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="img-thumbnail icon-mh-100"></a> <a href="#topic" class="edit">{{topic}}</a></td>
+        <td>
+          <a href="#icon_path_article" class="edit" data-type="img" data-display="icon_path"><img src="{{#if icon_path}}{{icon_path}}{{else}}./img/image.png{{/if}}" class="img-thumbnail icon-mh-100"></a>
+        </td>
+        <td><a href="#topic" class="edit">{{topic}}</a></td>
         <td><a href="#start_time" class="edit" data-type="datetime">{{start_time}}</a></td>
         <td><a href="#end_time" class="edit" data-type="datetime">{{end_time}}</a></td>
         <td><button type="button" class="btn btn-danger delete-button" title="提前下线"><i class="fa fa-trash-o"></i></button></td>
@@ -120,7 +124,7 @@
       </tbody>
       <tfoot class="waiting">
       <tr>
-        <td colspan="4" align="center"><i class="fa fa-spin fa-spinner fa-2x"></i><br>加载中，请稍后</td>
+        <td colspan="5" align="center"><i class="fa fa-spin fa-spinner fa-2x"></i><br>加载中，请稍后</td>
       </tr>
       </tfoot>
     </table>
