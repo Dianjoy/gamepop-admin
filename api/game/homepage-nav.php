@@ -134,11 +134,18 @@ function delete($args) {
 function update($args, $attr, $success = '更新成功', $error = '更新失败') {
   $game = new Game();
   $conditions = Spokesman::extract(true);
-  if (isset($args['image'])) {
-    $args['image'] = str_replace('http://r.yxpopo.com/', '', $args['image']);
+  if (isset($attr['image'])) {
+    $attr['image'] = str_replace('http://r.yxpopo.com/', '', $attr['image']);
+  }
+  if (array_key_exists('label', $attr)) {
+    $label = preg_replace('/（\d+）/', '', $attr['label']);
+    unset($attr['label']);
   }
   $result = $game->update($attr, Game::HOMEPAGE_NAV)
     ->where($conditions)
     ->execute();
-  Spokesman::judge($result, $success, $error, $args);
+
+  $attr['label'] = $label;
+
+  Spokesman::judge($result, $success, $error, $attr);
 }
