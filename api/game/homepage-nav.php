@@ -87,7 +87,7 @@ function create($args, $attr, $success = '创建成功', $error = '创建失败'
   $game = new Game();
   $article = new Article();
   if (isset($attr['label'])) {
-    $attr['category'] = $attr['label'];
+    $label = preg_replace('/（\d+）/', '', $attr['label']);
     unset($attr['label']);
   }
   $attr = array_merge($attr, Spokesman::extract(true));
@@ -112,9 +112,6 @@ function create($args, $attr, $success = '创建成功', $error = '创建失败'
   $result = $game->insert($attr, Game::HOMEPAGE_NAV)
     ->execute()
     ->lastInsertId();
-  $label = $article->select('label')
-    ->where(array('id' => $attr['category']))
-    ->fetch(PDO::FETCH_COLUMN);
   $attr = array_merge(array(
     'id' => $result,
     'label' => $label,
