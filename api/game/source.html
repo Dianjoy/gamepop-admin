@@ -13,7 +13,7 @@
     <tr id="{{id}}">
       <td><a href="#source" class="edit">{{#if source}}{{source}}{{else}}（请填写内容来源）{{/if}}</a></td>
       <td><time datetime="{{last_fetch_time}}">{{last_fetch_time}}</time></td>
-      <td><a href="#min_catch_time" class="edit" data-type="select" data-display="label" data-url="api/game/json/fetch-rate.json">{{label}}</a></td>
+      <td><a href="#min_catch_time" class="edit" data-type="select" data-display="label" data-url="api/game/json/fetch-rate.json" data-auto-load="true">{{label}}</a></td>
       <td>
         <a href="#status" class="btn btn-success status-button {{^if status}}active{{/if}}" title="抓取"><i class="fa fa-refresh"></i></a>
       </td>

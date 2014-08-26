@@ -23,18 +23,22 @@ function fetch($args) {
   $pagesize = isset($args['pagesize']) ? (int)$args['pagesize'] : 20;
   $page = isset($args['page']) ? (int)$args['page'] : 0;
   $keyword = $args['keyword'];
-  $status = array(
+  $author = array(
     'author' => $_SESSION['id'],
-    'status' => 0,
+  );
+  $status = array(
+    'status' => array(Article::NORMAL, Article::DRAFT),
   );
 
   $total = $article->select($article->count())
-    ->where($status)
+    ->where($author)
+    ->where($status, '', \gamepop\Base::R_IN)
     ->search($keyword)
     ->fetch(PDO::FETCH_COLUMN);
 
   $articles = $article->select(Article::$ALL)
-    ->where($status, Article::TABLE)
+    ->where($author)
+    ->where($status, Article::TABLE, \gamepop\Base::R_IN)
     ->search($keyword)
     ->order('id')
     ->limit($page * $pagesize, $pagesize)

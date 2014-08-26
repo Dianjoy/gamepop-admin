@@ -60,7 +60,13 @@
   <script type="text/x-handlebars-template">
     {{#each list}}
     <tr id="{{id}}">
-      <td><a href="#category" class="{{#if label}}label label-default{{/if}} edit" data-type="select" data-url="api/article/category.php" data-display="label" data-refresh="true">{{label}}</a></td>
+      <td class="label-list">
+        <a href="#category" class="edit" data-type="tags" data-url="api/article/category.php" data-refresh="true" data-tag="label">
+          {{#if category}}
+          {{#each category}}<span class="label label-info">{{label}}</span> {{/each}}
+          {{/if}}
+        </a>
+      </td>
       <td>
         {{#if source}}
         <a href="{{src_url}}" target="_blank">{{source}} <i class="fa fa-external-link"></i></a>

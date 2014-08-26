@@ -75,7 +75,7 @@
         {{#each list}}
         <tr id="{{id}}">
           <td><a href="#image" class="edit" data-type="img"><img src="{{#if image}}{{image}}{{else}}./img/image.png{{/if}}" class="img-thumbnail icon-mh-100"></a></td>
-          <td><a href="#label" class="edit" data-type="select" data-url="api/game/homepage-nav.php/{{guide_name}}?search=1">{{label}}</a></td>
+          <td><a href="#label" class="edit" data-type="select" data-url="api/game/homepage-nav.php/{{guide_name}}?search=1" data-auto-load="true">{{label}}</a></td>
           <td>
             <select name="order_by" value="{{order_by}}" class="edit form-control">
               <option value="0">缺省</option>
