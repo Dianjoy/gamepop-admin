@@ -24,6 +24,7 @@
       <thead>
       <tr>
         <th>背景大图</th>
+        <th>模糊大图</th>
         <th>入口小图</th>
         <th>目标游戏</th>
         <th>链接</th>
@@ -36,13 +37,16 @@
       {{#each list}}
       <tr id="{{id}}">
         <td>
-          <a href="#big_pic" class="edit" data-type="img" data-refresh="true"><img src="{{#if big_pic}}{{big_pic}}{{else}}./img/image.png{{/if}}" class="icon-mh-100 img-thumbnail"></a>
+          <a href="#big_pic" class="edit" data-type="img"><img src="{{#if big_pic}}{{big_pic}}{{else}}./img/image.png{{/if}}" class="icon-mh-100 img-thumbnail"></a>
+        </td>
+        <td>
+          <a href="#blur_pic" class="edit" data-type="img"><img src="{{#if blur_pic}}{{blur_pic}}{{else}}./img/image.png{{/if}}" class="icon-mh-100 img-thumbnail"></a>
         </td>
         <td>
           <a href="#logo" class="edit" data-type="img" data-refresh="true"><img src="{{#if logo}}{{logo}}{{else}}./img/image.png{{/if}}" class="icon-mh-100 img-thumbnail bg-gray"></a>
         </td>
         <td><a href="#guide_name" data-type="search" class="edit" data-search-url="api/game/list.php" data-display="game_name">{{game_name}}</a></td>
-        <td><a href="#link" class="edit" data-type="search" data-search-url="api/article/list.php">{{link}}</a></td>
+        <td class="break"><a href="#link" class="edit" data-type="search" data-search-url="api/article/list.php">{{link}}</a></td>
         <td><a href="#online_time" class="edit" data-type="datetime">{{online_time}}</a></td>
         <td><button class="btn btn-danger delete-button" type="button"><i class="fa fa-trash-o"></i></button></td>
       </tr>
