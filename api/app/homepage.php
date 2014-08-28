@@ -81,7 +81,7 @@ function fetch($args) {
   Spokesman::say(array(
     'total' => $total,
     'list' => $list,
-  ), array('logo', 'big_pic'));
+  ), array('logo', 'big_pic', 'blur_pic'));
 }
 
 function update($args, $attr) {
@@ -109,7 +109,7 @@ function update($args, $attr) {
     ->where($conditions)
     ->execute();
 
-  Spokesman::judge($result, '修改成功', '修改失败', $attr, array('logo', 'big_pic'));
+  Spokesman::judge($result, '修改成功', '修改失败', $attr, array('logo', 'big_pic', 'blur_pic'));
 }
 
 function delete($args) {
