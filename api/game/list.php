@@ -65,6 +65,41 @@ function fetch($game, $args) {
     $range = array(Game::ID => $guide_names);
   }
 
+
+  // 关联游戏的页面
+  if ($only_game) {
+    $the_one = $game->select(Game::$ALL)
+      ->where($conditions)
+      ->where(array('game_name' => $keyword))
+      ->fetchAll(PDO::FETCH_ASSOC);
+
+    $games = $game->select(Game::$ALL)
+      ->where($conditions)
+      ->search($keyword)
+      ->order('hot')
+      ->limit($page * $pagesize, $pagesize)
+      ->fetchAll(PDO::FETCH_ASSOC);
+    if ($the_one) {
+      $is_exist = false;
+      foreach ($games as $item) {
+        if ($item['guide_name'] == $the_one['guide_name']) {
+          $is_exist = true;
+          break;
+        }
+      }
+      if (!$is_exist) {
+        $games = array_merge($the_one, $games);
+      }
+    }
+    foreach ($games as $key => $single) {
+      $games[$key]['id'] = $single['guide_name'];
+      $games[$key]['label'] = $single['game_name'];
+    }
+    return Spokesman::say(array(
+      'list' => $games,
+    ));
+  }
+
   $total = (int)$game->select($game->count())
     ->where($conditions)
     ->where($range, '', \gamepop\Base::R_IN)
@@ -90,19 +125,6 @@ function fetch($game, $args) {
       ->order('hot')
       ->limit($page * $pagesize, $pagesize)
       ->fetchAll(PDO::FETCH_ASSOC);
-  }
-
-
-  // 某些地方检索到这里就OK了，比如文章关联游戏的页面
-  if ($only_game) {
-    foreach ($games as $key => $single) {
-      $games[$key]['id'] = $single['guide_name'];
-      $games[$key]['label'] = $single['game_name'];
-    }
-    return Spokesman::say(array(
-      'total' => $total,
-      'list' => $games,
-    ));
   }
 
   // 取游戏tag
