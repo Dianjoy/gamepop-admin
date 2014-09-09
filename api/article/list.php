@@ -18,7 +18,7 @@ $api = new API('article|article_wb', array(
 ));
 
 function fetch($args) {
-  $article = new Article();
+  $article = new Article(false, false); // no cache
   $pagesize = empty($args['pagesize']) ? 20 : (int)$args['pagesize'];
   $page = isset($args['page']) ? (int)$args['page'] : 0;
   $keyword = $args['keyword'];

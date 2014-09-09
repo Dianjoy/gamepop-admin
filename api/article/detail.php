@@ -18,7 +18,7 @@ $api = new API('article|article_wb', array(
 
 function fetch($args) {
   require_once(dirname(__FILE__) . '/../../inc/HTML_To_Markdown.php');
-  $article = new Article();
+  $article = new Article(false, false); // no cache
 
   $conditions = Spokesman::extract();
   $result = $article->select(Article::$DETAIL)
