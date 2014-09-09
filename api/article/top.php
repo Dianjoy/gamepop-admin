@@ -37,11 +37,29 @@ function delete($args) {
 function update($args, $attr, $success = '修改成功', $error = '修改失败') {
   $article = new Article();
   $conditions = Spokesman::extract(true);
+  if (Admin::is_outsider() && !Admin::has_this_game($conditions['guide_name'])) {
+    header('HTTP/1.1 401 Unauthorized');
+    Spokesman::say(array(
+      'code' => 1,
+      'msg' => '您不能操作这个游戏',
+    ));
+    exit();
+  }
   unset($conditions['guide_name']);
-
-  $result = $article->update($attr, Article::TOP)
-    ->where($conditions)
-    ->execute();
+  
+  if (isset($attr['icon_path']) || isset($attr['topic'])) {
+    $aid = $article->select('aid')
+      ->from(Article::TOP)
+      ->where($conditions)
+      ->fetch(PDO::FETCH_COLUMN);
+    $result = $article->update($attr)
+      ->where(array('id' => $aid))
+      ->execute();
+  } else {
+    $result = $article->update($attr, Article::TOP)
+      ->where($conditions)
+      ->execute();
+  }
 
   Spokesman::judge($result, $success, $error, $attr);
 }
