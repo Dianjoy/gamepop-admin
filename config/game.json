@@ -19,6 +19,11 @@
       "url": "#/game/merge"
     },
     {
+      "icon": "fire",
+      "title": "热门游戏",
+      "url": "#/game/hot"
+    },
+    {
       "icon": "truck",
       "title": "新收录游戏",
       "url": "#/game/fetched"

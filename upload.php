@@ -13,6 +13,7 @@ header("Content-Type: application/json; charset: utf-8");
 $up_path = array(
   'icon_path' => 'icon/',
   'icon_path_article' => 'icon/',
+  'poster' => 'image/',
   'big_pic' => 'image/',
   'blur_pic' => 'image/',
   'logo' => 'image/',
