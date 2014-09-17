@@ -10,3 +10,10 @@ var baseURL = "api/"
 dianjoy.service.Manager.autoUpload = true;
 dianjoy.service.Manager.api = './upload.php';
 dianjoy.service.Manager.maxUploadSize = 209715200;
+
+;(function (ns) {
+  ns.login = {
+    action: '/login_do.php',
+    verify: '/inc/showimg.php'
+  };
+}(Nervenet.createNameSpace('dianjoy.config')));
