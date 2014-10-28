@@ -16,3 +16,4 @@ admin.class.php
 # build
 css/*.css
 css/*.map
+**/.sass-cache

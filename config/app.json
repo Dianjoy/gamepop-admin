@@ -7,6 +7,11 @@
       "icon": "image",
       "title": "首页推荐",
       "url": "#/app/main"
+    },
+    {
+      "icon": "cloud-upload",
+      "title": "上传安装包",
+      "url": "#/app/upload"
     }
   ]
 }

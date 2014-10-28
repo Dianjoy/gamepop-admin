@@ -1,0 +1,61 @@
+<div class="row">
+  <div class="col-md-3 col-sm-12">
+    <div class="panel panel-primary">
+      <div class="panel-heading">添加新版本</div>
+      <form class="panel-body table-item-editor" action="" method="post">
+        <div class="form-group">
+          <div class="file-placeholder"></div>
+          <button type="button" class="btn btn-info btn-block"><i class="fa fa-cloud-upload"></i> 上传安装包</button>
+          <input type="hidden" name="url">
+        </div>
+        <div class="form-group">
+          <label>目标平台</label><br>
+          <div class="btn-group" data-toggle="buttons">
+            <label class="btn btn-info">
+              <i class="fa fa-android"></i> Android
+              <input type="radio" name="platform" value="android">
+            </label>
+            <label class="btn btn-info">
+              <i class="fa fa-apple"></i> iOS
+              <input type="radio" name="platform" value="apple">
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="pack-version">版本号</label>
+          <input class="form-control" name="version" id="pack-version" placeholder="“主.副.小”，如：1.0.0">
+        </div>
+        <button class="btn btn-primary btn-block"><i class="fa fa-plus"></i> 添加此版本</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-md-9 col-sm-12">
+    <table class="table table-bordered smart-table" data-url="api/app/uploaded.php" data-collection-id="uploaded">
+      <thead>
+      <tr>
+        <th>版本</th>
+        <th>MD5</th>
+        <th>上传日期</th>
+        <th>上传用户</th>
+        <th>操作</th>
+      </tr>
+      </thead>
+      <tbody>
+      <script type="text/x-handlebars-template">
+        <tr>
+          <td><a href="{{url}}">{{version}}</a></td>
+          <td>{{md5}}</td>
+          <td>{{upload_time}}</td>
+          <td>{{upload_user}}</td>
+          <td>
+            <div class="btn-group">
+              <a class="btn btn-primary"><i class="fa fa-square-o"></i> 启用</a>
+              <a class="btn btn-danger"><i class="fa fa-trash-o"></i> 删除</a>
+            </div>
+          </td>
+        </tr>
+      </script>
+      </tbody>
+    </table>
+  </div>
+</div>
